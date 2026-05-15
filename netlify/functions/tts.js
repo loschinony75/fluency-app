@@ -1,10 +1,11 @@
 exports.handler = async function(event) {
   const text = event.queryStringParameters && event.queryStringParameters.text;
+  const lang = event.queryStringParameters && event.queryStringParameters.lang || 'es';
   if (!text) {
     return { statusCode: 400, body: 'Missing text parameter' };
   }
 
-  const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q=${encodeURIComponent(text)}`;
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(text)}`;
 
   try {
     const fetch = (await import('node-fetch')).default;
