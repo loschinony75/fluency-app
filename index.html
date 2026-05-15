@@ -1,1678 +1,1077 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fluency — Sentence-Based Language Training</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fluency — Sentence-Based Language Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      :root {
-        --bg: #0a0a0b;
-        --surface: #111114;
-        --surface2: #18181d;
-        --border: rgba(255, 255, 255, 0.07);
-        --border2: rgba(255, 255, 255, 0.13);
-        --text: #f0ede8;
-        --muted: #7a7870;
-        --accent: #d4f03c;
-        --accent2: #b8d433;
-        --danger: #ff4f4f;
-        --success: #4fcf8a;
-        --warn: #f0a440;
-        --font-head: 'Syne', sans-serif;
-        --font-mono: 'DM Mono', monospace;
-      }
+  :root {
+    --bg: #0a0a0b;
+    --surface: #111114;
+    --surface2: #18181d;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #f0ede8;
+    --muted: #7a7870;
+    --accent: #d4f03c;
+    --accent2: #b8d433;
+    --danger: #ff4f4f;
+    --success: #4fcf8a;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
 
-      body {
-        background: var(--bg);
-        color: var(--text);
-        font-family: var(--font-mono);
-        font-size: 14px;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-      /* NAV */
-      nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 24px;
-        border-bottom: 1px solid var(--border);
-        background: var(--surface);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 12px;
+  }
 
-      .logo {
-        font-family: var(--font-head);
-        font-weight: 800;
-        font-size: 18px;
-        letter-spacing: -0.5px;
-        color: var(--accent);
-      }
+  .logo {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--text); }
 
-      .logo span {
-        color: var(--text);
-      }
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+  }
 
-      .nav-tabs {
-        display: flex;
-        gap: 4px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 3px;
-      }
+  .nav-tab {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--border); }
+  .nav-tab.active { background: var(--accent); color: var(--bg); font-weight: 500; }
 
-      .nav-tab {
-        background: none;
-        border: none;
-        color: var(--muted);
-        font-family: var(--font-mono);
-        font-size: 12px;
-        padding: 6px 14px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.15s;
-        letter-spacing: 0.03em;
-      }
+  .lang-badge {
+    font-size: 11px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 10px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .lang-badge:hover { border-color: var(--border2); color: var(--text); }
 
-      .nav-tab:hover {
-        color: var(--text);
-        background: var(--border);
-      }
-      .nav-tab.active {
-        background: var(--accent);
-        color: var(--bg);
-        font-weight: 500;
-      }
+  @media (max-width: 600px) {
+    nav {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 12px 14px;
+      gap: 10px;
+    }
+    .nav-top-row { display: flex; align-items: center; justify-content: space-between; }
+    .nav-tabs { width: 100%; }
+    .nav-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 11px; }
+  }
 
-      .lang-badge {
-        font-size: 11px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 5px;
-        padding: 4px 10px;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .lang-badge:hover {
-        border-color: var(--border2);
-        color: var(--text);
-      }
+  .screen { display: none; padding: 32px 24px; max-width: 720px; margin: 0 auto; width: 100%; }
+  .screen.active { display: block; }
 
-      /* SCREENS */
-      .screen {
-        display: none;
-        padding: 32px 24px;
-        max-width: 720px;
-        margin: 0 auto;
-        width: 100%;
-      }
-      .screen.active {
-        display: block;
-      }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+  }
 
-      /* CARDS */
-      .card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px 24px;
-        margin-bottom: 12px;
-      }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-accent { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 500; }
+  .btn-accent:hover { background: var(--accent2); border-color: var(--accent2); color: var(--bg); }
+  .btn-danger { background: rgba(255,79,79,0.1); border-color: rgba(255,79,79,0.3); color: var(--danger); }
+  .btn-success { background: rgba(79,207,138,0.1); border-color: rgba(79,207,138,0.3); color: var(--success); }
+  .btn-lg { font-size: 15px; padding: 12px 24px; border-radius: 9px; }
+  .btn-full { width: 100%; justify-content: center; }
 
-      .card-sm {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 14px 16px;
-        margin-bottom: 8px;
-      }
+  input[type="text"], textarea, select {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 9px 13px;
+    border-radius: 7px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--surface2); }
+  textarea { resize: vertical; min-height: 72px; }
 
-      /* BUTTONS */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: none;
-        border: 1px solid var(--border2);
-        color: var(--text);
-        font-family: var(--font-mono);
-        font-size: 13px;
-        padding: 8px 16px;
-        border-radius: 7px;
-        cursor: pointer;
-        transition: all 0.15s;
-        white-space: nowrap;
-      }
-      .btn:hover {
-        background: var(--surface2);
-        border-color: var(--border2);
-      }
-      .btn:active {
-        transform: scale(0.98);
-      }
-      .btn-accent {
-        background: var(--accent);
-        color: var(--bg);
-        border-color: var(--accent);
-        font-weight: 500;
-      }
-      .btn-accent:hover {
-        background: var(--accent2);
-        border-color: var(--accent2);
-        color: var(--bg);
-      }
-      .btn-danger {
-        background: rgba(255, 79, 79, 0.1);
-        border-color: rgba(255, 79, 79, 0.3);
-        color: var(--danger);
-      }
-      .btn-danger:hover {
-        background: rgba(255, 79, 79, 0.2);
-      }
-      .btn-success {
-        background: rgba(79, 207, 138, 0.1);
-        border-color: rgba(79, 207, 138, 0.3);
-        color: var(--success);
-      }
-      .btn-success:hover {
-        background: rgba(79, 207, 138, 0.2);
-      }
-      .btn-lg {
-        font-size: 15px;
-        padding: 12px 24px;
-        border-radius: 9px;
-      }
-      .btn-full {
-        width: 100%;
-        justify-content: center;
-      }
+  label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
 
-      /* FORM */
-      input[type='text'],
-      textarea,
-      select {
-        background: var(--surface2);
-        border: 1px solid var(--border2);
-        color: var(--text);
-        font-family: var(--font-mono);
-        font-size: 13px;
-        padding: 9px 13px;
-        border-radius: 7px;
-        outline: none;
-        width: 100%;
-        transition: border-color 0.15s;
-      }
-      input[type='text']:focus,
-      textarea:focus,
-      select:focus {
-        border-color: var(--accent);
-      }
-      select option {
-        background: var(--surface2);
-      }
-      textarea {
-        resize: vertical;
-        min-height: 72px;
-      }
+  .form-row { margin-bottom: 14px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-      label {
-        display: block;
-        font-size: 11px;
-        color: var(--muted);
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 5px;
-      }
+  .sentence-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    transition: border-color 0.15s;
+  }
+  .sentence-item:hover { border-color: var(--border2); }
 
-      .form-row {
-        margin-bottom: 14px;
-      }
-      .form-row-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
+  .sentence-texts { flex: 1; min-width: 0; }
+  .sentence-en { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sentence-es { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sentence-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
 
-      /* SENTENCE LIST */
-      .sentence-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 12px 14px;
-        margin-bottom: 6px;
-        cursor: pointer;
-        transition: border-color 0.15s;
-      }
-      .sentence-item:hover {
-        border-color: var(--border2);
-      }
-      .sentence-item.selected {
-        border-color: var(--accent);
-      }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    min-width: 38px;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-btn:hover { color: var(--text); background: var(--border); }
+  .icon-btn.playing { color: var(--accent); }
 
-      .sentence-texts {
-        flex: 1;
-        min-width: 0;
-      }
-      .sentence-en {
-        font-size: 13px;
-        color: var(--text);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .sentence-es {
-        font-size: 12px;
-        color: var(--muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+  .cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .cat-pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .cat-pill.active { background: rgba(212,240,60,0.12); border-color: var(--accent); color: var(--accent); }
 
-      .sentence-actions {
-        display: flex;
-        gap: 6px;
-        flex-shrink: 0;
-      }
+  .practice-mode-title {
+    font-family: var(--font-head);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
 
-      .icon-btn {
-        background: none;
-        border: none;
-        color: var(--muted);
-        cursor: pointer;
-        padding: 4px 6px;
-        border-radius: 5px;
-        font-size: 16px;
-        transition: color 0.15s;
-        line-height: 1;
-      }
-      .icon-btn:hover {
-        color: var(--text);
-        background: var(--border);
-      }
-      .icon-btn.playing {
-        color: var(--accent);
-      }
+  .sentence-big {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
 
-      /* CATEGORY PILLS */
-      .cat-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-bottom: 20px;
-      }
-      .cat-pill {
-        background: var(--surface2);
-        border: 1px solid var(--border);
-        color: var(--muted);
-        font-family: var(--font-mono);
-        font-size: 11px;
-        padding: 4px 11px;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.15s;
-        letter-spacing: 0.04em;
-      }
-      .cat-pill:hover {
-        border-color: var(--border2);
-        color: var(--text);
-      }
-      .cat-pill.active {
-        background: rgba(212, 240, 60, 0.12);
-        border-color: var(--accent);
-        color: var(--accent);
-      }
+  .sentence-big-es {
+    font-family: var(--font-head);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
 
-      /* PRACTICE SCREENS */
-      .practice-mode-title {
-        font-family: var(--font-head);
-        font-size: 11px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 24px;
-      }
+  .sentence-count { font-size: 11px; color: var(--muted); margin-bottom: 28px; letter-spacing: 0.06em; }
 
-      .sentence-big {
-        font-family: var(--font-head);
-        font-size: 28px;
-        font-weight: 700;
-        line-height: 1.3;
-        color: var(--text);
-        margin-bottom: 10px;
-      }
+  .audio-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
 
-      .sentence-big-es {
-        font-family: var(--font-head);
-        font-size: 26px;
-        font-weight: 600;
-        line-height: 1.3;
-        color: var(--accent);
-        margin-bottom: 24px;
-      }
+  .recall-reveal { display: none; }
+  .recall-reveal.shown { display: block; }
 
-      .sentence-count {
-        font-size: 11px;
-        color: var(--muted);
-        margin-bottom: 28px;
-        letter-spacing: 0.06em;
-      }
+  .result-btns { display: flex; gap: 10px; margin-top: 20px; }
+  .result-btns .btn { flex: 1; justify-content: center; }
 
-      /* SHADOW MODE */
-      .audio-controls {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-      }
+  .stats-bar {
+    display: flex;
+    gap: 20px;
+    padding: 12px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .stats-bar span { color: var(--text); }
 
-      /* RECALL */
-      .recall-reveal {
-        display: none;
-      }
-      .recall-reveal.shown {
-        display: block;
-      }
+  .progress-track { background: var(--surface2); border-radius: 4px; height: 3px; width: 100%; overflow: hidden; margin-bottom: 8px; }
+  .progress-fill { background: var(--accent); height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 
-      .result-btns {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-      .result-btns .btn {
-        flex: 1;
-        justify-content: center;
-      }
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 28px;
+    width: 100%;
+    max-width: 540px;
+    margin: auto;
+  }
+  .modal-title { font-family: var(--font-head); font-weight: 700; font-size: 18px; margin-bottom: 20px; }
 
-      /* STATS BAR */
-      .stats-bar {
-        display: flex;
-        gap: 20px;
-        padding: 12px 24px;
-        border-top: 1px solid var(--border);
-        background: var(--surface);
-        font-size: 12px;
-        color: var(--muted);
-      }
-      .stats-bar span {
-        color: var(--text);
-      }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
-      /* PROGRESS BAR */
-      .progress-track {
-        background: var(--surface2);
-        border-radius: 4px;
-        height: 3px;
-        width: 100%;
-        overflow: hidden;
-        margin-bottom: 8px;
-      }
-      .progress-fill {
-        background: var(--accent);
-        height: 100%;
-        border-radius: 4px;
-        transition: width 0.3s ease;
-      }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .flex-gap { display: flex; gap: 8px; align-items: center; }
+  .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; }
+  .mb8 { margin-bottom: 8px; } .mb16 { margin-bottom: 16px; }
+  .text-muted { color: var(--muted); } .text-accent { color: var(--accent); } .text-sm { font-size: 12px; }
 
-      /* MODAL */
-      .modal-bg {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 200;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-      }
-      .modal-bg.open {
-        display: flex;
-      }
-      .modal {
-        background: var(--surface);
-        border: 1px solid var(--border2);
-        border-radius: 14px;
-        padding: 28px;
-        width: 100%;
-        max-width: 540px;
-        max-height: 90vh;
-        overflow-y: auto;
-      }
-      .modal-title {
-        font-family: var(--font-head);
-        font-weight: 700;
-        font-size: 18px;
-        margin-bottom: 20px;
-      }
+  .empty-state { text-align: center; color: var(--muted); padding: 48px 16px; font-size: 13px; }
+  .empty-state-icon { font-size: 32px; margin-bottom: 12px; }
 
-      /* MISC */
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        margin: 20px 0;
-      }
-      .tag {
-        display: inline-block;
-        font-size: 10px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        background: rgba(212, 240, 60, 0.1);
-        color: var(--accent);
-        border: 1px solid rgba(212, 240, 60, 0.2);
-      }
-      .tag-muted {
-        background: var(--surface2);
-        color: var(--muted);
-        border-color: var(--border);
-      }
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-      .flex {
-        display: flex;
-      }
-      .flex-between {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .flex-gap {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-      .mt8 {
-        margin-top: 8px;
-      }
-      .mt16 {
-        margin-top: 16px;
-      }
-      .mt24 {
-        margin-top: 24px;
-      }
-      .mb8 {
-        margin-bottom: 8px;
-      }
-      .mb16 {
-        margin-bottom: 16px;
-      }
-      .text-muted {
-        color: var(--muted);
-      }
-      .text-accent {
-        color: var(--accent);
-      }
-      .text-sm {
-        font-size: 12px;
-      }
-      .text-lg {
-        font-size: 16px;
-      }
+  .loop-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--accent);
+    padding: 3px 9px;
+    background: rgba(212,240,60,0.1);
+    border-radius: 5px;
+    border: 1px solid rgba(212,240,60,0.2);
+  }
 
-      .empty-state {
-        text-align: center;
-        color: var(--muted);
-        padding: 48px 16px;
-        font-size: 13px;
-      }
-      .empty-state-icon {
-        font-size: 32px;
-        margin-bottom: 12px;
-      }
+  .waveform { display: flex; align-items: center; gap: 3px; height: 28px; }
+  .waveform-bar { width: 3px; background: var(--border2); border-radius: 2px; }
+  .waveform.playing .waveform-bar { background: var(--accent); animation: wave 0.8s ease-in-out infinite alternate; }
+  .waveform-bar:nth-child(1) { height: 8px;  animation-delay: 0s; }
+  .waveform-bar:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+  .waveform-bar:nth-child(3) { height: 20px; animation-delay: 0.2s; }
+  .waveform-bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+  .waveform-bar:nth-child(5) { height: 22px; animation-delay: 0.15s; }
+  .waveform-bar:nth-child(6) { height: 12px; animation-delay: 0.25s; }
+  .waveform-bar:nth-child(7) { height: 18px; animation-delay: 0.35s; }
+  .waveform-bar:nth-child(8) { height: 10px; animation-delay: 0.05s; }
+  @keyframes wave { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
 
-      /* LOADING SPINNER */
-      .spinner {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 2px solid var(--border2);
-        border-top-color: var(--accent);
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-        flex-shrink: 0;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
+  .ai-status { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 8px; min-height: 18px; }
 
-      .loop-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11px;
-        color: var(--accent);
-        padding: 3px 9px;
-        background: rgba(212, 240, 60, 0.1);
-        border-radius: 5px;
-        border: 1px solid rgba(212, 240, 60, 0.2);
-      }
+  .tts-status {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 6px 10px;
+    background: var(--surface2);
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    margin-bottom: 10px;
+    display: none;
+  }
+  .tts-status.visible { display: block; }
+  .tts-status.error { color: var(--danger); border-color: rgba(255,79,79,0.3); }
 
-      /* WAVEFORM (fake visual) */
-      .waveform {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        height: 28px;
-      }
-      .waveform-bar {
-        width: 3px;
-        background: var(--border2);
-        border-radius: 2px;
-        transition: height 0.1s ease, background 0.1s;
-      }
-      .waveform.playing .waveform-bar {
-        background: var(--accent);
-        animation: wave 0.8s ease-in-out infinite alternate;
-      }
-      .waveform-bar:nth-child(1) {
-        animation-delay: 0s;
-        height: 8px;
-      }
-      .waveform-bar:nth-child(2) {
-        animation-delay: 0.1s;
-        height: 14px;
-      }
-      .waveform-bar:nth-child(3) {
-        animation-delay: 0.2s;
-        height: 20px;
-      }
-      .waveform-bar:nth-child(4) {
-        animation-delay: 0.3s;
-        height: 16px;
-      }
-      .waveform-bar:nth-child(5) {
-        animation-delay: 0.15s;
-        height: 22px;
-      }
-      .waveform-bar:nth-child(6) {
-        animation-delay: 0.25s;
-        height: 12px;
-      }
-      .waveform-bar:nth-child(7) {
-        animation-delay: 0.35s;
-        height: 18px;
-      }
-      .waveform-bar:nth-child(8) {
-        animation-delay: 0.05s;
-        height: 10px;
-      }
-      @keyframes wave {
-        from {
-          transform: scaleY(0.4);
-        }
-        to {
-          transform: scaleY(1);
-        }
-      }
+  @media (max-width: 600px) {
+    .screen { padding: 16px 14px; }
+    .sentence-big { font-size: 22px; }
+    .sentence-big-es { font-size: 20px; }
+    .form-row-2 { grid-template-columns: 1fr; }
+    .btn-lg { font-size: 14px; padding: 11px 18px; }
+    .modal { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
 
-      /* AI status */
-      .ai-status {
-        font-size: 11px;
-        color: var(--muted);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-top: 8px;
-        min-height: 18px;
-      }
+<nav>
+  <div class="nav-top-row" style="display:flex;align-items:center;justify-content:space-between;width:100%">
+    <div class="logo">fluency<span>.</span></div>
+    <div class="lang-badge" onclick="toggleLang()" id="lang-badge">🇵🇷 PR Spanish</div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showScreen('sentences')">Sentences</button>
+    <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
+    <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
+    <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
+  </div>
+</nav>
 
-      @media (max-width: 600px) {
-        nav {
-          padding: 12px 14px;
-        }
-        .screen {
-          padding: 20px 14px;
-        }
-        .sentence-big {
-          font-size: 22px;
-        }
-        .form-row-2 {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- NAV -->
-    <nav>
-      <div class="logo">fluency<span>.</span></div>
-      <div class="nav-tabs">
-        <button class="nav-tab active" onclick="showScreen('sentences')">
-          Sentences
-        </button>
-        <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
-        <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
-        <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
-      </div>
-      <div class="lang-badge" onclick="toggleLang()" id="lang-badge">
-        🇵🇷 PR Spanish
-      </div>
-    </nav>
-
-    <!-- ===== SENTENCES SCREEN ===== -->
-    <div class="screen active" id="screen-sentences">
-      <div class="flex-between mb16">
-        <div>
-          <div
-            style="
-              font-family: var(--font-head);
-              font-size: 22px;
-              font-weight: 700;
-            "
-          >
-            Your Sentences
-          </div>
-          <div class="text-muted text-sm mt8">
-            Build your personal language bank
-          </div>
-        </div>
-        <button class="btn btn-accent" onclick="openAddModal()">+ Add</button>
-      </div>
-
-      <div class="cat-pills" id="cat-filter">
-        <div class="cat-pill active" onclick="filterCat('all',this)">All</div>
-        <div class="cat-pill" onclick="filterCat('daily',this)">Daily Life</div>
-        <div class="cat-pill" onclick="filterCat('work',this)">Work</div>
-        <div class="cat-pill" onclick="filterCat('social',this)">Social</div>
-        <div class="cat-pill" onclick="filterCat('errands',this)">Errands</div>
-        <div class="cat-pill" onclick="filterCat('family',this)">Family</div>
-      </div>
-
-      <div id="sentence-list"></div>
+<!-- SENTENCES -->
+<div class="screen active" id="screen-sentences">
+  <div class="tts-status" id="tts-status"></div>
+  <div class="flex-between mb16">
+    <div>
+      <div style="font-family:var(--font-head);font-size:22px;font-weight:700;">Your Sentences</div>
+      <div class="text-muted text-sm mt8">Build your personal language bank</div>
     </div>
+    <button class="btn btn-accent" onclick="openAddModal()">+ Add</button>
+  </div>
+  <div class="cat-pills">
+    <div class="cat-pill active" onclick="filterCat('all',this)">All</div>
+    <div class="cat-pill" onclick="filterCat('daily',this)">Daily Life</div>
+    <div class="cat-pill" onclick="filterCat('work',this)">Work</div>
+    <div class="cat-pill" onclick="filterCat('social',this)">Social</div>
+    <div class="cat-pill" onclick="filterCat('errands',this)">Errands</div>
+    <div class="cat-pill" onclick="filterCat('family',this)">Family</div>
+  </div>
+  <div id="sentence-list"></div>
+</div>
 
-    <!-- ===== SHADOW SCREEN ===== -->
-    <div class="screen" id="screen-shadow">
-      <div class="practice-mode-title">▶ Shadowing Mode</div>
-
-      <div id="shadow-empty" class="empty-state" style="display: none">
-        <div class="empty-state-icon">🎙</div>
-        <div>No sentences yet. Add some on the Sentences tab.</div>
-      </div>
-
-      <div id="shadow-content">
-        <div class="progress-track mb8">
-          <div
-            class="progress-fill"
-            id="shadow-progress"
-            style="width: 0%"
-          ></div>
-        </div>
-        <div class="sentence-count" id="shadow-count">— / —</div>
-
-        <div class="sentence-big" id="shadow-en">—</div>
-        <div class="sentence-big-es" id="shadow-es">—</div>
-
-        <div class="audio-controls mt24">
-          <button
-            class="btn btn-accent btn-lg"
-            onclick="shadowPlay()"
-            id="shadow-play-btn"
-          >
-            ▶ Play
-          </button>
-          <button
-            class="btn btn-lg"
-            onclick="shadowLoop()"
-            id="shadow-loop-btn"
-          >
-            ↺ Loop Off
-          </button>
-          <div class="waveform" id="shadow-wave">
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-            <div class="waveform-bar"></div>
-          </div>
-        </div>
-
-        <hr class="divider" />
-
-        <div class="flex-gap">
-          <button class="btn" onclick="shadowPrev()">← Prev</button>
-          <button class="btn" onclick="shadowNext()">Next →</button>
-          <button
-            class="btn text-sm"
-            onclick="shadowShuffle()"
-            style="margin-left: auto"
-          >
-            ⇄ Shuffle
-          </button>
-        </div>
-
-        <div
-          class="card mt24"
-          style="
-            border-color: rgba(212, 240, 60, 0.15);
-            background: rgba(212, 240, 60, 0.04);
-          "
-        >
-          <div
-            style="
-              font-size: 11px;
-              color: var(--accent);
-              letter-spacing: 0.1em;
-              text-transform: uppercase;
-              margin-bottom: 8px;
-            "
-          >
-            Shadowing Tips
-          </div>
-          <div class="text-muted text-sm" style="line-height: 1.7">
-            Press Play → listen to the full sentence → immediately repeat out
-            loud, mimicking the exact rhythm and sound. Use Loop to repeat the
-            same sentence until it feels natural in your mouth.
-          </div>
-        </div>
+<!-- SHADOW -->
+<div class="screen" id="screen-shadow">
+  <div class="practice-mode-title">▶ Shadowing Mode</div>
+  <div id="shadow-empty" class="empty-state" style="display:none;">
+    <div class="empty-state-icon">🎙</div>
+    <div>No sentences yet. Add some on the Sentences tab.</div>
+  </div>
+  <div id="shadow-content">
+    <div class="progress-track mb8"><div class="progress-fill" id="shadow-progress" style="width:0%"></div></div>
+    <div class="sentence-count" id="shadow-count">— / —</div>
+    <div class="sentence-big" id="shadow-en">—</div>
+    <div class="sentence-big-es" id="shadow-es">—</div>
+    <div class="audio-controls mt24">
+      <button class="btn btn-accent btn-lg" onclick="shadowPlay()" id="shadow-play-btn">▶ Play</button>
+      <button class="btn btn-lg" onclick="shadowLoop()" id="shadow-loop-btn">↺ Loop Off</button>
+      <div class="waveform" id="shadow-wave">
+        <div class="waveform-bar"></div><div class="waveform-bar"></div>
+        <div class="waveform-bar"></div><div class="waveform-bar"></div>
+        <div class="waveform-bar"></div><div class="waveform-bar"></div>
+        <div class="waveform-bar"></div><div class="waveform-bar"></div>
       </div>
     </div>
+    <hr class="divider">
+    <div class="flex-gap">
+      <button class="btn" onclick="shadowPrev()">← Prev</button>
+      <button class="btn" onclick="shadowNext()">Next →</button>
+      <button class="btn text-sm" onclick="shadowShuffle()" style="margin-left:auto">⇄ Shuffle</button>
+    </div>
+    <div class="card mt24" style="border-color:rgba(212,240,60,0.15);background:rgba(212,240,60,0.04)">
+      <div style="font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Shadowing Tips</div>
+      <div class="text-muted text-sm" style="line-height:1.7">Press Play → listen → immediately repeat out loud, mimicking the exact rhythm and sound. Use Loop to repeat until it feels natural.</div>
+    </div>
+  </div>
+</div>
 
-    <!-- ===== RECALL SCREEN ===== -->
-    <div class="screen" id="screen-recall">
-      <div class="practice-mode-title">🧠 Active Recall Mode</div>
-
-      <div id="recall-empty" class="empty-state" style="display: none">
-        <div class="empty-state-icon">💭</div>
-        <div>No sentences yet. Add some on the Sentences tab.</div>
-      </div>
-
-      <div id="recall-content">
-        <div class="progress-track mb8">
-          <div
-            class="progress-fill"
-            id="recall-progress"
-            style="width: 0%"
-          ></div>
-        </div>
-        <div class="sentence-count" id="recall-count">— / —</div>
-
-        <div
-          class="card mb16"
-          style="min-height: 100px; display: flex; align-items: center"
-        >
-          <div>
-            <div class="text-muted text-sm mb8">
-              Say this in
-              <span id="recall-lang-label" style="color: var(--accent)"
-                >Puerto Rican Spanish</span
-              >:
-            </div>
-            <div class="sentence-big" id="recall-en" style="font-size: 24px">
-              —
-            </div>
-          </div>
-        </div>
-
-        <div class="recall-reveal" id="recall-reveal-block">
-          <div
-            class="card"
-            style="
-              border-color: rgba(212, 240, 60, 0.2);
-              background: rgba(212, 240, 60, 0.04);
-            "
-          >
-            <div class="text-muted text-sm mb8">Correct answer:</div>
-            <div
-              class="sentence-big-es"
-              id="recall-es"
-              style="font-size: 22px; margin-bottom: 12px"
-            >
-              —
-            </div>
-            <button
-              class="btn"
-              onclick="recallPlayAudio()"
-              id="recall-audio-btn"
-            >
-              ▶ Hear it
-            </button>
-          </div>
-
-          <div class="result-btns">
-            <button class="btn btn-danger btn-lg" onclick="recallResult(false)">
-              ✗ Wrong
-            </button>
-            <button class="btn btn-success btn-lg" onclick="recallResult(true)">
-              ✓ Correct
-            </button>
-          </div>
-        </div>
-
-        <div id="recall-show-btn-wrap" style="margin-top: 16px">
-          <button
-            class="btn btn-accent btn-lg btn-full"
-            onclick="recallReveal()"
-          >
-            Reveal Answer
-          </button>
-        </div>
-
-        <div class="card mt24" style="background: var(--surface2)">
-          <div class="flex-between">
-            <span class="text-muted text-sm">Session score</span>
-            <span
-              id="recall-score"
-              class="text-accent"
-              style="
-                font-family: var(--font-head);
-                font-size: 16px;
-                font-weight: 700;
-              "
-              >— / —</span
-            >
-          </div>
-        </div>
+<!-- RECALL -->
+<div class="screen" id="screen-recall">
+  <div class="practice-mode-title">🧠 Active Recall Mode</div>
+  <div id="recall-empty" class="empty-state" style="display:none;">
+    <div class="empty-state-icon">💭</div>
+    <div>No sentences yet. Add some on the Sentences tab.</div>
+  </div>
+  <div id="recall-content">
+    <div class="progress-track mb8"><div class="progress-fill" id="recall-progress" style="width:0%"></div></div>
+    <div class="sentence-count" id="recall-count">— / —</div>
+    <div class="card mb16" style="min-height:100px;display:flex;align-items:center;">
+      <div>
+        <div class="text-muted text-sm mb8">Say this in <span id="recall-lang-label" style="color:var(--accent)">Puerto Rican Spanish</span>:</div>
+        <div class="sentence-big" id="recall-en" style="font-size:24px">—</div>
       </div>
     </div>
-
-    <!-- ===== LISTEN SCREEN ===== -->
-    <div class="screen" id="screen-listen">
-      <div class="practice-mode-title">🔊 Passive Listening Mode</div>
-
-      <div class="card mb16">
-        <div class="flex-between mb16">
-          <div>
-            <div
-              style="
-                font-family: var(--font-head);
-                font-weight: 600;
-                font-size: 15px;
-                margin-bottom: 4px;
-              "
-            >
-              Background Loop
-            </div>
-            <div class="text-muted text-sm">
-              Auto-plays all sentences in sequence
-            </div>
-          </div>
-          <button
-            class="btn btn-accent"
-            id="listen-toggle"
-            onclick="toggleListen()"
-          >
-            ▶ Start
-          </button>
-        </div>
-
-        <div class="waveform" id="listen-wave" style="margin-bottom: 14px">
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-          <div class="waveform-bar"></div>
-        </div>
-
-        <div id="listen-now" class="text-muted text-sm">Not playing</div>
+    <div class="recall-reveal" id="recall-reveal-block">
+      <div class="card" style="border-color:rgba(212,240,60,0.2);background:rgba(212,240,60,0.04);">
+        <div class="text-muted text-sm mb8">Correct answer:</div>
+        <div class="sentence-big-es" id="recall-es" style="font-size:22px;margin-bottom:12px">—</div>
+        <button class="btn" onclick="recallPlayAudio()">▶ Hear it</button>
       </div>
-
-      <div class="card" style="background: var(--surface2)">
-        <div
-          class="text-muted text-sm mb8"
-          style="
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            font-size: 11px;
-          "
-        >
-          Now Playing
-        </div>
-        <div
-          id="listen-en"
-          class="text-muted"
-          style="font-size: 13px; margin-bottom: 4px"
-        >
-          —
-        </div>
-        <div
-          id="listen-es"
-          style="font-size: 15px; font-weight: 600; color: var(--accent)"
-        >
-          —
-        </div>
+      <div class="result-btns">
+        <button class="btn btn-danger btn-lg" onclick="recallResult(false)">✗ Wrong</button>
+        <button class="btn btn-success btn-lg" onclick="recallResult(true)">✓ Correct</button>
       </div>
+    </div>
+    <div id="recall-show-btn-wrap" style="margin-top:16px">
+      <button class="btn btn-accent btn-lg btn-full" onclick="recallReveal()">Reveal Answer</button>
+    </div>
+    <div class="card mt24" style="background:var(--surface2)">
+      <div class="flex-between">
+        <span class="text-muted text-sm">Session score</span>
+        <span id="recall-score" class="text-accent" style="font-family:var(--font-head);font-size:16px;font-weight:700">— / —</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <div class="flex-gap mt16">
-        <div class="text-muted text-sm">Delay between sentences:</div>
-        <select id="listen-delay" style="width: auto">
-          <option value="1000">1 sec</option>
-          <option value="2000" selected>2 sec</option>
-          <option value="3000">3 sec</option>
-          <option value="5000">5 sec</option>
+<!-- LISTEN -->
+<div class="screen" id="screen-listen">
+  <div class="practice-mode-title">🔊 Passive Listening Mode</div>
+  <div class="card mb16">
+    <div class="flex-between mb16">
+      <div>
+        <div style="font-family:var(--font-head);font-weight:600;font-size:15px;margin-bottom:4px">Background Loop</div>
+        <div class="text-muted text-sm">Auto-plays all sentences in sequence</div>
+      </div>
+      <button class="btn btn-accent" id="listen-toggle" onclick="toggleListen()">▶ Start</button>
+    </div>
+    <div class="waveform" id="listen-wave" style="margin-bottom:14px">
+      <div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div>
+    </div>
+    <div id="listen-now" class="text-muted text-sm">Not playing</div>
+  </div>
+  <div class="card" style="background:var(--surface2)">
+    <div class="text-muted text-sm mb8" style="letter-spacing:0.06em;text-transform:uppercase;font-size:11px">Now Playing</div>
+    <div id="listen-en" class="text-muted" style="font-size:13px;margin-bottom:4px">—</div>
+    <div id="listen-es" style="font-size:15px;font-weight:600;color:var(--accent)">—</div>
+  </div>
+  <div class="flex-gap mt16">
+    <div class="text-muted text-sm">Delay between sentences:</div>
+    <select id="listen-delay" style="width:auto">
+      <option value="1000">1 sec</option>
+      <option value="2000" selected>2 sec</option>
+      <option value="3000">3 sec</option>
+      <option value="5000">5 sec</option>
+    </select>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <div class="flex-between mb16">
+      <div class="modal-title">Add Sentence</div>
+      <button class="icon-btn" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="form-row">
+      <label>English sentence</label>
+      <input type="text" id="input-en" placeholder="e.g. Can I get the check please?" />
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label>Category</label>
+        <select id="input-cat">
+          <option value="daily">Daily Life</option>
+          <option value="work">Work</option>
+          <option value="social">Social</option>
+          <option value="errands">Errands</option>
+          <option value="family">Family</option>
+        </select>
+      </div>
+      <div>
+        <label>Dialect</label>
+        <select id="input-dialect">
+          <option value="pr">Puerto Rican Spanish</option>
+          <option value="co">Colombian Spanish</option>
         </select>
       </div>
     </div>
-
-    <!-- ===== ADD SENTENCE MODAL ===== -->
-    <div class="modal-bg" id="add-modal">
-      <div class="modal">
-        <div class="flex-between mb16">
-          <div class="modal-title">Add Sentence</div>
-          <button class="icon-btn" onclick="closeAddModal()">✕</button>
-        </div>
-
-        <div class="form-row">
-          <label>English sentence</label>
-          <input
-            type="text"
-            id="input-en"
-            placeholder="e.g. Can I get the check please?"
-          />
-        </div>
-
-        <div class="form-row-2">
-          <div>
-            <label>Category</label>
-            <select id="input-cat">
-              <option value="daily">Daily Life</option>
-              <option value="work">Work</option>
-              <option value="social">Social</option>
-              <option value="errands">Errands</option>
-              <option value="family">Family</option>
-            </select>
-          </div>
-          <div>
-            <label>Dialect</label>
-            <select id="input-dialect">
-              <option value="pr">Puerto Rican Spanish</option>
-              <option value="co">Colombian Spanish</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <label>Spanish translation (or generate with AI)</label>
-          <textarea
-            id="input-es"
-            placeholder="Enter translation or use AI below..."
-          ></textarea>
-          <div class="ai-status" id="ai-status"></div>
-        </div>
-
-        <div
-          class="flex-gap"
-          style="flex-wrap: wrap; gap: 8px; margin-bottom: 20px"
-        >
-          <button class="btn" onclick="aiTranslate()" id="btn-ai-translate">
-            ✨ AI Translate
-          </button>
-          <div
-            class="text-muted text-sm"
-            style="font-size: 11px; color: var(--muted)"
-          >
-            Uses Claude to generate natural native speech
-          </div>
-        </div>
-
-        <div class="flex-gap" style="justify-content: flex-end; gap: 10px">
-          <button class="btn" onclick="closeAddModal()">Cancel</button>
-          <button class="btn btn-accent" onclick="saveSentence()">
-            Save Sentence
-          </button>
-        </div>
-      </div>
+    <div class="form-row">
+      <label>Spanish translation (or generate with AI)</label>
+      <textarea id="input-es" placeholder="Enter translation or use AI below..."></textarea>
+      <div class="ai-status" id="ai-status"></div>
     </div>
-
-    <!-- ===== STATS BAR ===== -->
-    <div class="stats-bar" id="stats-bar">
-      <div>Sentences: <span id="stat-total">0</span></div>
-      <div>Practiced today: <span id="stat-today">0</span></div>
-      <div>Recall accuracy: <span id="stat-acc">—</span></div>
+    <div class="flex-gap" style="flex-wrap:wrap;gap:8px;margin-bottom:20px">
+      <button class="btn" onclick="aiTranslate()" id="btn-ai-translate">✨ AI Translate</button>
+      <div class="text-muted text-sm" style="font-size:11px;color:var(--muted)">Uses Claude to generate natural native speech</div>
     </div>
+    <div class="flex-gap" style="justify-content:flex-end;gap:10px">
+      <button class="btn" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-accent" onclick="saveSentence()">Save Sentence</button>
+    </div>
+  </div>
+</div>
 
-    <script>
-      // ============================================================
-      // STATE
-      // ============================================================
-      let sentences = JSON.parse(
-        localStorage.getItem('fluency_sentences') || '[]'
-      );
-      let currentLang = 'pr';
-      let currentCatFilter = 'all';
+<div class="stats-bar">
+  <div>Sentences: <span id="stat-total">0</span></div>
+  <div>Practiced today: <span id="stat-today">0</span></div>
+  <div>Recall accuracy: <span id="stat-acc">—</span></div>
+</div>
 
-      let shadowIdx = 0;
-      let shadowLooping = false;
-      let shadowAudio = null;
+<script>
+// ================================================================
+// TTS ENGINE — Google Translate proxy via Netlify function
+//
+// Calls /.netlify/functions/tts?text=... which proxies to
+// Google Translate TTS and returns an MP3. We play it with
+// the HTML5 Audio API, which works on all browsers/OS including
+// GrapheneOS with no system TTS engine required.
+// ================================================================
 
-      let recallIdx = 0;
-      let recallShuffled = [];
-      let recallCorrect = 0;
-      let recallTotal = 0;
-      let recallRevealed = false;
+let currentAudio = null;
+let audioQueue = [];
+let isPlaying = false;
 
-      let listenPlaying = false;
-      let listenIdx = 0;
-      let listenTimer = null;
-      let listenAudio = null;
+function ttsSpeak(text, onDone) {
+  if (!text) { if (onDone) onDone(); return; }
+  ttsStop();
 
-      let practicedToday = parseInt(
-        localStorage.getItem('fluency_today') || '0'
-      );
-      let todayKey = new Date().toDateString();
-      if (localStorage.getItem('fluency_todayKey') !== todayKey) {
-        practicedToday = 0;
-        localStorage.setItem('fluency_todayKey', todayKey);
-        localStorage.setItem('fluency_today', '0');
-      }
+  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text);
+  const audio = new Audio(url);
+  currentAudio = audio;
+  isPlaying = true;
 
-      // ============================================================
-      // SEED DATA
-      // ============================================================
-      if (sentences.length === 0) {
-        sentences = [
-          {
-            id: 1,
-            en: 'Can I get the check please?',
-            es_pr: '¿Me puede traer la cuenta?',
-            es_co: '¿Me trae la cuenta, por favor?',
-            cat: 'errands',
-          },
-          {
-            id: 2,
-            en: 'What time does the store close?',
-            es_pr: '¿A qué hora cierra la tienda?',
-            es_co: '¿A qué hora cierra el almacén?',
-            cat: 'errands',
-          },
-          {
-            id: 3,
-            en: 'I need to think about it.',
-            es_pr: 'Tengo que pensarlo.',
-            es_co: 'Necesito pensarlo.',
-            cat: 'social',
-          },
-          {
-            id: 4,
-            en: 'Good morning, how are you?',
-            es_pr: 'Buenos días, ¿cómo estás?',
-            es_co: 'Buenos días, ¿cómo estás?',
-            cat: 'daily',
-          },
-          {
-            id: 5,
-            en: "I'll be there in a few minutes.",
-            es_pr: 'Llego en un ratito.',
-            es_co: 'Llego en unos minutos.',
-            cat: 'social',
-          },
-          {
-            id: 6,
-            en: 'Can you send me that by email?',
-            es_pr: '¿Me lo puedes mandar por correo?',
-            es_co: '¿Me lo puede enviar por correo?',
-            cat: 'work',
-          },
-        ];
-        saveSentences();
-      }
+  audio.onended = () => {
+    isPlaying = false;
+    currentAudio = null;
+    if (onDone) onDone();
+  };
 
-      // ============================================================
-      // UTILS
-      // ============================================================
-      function saveSentences() {
-        localStorage.setItem('fluency_sentences', JSON.stringify(sentences));
-      }
+  audio.onerror = (e) => {
+    isPlaying = false;
+    currentAudio = null;
+    showTtsError('Audio error — check connection');
+    if (onDone) onDone();
+  };
 
-      function getEs(s) {
-        return currentLang === 'pr'
-          ? s.es_pr || s.es_co || ''
-          : s.es_co || s.es_pr || '';
-      }
+  audio.play().catch(err => {
+    isPlaying = false;
+    currentAudio = null;
+    showTtsError('Playback blocked: ' + err.message);
+    if (onDone) onDone();
+  });
+}
 
-      function filteredSentences() {
-        if (currentCatFilter === 'all') return sentences;
-        return sentences.filter((s) => s.cat === currentCatFilter);
-      }
+function ttsStop() {
+  if (currentAudio) {
+    currentAudio.onended = null;
+    currentAudio.onerror = null;
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+  }
+  isPlaying = false;
+}
 
-      function speak(text, onEnd) {
-        if (!text) {
-          if (onEnd) onEnd();
-          return null;
-        }
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'es-US';
-        u.rate = 0.95;
-        u.pitch = 1.0;
-        if (onEnd) u.onend = onEnd;
-        // Try to pick a Spanish voice
-        const voices = window.speechSynthesis.getVoices();
-        const esVoice =
-          voices.find((v) => v.lang && v.lang.startsWith('es')) || null;
-        if (esVoice) u.voice = esVoice;
-        window.speechSynthesis.speak(u);
-        return u;
-      }
+function showTtsError(msg) {
+  const el = document.getElementById('tts-status');
+  if (!el) return;
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('visible', 'error');
+  setTimeout(() => { el.classList.remove('visible', 'error'); }, 4000);
+}
 
-      function stopSpeech() {
-        window.speechSynthesis.cancel();
-      }
+// ================================================================
+// STATE
+// ================================================================
+let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || '[]');
+let currentLang = 'pr';
+let currentCatFilter = 'all';
 
-      function updateStats() {
-        document.getElementById('stat-total').textContent = sentences.length;
-        document.getElementById('stat-today').textContent = practicedToday;
-        const acc =
-          recallTotal > 0
-            ? Math.round((recallCorrect / recallTotal) * 100) + '%'
-            : '—';
-        document.getElementById('stat-acc').textContent = acc;
-      }
+let shadowIdx = 0;
+let shadowLooping = false;
+let shadowLoopTimeout = null;
 
-      // ============================================================
-      // NAVIGATION
-      // ============================================================
-      let currentScreen = 'sentences';
+let recallIdx = 0;
+let recallShuffled = [];
+let recallCorrect = 0;
+let recallTotal = 0;
+let recallRevealed = false;
 
-      function showScreen(name) {
-        document
-          .querySelectorAll('.screen')
-          .forEach((s) => s.classList.remove('active'));
-        document
-          .querySelectorAll('.nav-tab')
-          .forEach((t) => t.classList.remove('active'));
-        document.getElementById('screen-' + name).classList.add('active');
-        document.querySelectorAll('.nav-tab').forEach((t) => {
-          if (t.textContent.toLowerCase().includes(name.substring(0, 4)))
-            t.classList.add('active');
-        });
-        currentScreen = name;
+let listenPlaying = false;
+let listenIdx = 0;
+let listenTimer = null;
 
-        stopSpeech();
-        shadowLooping = false;
-        updateShadowLoopBtn();
-        setWave('shadow-wave', false);
+let practicedToday = parseInt(localStorage.getItem('fluency_today') || '0');
+const todayKey = new Date().toDateString();
+if (localStorage.getItem('fluency_todayKey') !== todayKey) {
+  practicedToday = 0;
+  localStorage.setItem('fluency_todayKey', todayKey);
+  localStorage.setItem('fluency_today', '0');
+}
 
-        if (name === 'shadow') initShadow();
-        if (name === 'recall') initRecall();
-        if (name === 'listen') renderListenNow();
-      }
+// ================================================================
+// SEED DATA
+// ================================================================
+if (sentences.length === 0) {
+  sentences = [
+    { id: 1, en: "Can I get the check please?", es_pr: "¿Me puede traer la cuenta?", es_co: "¿Me trae la cuenta, por favor?", cat: "errands" },
+    { id: 2, en: "What time does the store close?", es_pr: "¿A qué hora cierra la tienda?", es_co: "¿A qué hora cierra el almacén?", cat: "errands" },
+    { id: 3, en: "I need to think about it.", es_pr: "Tengo que pensarlo.", es_co: "Necesito pensarlo.", cat: "social" },
+    { id: 4, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_co: "Buenos días, ¿cómo estás?", cat: "daily" },
+    { id: 5, en: "I'll be there in a few minutes.", es_pr: "Llego en un ratito.", es_co: "Llego en unos minutos.", cat: "social" },
+    { id: 6, en: "Can you send me that by email?", es_pr: "¿Me lo puedes mandar por correo?", es_co: "¿Me lo puede enviar por correo?", cat: "work" },
+  ];
+  saveSentences();
+}
 
-      function toggleLang() {
-        currentLang = currentLang === 'pr' ? 'co' : 'pr';
-        document.getElementById('lang-badge').textContent =
-          currentLang === 'pr' ? '🇵🇷 PR Spanish' : '🇨🇴 CO Spanish';
-        document.getElementById('recall-lang-label').textContent =
-          currentLang === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
-        renderSentenceList();
-        if (currentScreen === 'shadow') renderShadow();
-        if (currentScreen === 'recall') renderRecall();
-      }
+// ================================================================
+// UTILS
+// ================================================================
+function saveSentences() { localStorage.setItem('fluency_sentences', JSON.stringify(sentences)); }
+function getEs(s) { return currentLang === 'pr' ? (s.es_pr || s.es_co || '') : (s.es_co || s.es_pr || ''); }
+function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
+function updateStats() {
+  document.getElementById('stat-total').textContent = sentences.length;
+  document.getElementById('stat-today').textContent = practicedToday;
+  const acc = recallTotal > 0 ? Math.round(recallCorrect / recallTotal * 100) + '%' : '—';
+  document.getElementById('stat-acc').textContent = acc;
+}
 
-      // ============================================================
-      // SENTENCE LIST
-      // ============================================================
-      function renderSentenceList() {
-        const list = document.getElementById('sentence-list');
-        const fs = filteredSentences();
-        if (fs.length === 0) {
-          list.innerHTML =
-            '<div class="empty-state"><div class="empty-state-icon">📝</div><div>No sentences here yet.<br>Press + Add to get started.</div></div>';
-          return;
-        }
-        list.innerHTML = fs
-          .map(
-            (s) => `
+// ================================================================
+// NAVIGATION
+// ================================================================
+let currentScreen = 'sentences';
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(name.substring(0, 4))) t.classList.add('active');
+  });
+  currentScreen = name;
+  ttsStop();
+  shadowLooping = false;
+  if (shadowLoopTimeout) { clearTimeout(shadowLoopTimeout); shadowLoopTimeout = null; }
+  updateShadowLoopBtn();
+  setWave('shadow-wave', false);
+  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
+  if (name === 'shadow') initShadow();
+  if (name === 'recall') initRecall();
+  if (name === 'listen') renderListenNow();
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'pr' ? 'co' : 'pr';
+  document.getElementById('lang-badge').textContent = currentLang === 'pr' ? '🇵🇷 PR Spanish' : '🇨🇴 CO Spanish';
+  document.getElementById('recall-lang-label').textContent = currentLang === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
+  renderSentenceList();
+  if (currentScreen === 'shadow') renderShadow();
+  if (currentScreen === 'recall') renderRecall();
+}
+
+// ================================================================
+// SENTENCE LIST
+// ================================================================
+function renderSentenceList() {
+  const list = document.getElementById('sentence-list');
+  const fs = filteredSentences();
+  if (!fs.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><div>No sentences here yet.<br>Press + Add to get started.</div></div>';
+    return;
+  }
+  list.innerHTML = fs.map(s => `
     <div class="sentence-item" id="si-${s.id}">
       <div class="sentence-texts">
         <div class="sentence-en">${s.en}</div>
         <div class="sentence-es">${getEs(s)}</div>
       </div>
       <div class="sentence-actions">
-        <span class="tag-muted" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${
-          s.cat
-        }</span>
-        <button class="icon-btn" onclick="playSentence(${
-          s.id
-        },this)" title="Play audio">▶</button>
-        <button class="icon-btn" onclick="deleteSentence(${
-          s.id
-        })" title="Delete" style="color:rgba(255,79,79,0.5)">✕</button>
+        <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
+        <button class="icon-btn" onclick="playSentence(${s.id},this)">▶</button>
+        <button class="icon-btn" onclick="deleteSentence(${s.id})" style="color:rgba(255,79,79,0.5)">✕</button>
       </div>
     </div>
-  `
-          )
-          .join('');
-        updateStats();
-      }
+  `).join('');
+  updateStats();
+}
 
-      function filterCat(cat, el) {
-        currentCatFilter = cat;
-        document
-          .querySelectorAll('.cat-pill')
-          .forEach((p) => p.classList.remove('active'));
-        el.classList.add('active');
-        renderSentenceList();
-      }
+function filterCat(cat, el) {
+  currentCatFilter = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderSentenceList();
+}
 
-      function playSentence(id, btn) {
-        const s = sentences.find((x) => x.id === id);
-        if (!s) return;
-        stopSpeech();
-        btn.classList.add('playing');
-        btn.textContent = '⏸';
-        speak(getEs(s), () => {
-          btn.classList.remove('playing');
-          btn.textContent = '▶';
-        });
-      }
+function playSentence(id, btn) {
+  const s = sentences.find(x => x.id === id);
+  if (!s) return;
+  ttsStop();
+  btn.classList.add('playing');
+  btn.textContent = '⏸';
+  ttsSpeak(getEs(s), () => {
+    btn.classList.remove('playing');
+    btn.textContent = '▶';
+  });
+}
 
-      function deleteSentence(id) {
-        if (!confirm('Delete this sentence?')) return;
-        sentences = sentences.filter((s) => s.id !== id);
-        saveSentences();
-        renderSentenceList();
-        updateStats();
-      }
+function deleteSentence(id) {
+  if (!confirm('Delete this sentence?')) return;
+  sentences = sentences.filter(s => s.id !== id);
+  saveSentences(); renderSentenceList(); updateStats();
+}
 
-      // ============================================================
-      // ADD MODAL
-      // ============================================================
-      function openAddModal() {
-        document.getElementById('add-modal').classList.add('open');
-        document.getElementById('input-en').focus();
-        document.getElementById('input-es').value = '';
-        document.getElementById('input-en').value = '';
-        document.getElementById('ai-status').innerHTML = '';
-      }
+// ================================================================
+// ADD MODAL
+// ================================================================
+function openAddModal() {
+  document.getElementById('add-modal').classList.add('open');
+  document.getElementById('input-en').value = '';
+  document.getElementById('input-es').value = '';
+  document.getElementById('ai-status').innerHTML = '';
+  setTimeout(() => document.getElementById('input-en').focus(), 100);
+}
+function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
 
-      function closeAddModal() {
-        document.getElementById('add-modal').classList.remove('open');
-      }
+function saveSentence() {
+  const en = document.getElementById('input-en').value.trim();
+  const es = document.getElementById('input-es').value.trim();
+  const cat = document.getElementById('input-cat').value;
+  const dialect = document.getElementById('input-dialect').value;
+  if (!en) { alert('Please enter an English sentence.'); return; }
+  if (!es) { alert('Please enter or generate a Spanish translation.'); return; }
+  const id = Date.now();
+  const obj = { id, en, cat };
+  if (dialect === 'pr') { obj.es_pr = es; obj.es_co = es; }
+  else { obj.es_co = es; obj.es_pr = es; }
+  sentences.push(obj);
+  saveSentences(); renderSentenceList(); closeAddModal(); updateStats();
+}
 
-      function saveSentence() {
-        const en = document.getElementById('input-en').value.trim();
-        const es = document.getElementById('input-es').value.trim();
-        const cat = document.getElementById('input-cat').value;
-        const dialect = document.getElementById('input-dialect').value;
+async function aiTranslate() {
+  const en = document.getElementById('input-en').value.trim();
+  const dialect = document.getElementById('input-dialect').value;
+  if (!en) { alert('Enter an English sentence first.'); return; }
+  const btn = document.getElementById('btn-ai-translate');
+  const status = document.getElementById('ai-status');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Translating...';
+  status.innerHTML = '<span class="spinner"></span> Calling Claude...';
+  const dialectName = dialect === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
+  const prompt = `Translate the following English sentence into natural, colloquial ${dialectName} as a native speaker would actually say it in everyday conversation. Do NOT use formal or textbook Spanish. Respond with ONLY the translation, nothing else.\n\nEnglish: ${en}`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const translation = data.content?.[0]?.text?.trim() || '';
+    if (translation) {
+      document.getElementById('input-es').value = translation;
+      status.innerHTML = '<span style="color:var(--success)">✓ Translation ready</span>';
+    } else {
+      status.innerHTML = '<span style="color:var(--danger)">Error: no response</span>';
+    }
+  } catch (e) {
+    status.innerHTML = '<span style="color:var(--danger)">Error — check connection</span>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '✨ AI Translate';
+}
 
-        if (!en) {
-          alert('Please enter an English sentence.');
-          return;
-        }
-        if (!es) {
-          alert('Please enter or generate a Spanish translation.');
-          return;
-        }
+// ================================================================
+// SHADOW MODE
+// ================================================================
+function initShadow() {
+  const fs = filteredSentences();
+  if (!fs.length) {
+    document.getElementById('shadow-empty').style.display = 'block';
+    document.getElementById('shadow-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('shadow-empty').style.display = 'none';
+  document.getElementById('shadow-content').style.display = 'block';
+  shadowIdx = Math.min(shadowIdx, fs.length - 1);
+  renderShadow();
+}
 
-        const id = Date.now();
-        const obj = { id, en, cat };
-        if (dialect === 'pr') {
-          obj.es_pr = es;
-          obj.es_co = es;
-        } else {
-          obj.es_co = es;
-          obj.es_pr = es;
-        }
+function renderShadow() {
+  const fs = filteredSentences();
+  if (!fs.length) return;
+  const s = fs[shadowIdx];
+  document.getElementById('shadow-en').textContent = s.en;
+  document.getElementById('shadow-es').textContent = getEs(s);
+  document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + fs.length;
+  const pct = fs.length > 1 ? (shadowIdx / (fs.length - 1)) * 100 : 100;
+  document.getElementById('shadow-progress').style.width = pct + '%';
+}
 
-        sentences.push(obj);
-        saveSentences();
-        renderSentenceList();
-        closeAddModal();
-        updateStats();
-      }
+function shadowPlay() {
+  const fs = filteredSentences();
+  if (!fs.length) return;
+  const playBtn = document.getElementById('shadow-play-btn');
+  if (playBtn.innerHTML.includes('Stop')) {
+    ttsStop();
+    shadowLooping = false; updateShadowLoopBtn();
+    setWave('shadow-wave', false);
+    playBtn.innerHTML = '▶ Play';
+    return;
+  }
+  ttsStop();
+  setWave('shadow-wave', true);
+  playBtn.innerHTML = '⏹ Stop';
+  ttsSpeak(getEs(fs[shadowIdx]), () => {
+    if (shadowLooping) {
+      shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 400);
+    } else {
+      setWave('shadow-wave', false);
+      playBtn.innerHTML = '▶ Play';
+    }
+  });
+  practicedToday++;
+  localStorage.setItem('fluency_today', practicedToday);
+  updateStats();
+}
 
-      async function aiTranslate() {
-        const en = document.getElementById('input-en').value.trim();
-        const dialect = document.getElementById('input-dialect').value;
-        if (!en) {
-          alert('Enter an English sentence first.');
-          return;
-        }
+function shadowLoop() {
+  shadowLooping = !shadowLooping;
+  updateShadowLoopBtn();
+  if (shadowLooping) shadowPlay();
+  else { ttsStop(); setWave('shadow-wave', false); document.getElementById('shadow-play-btn').innerHTML = '▶ Play'; }
+}
 
-        const btn = document.getElementById('btn-ai-translate');
-        const status = document.getElementById('ai-status');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner"></span> Translating...';
-        status.innerHTML = '<span class="spinner"></span> Calling Claude...';
+function updateShadowLoopBtn() {
+  const btn = document.getElementById('shadow-loop-btn');
+  if (shadowLooping) {
+    btn.innerHTML = '<span class="loop-indicator">↺ Looping</span>';
+    btn.classList.add('btn-accent');
+  } else {
+    btn.innerHTML = '↺ Loop Off';
+    btn.classList.remove('btn-accent');
+  }
+}
 
-        const dialectName =
-          dialect === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
-        const prompt = `Translate the following English sentence into natural, colloquial ${dialectName} as a native speaker would actually say it in everyday conversation. Do NOT use formal or textbook Spanish. Respond with ONLY the translation, nothing else.\n\nEnglish: ${en}`;
+function shadowNext() {
+  const fs = filteredSentences();
+  shadowIdx = (shadowIdx + 1) % fs.length;
+  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
+  setWave('shadow-wave', false);
+  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
+  renderShadow();
+}
 
-        try {
-          const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              model: 'claude-sonnet-4-20250514',
-              max_tokens: 1000,
-              messages: [{ role: 'user', content: prompt }],
-            }),
-          });
-          const data = await res.json();
-          const translation = data.content?.[0]?.text?.trim() || '';
-          if (translation) {
-            document.getElementById('input-es').value = translation;
-            status.innerHTML =
-              '<span style="color:var(--success)">✓ Translation ready</span>';
-          } else {
-            status.innerHTML =
-              '<span style="color:var(--danger)">Error: no response</span>';
-          }
-        } catch (e) {
-          status.innerHTML =
-            '<span style="color:var(--danger)">Error — check connection</span>';
-        }
+function shadowPrev() {
+  const fs = filteredSentences();
+  shadowIdx = (shadowIdx - 1 + fs.length) % fs.length;
+  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
+  setWave('shadow-wave', false);
+  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
+  renderShadow();
+}
 
-        btn.disabled = false;
-        btn.innerHTML = '✨ AI Translate';
-      }
+function shadowShuffle() {
+  const fs = filteredSentences();
+  shadowIdx = Math.floor(Math.random() * fs.length);
+  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
+  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
+  renderShadow();
+}
 
-      // ============================================================
-      // SHADOW MODE
-      // ============================================================
-      function initShadow() {
-        const fs = filteredSentences();
-        if (fs.length === 0) {
-          document.getElementById('shadow-empty').style.display = 'block';
-          document.getElementById('shadow-content').style.display = 'none';
-          return;
-        }
-        document.getElementById('shadow-empty').style.display = 'none';
-        document.getElementById('shadow-content').style.display = 'block';
-        shadowIdx = Math.min(shadowIdx, fs.length - 1);
-        renderShadow();
-      }
+// ================================================================
+// RECALL MODE
+// ================================================================
+function initRecall() {
+  const fs = filteredSentences();
+  if (!fs.length) {
+    document.getElementById('recall-empty').style.display = 'block';
+    document.getElementById('recall-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('recall-empty').style.display = 'none';
+  document.getElementById('recall-content').style.display = 'block';
+  recallShuffled = shuffleArray([...fs]);
+  recallIdx = 0; recallRevealed = false;
+  renderRecall();
+}
 
-      function renderShadow() {
-        const fs = filteredSentences();
-        if (fs.length === 0) return;
-        const s = fs[shadowIdx];
-        document.getElementById('shadow-en').textContent = s.en;
-        document.getElementById('shadow-es').textContent = getEs(s);
-        document.getElementById('shadow-count').textContent =
-          shadowIdx + 1 + ' / ' + fs.length;
-        const pct = fs.length > 1 ? (shadowIdx / (fs.length - 1)) * 100 : 100;
-        document.getElementById('shadow-progress').style.width = pct + '%';
-      }
+function renderRecall() {
+  if (recallIdx >= recallShuffled.length) { initRecall(); return; }
+  const s = recallShuffled[recallIdx];
+  document.getElementById('recall-en').textContent = s.en;
+  document.getElementById('recall-es').textContent = getEs(s);
+  document.getElementById('recall-count').textContent = (recallIdx + 1) + ' / ' + recallShuffled.length;
+  const pct = recallShuffled.length > 1 ? (recallIdx / (recallShuffled.length - 1)) * 100 : 0;
+  document.getElementById('recall-progress').style.width = pct + '%';
+  document.getElementById('recall-reveal-block').classList.remove('shown');
+  document.getElementById('recall-show-btn-wrap').style.display = 'block';
+  recallRevealed = false;
+  document.getElementById('recall-score').textContent = recallTotal > 0 ? recallCorrect + ' / ' + recallTotal : '— / —';
+}
 
-      function shadowPlay() {
-        const fs = filteredSentences();
-        if (fs.length === 0) return;
-        const s = fs[shadowIdx];
-        stopSpeech();
-        setWave('shadow-wave', true);
-        document.getElementById('shadow-play-btn').innerHTML = '⏹ Stop';
-        speak(getEs(s), () => {
-          setWave('shadow-wave', shadowLooping);
-          if (!shadowLooping) {
-            document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-          } else {
-            shadowPlay();
-          }
-        });
-        practicedToday++;
-        localStorage.setItem('fluency_today', practicedToday);
-        updateStats();
-      }
+function recallReveal() {
+  document.getElementById('recall-reveal-block').classList.add('shown');
+  document.getElementById('recall-show-btn-wrap').style.display = 'none';
+  recallRevealed = true;
+}
 
-      function shadowLoop() {
-        shadowLooping = !shadowLooping;
-        updateShadowLoopBtn();
-        if (shadowLooping) shadowPlay();
-        else {
-          stopSpeech();
-          setWave('shadow-wave', false);
-          document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-        }
-      }
+function recallPlayAudio() {
+  if (recallIdx >= recallShuffled.length) return;
+  ttsSpeak(getEs(recallShuffled[recallIdx]));
+}
 
-      function updateShadowLoopBtn() {
-        const btn = document.getElementById('shadow-loop-btn');
-        if (shadowLooping) {
-          btn.innerHTML = '<span class="loop-indicator">↺ Looping</span>';
-          btn.classList.add('btn-accent');
-        } else {
-          btn.innerHTML = '↺ Loop Off';
-          btn.classList.remove('btn-accent');
-        }
-      }
+function recallResult(correct) {
+  recallTotal++;
+  if (correct) recallCorrect++;
+  practicedToday++;
+  localStorage.setItem('fluency_today', practicedToday);
+  updateStats();
+  recallIdx++;
+  if (recallIdx >= recallShuffled.length) { recallShuffled = shuffleArray([...filteredSentences()]); recallIdx = 0; }
+  renderRecall();
+}
 
-      function shadowNext() {
-        const fs = filteredSentences();
-        shadowIdx = (shadowIdx + 1) % fs.length;
-        stopSpeech();
-        setWave('shadow-wave', false);
-        shadowLooping = false;
-        updateShadowLoopBtn();
-        document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-        renderShadow();
-      }
+// ================================================================
+// LISTEN MODE
+// ================================================================
+function toggleListen() { listenPlaying ? stopListen() : startListen(); }
 
-      function shadowPrev() {
-        const fs = filteredSentences();
-        shadowIdx = (shadowIdx - 1 + fs.length) % fs.length;
-        stopSpeech();
-        setWave('shadow-wave', false);
-        shadowLooping = false;
-        updateShadowLoopBtn();
-        document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-        renderShadow();
-      }
+function startListen() {
+  const fs = filteredSentences();
+  if (!fs.length) return;
+  listenPlaying = true; listenIdx = 0;
+  document.getElementById('listen-toggle').textContent = '⏹ Stop';
+  document.getElementById('listen-now').textContent = 'Playing...';
+  setWave('listen-wave', true);
+  playListenNext();
+}
 
-      function shadowShuffle() {
-        const fs = filteredSentences();
-        shadowIdx = Math.floor(Math.random() * fs.length);
-        stopSpeech();
-        shadowLooping = false;
-        updateShadowLoopBtn();
-        document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-        renderShadow();
-      }
+function stopListen() {
+  listenPlaying = false;
+  ttsStop();
+  clearTimeout(listenTimer);
+  document.getElementById('listen-toggle').textContent = '▶ Start';
+  document.getElementById('listen-now').textContent = 'Not playing';
+  setWave('listen-wave', false);
+  document.getElementById('listen-en').textContent = '—';
+  document.getElementById('listen-es').textContent = '—';
+}
 
-      // ============================================================
-      // RECALL MODE
-      // ============================================================
-      function initRecall() {
-        const fs = filteredSentences();
-        if (fs.length === 0) {
-          document.getElementById('recall-empty').style.display = 'block';
-          document.getElementById('recall-content').style.display = 'none';
-          return;
-        }
-        document.getElementById('recall-empty').style.display = 'none';
-        document.getElementById('recall-content').style.display = 'block';
-        recallShuffled = shuffleArray([...fs]);
-        recallIdx = 0;
-        recallRevealed = false;
-        renderRecall();
-      }
+function playListenNext() {
+  if (!listenPlaying) return;
+  const fs = filteredSentences();
+  if (!fs.length) { stopListen(); return; }
+  const s = fs[listenIdx % fs.length];
+  document.getElementById('listen-en').textContent = s.en;
+  document.getElementById('listen-es').textContent = getEs(s);
+  document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
+  ttsSpeak(getEs(s), () => {
+    if (!listenPlaying) return;
+    listenIdx++;
+    const delay = parseInt(document.getElementById('listen-delay').value);
+    listenTimer = setTimeout(playListenNext, delay);
+  });
+}
 
-      function renderRecall() {
-        if (recallIdx >= recallShuffled.length) {
-          initRecall();
-          return;
-        }
-        const s = recallShuffled[recallIdx];
-        document.getElementById('recall-en').textContent = s.en;
-        document.getElementById('recall-es').textContent = getEs(s);
-        document.getElementById('recall-count').textContent =
-          recallIdx + 1 + ' / ' + recallShuffled.length;
-        const pct =
-          recallShuffled.length > 1
-            ? (recallIdx / (recallShuffled.length - 1)) * 100
-            : 0;
-        document.getElementById('recall-progress').style.width = pct + '%';
+function renderListenNow() {
+  if (!listenPlaying) {
+    document.getElementById('listen-en').textContent = '—';
+    document.getElementById('listen-es').textContent = '—';
+  }
+}
 
-        const revealBlock = document.getElementById('recall-reveal-block');
-        const showBtn = document.getElementById('recall-show-btn-wrap');
-        revealBlock.classList.remove('shown');
-        showBtn.style.display = 'block';
-        recallRevealed = false;
+// ================================================================
+// HELPERS
+// ================================================================
+function setWave(id, playing) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  playing ? el.classList.add('playing') : el.classList.remove('playing');
+}
 
-        const scoreEl = document.getElementById('recall-score');
-        scoreEl.textContent =
-          recallTotal > 0 ? recallCorrect + ' / ' + recallTotal : '— / —';
-      }
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
-      function recallReveal() {
-        document.getElementById('recall-reveal-block').classList.add('shown');
-        document.getElementById('recall-show-btn-wrap').style.display = 'none';
-        recallRevealed = true;
-      }
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (currentScreen === 'shadow') {
+    if (e.key === ' ') { e.preventDefault(); shadowPlay(); }
+    if (e.key === 'ArrowRight') shadowNext();
+    if (e.key === 'ArrowLeft') shadowPrev();
+    if (e.key === 'l' || e.key === 'L') shadowLoop();
+  }
+  if (currentScreen === 'recall') {
+    if (e.key === ' ') { e.preventDefault(); if (!recallRevealed) recallReveal(); }
+    if (e.key === 'ArrowRight' && recallRevealed) recallResult(true);
+    if (e.key === 'ArrowLeft' && recallRevealed) recallResult(false);
+    if (e.key === 'p' || e.key === 'P') recallPlayAudio();
+  }
+});
 
-      function recallPlayAudio() {
-        if (recallIdx >= recallShuffled.length) return;
-        const s = recallShuffled[recallIdx];
-        speak(getEs(s));
-      }
-
-      function recallResult(correct) {
-        recallTotal++;
-        if (correct) recallCorrect++;
-        practicedToday++;
-        localStorage.setItem('fluency_today', practicedToday);
-        updateStats();
-
-        recallIdx++;
-        if (recallIdx >= recallShuffled.length) {
-          recallShuffled = shuffleArray([...filteredSentences()]);
-          recallIdx = 0;
-        }
-        renderRecall();
-      }
-
-      // ============================================================
-      // LISTEN MODE
-      // ============================================================
-      function toggleListen() {
-        if (listenPlaying) {
-          stopListen();
-        } else {
-          startListen();
-        }
-      }
-
-      function startListen() {
-        const fs = filteredSentences();
-        if (fs.length === 0) return;
-        listenPlaying = true;
-        listenIdx = 0;
-        document.getElementById('listen-toggle').textContent = '⏹ Stop';
-        document.getElementById('listen-now').textContent = 'Playing...';
-        setWave('listen-wave', true);
-        playListenNext();
-      }
-
-      function stopListen() {
-        listenPlaying = false;
-        stopSpeech();
-        clearTimeout(listenTimer);
-        document.getElementById('listen-toggle').textContent = '▶ Start';
-        document.getElementById('listen-now').textContent = 'Not playing';
-        setWave('listen-wave', false);
-        document.getElementById('listen-en').textContent = '—';
-        document.getElementById('listen-es').textContent = '—';
-      }
-
-      function playListenNext() {
-        if (!listenPlaying) return;
-        const fs = filteredSentences();
-        if (fs.length === 0) {
-          stopListen();
-          return;
-        }
-        const s = fs[listenIdx % fs.length];
-        document.getElementById('listen-en').textContent = s.en;
-        document.getElementById('listen-es').textContent = getEs(s);
-        document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
-        speak(getEs(s), () => {
-          if (!listenPlaying) return;
-          listenIdx++;
-          const delay = parseInt(document.getElementById('listen-delay').value);
-          listenTimer = setTimeout(playListenNext, delay);
-        });
-      }
-
-      function renderListenNow() {
-        if (!listenPlaying) {
-          document.getElementById('listen-en').textContent = '—';
-          document.getElementById('listen-es').textContent = '—';
-        }
-      }
-
-      // ============================================================
-      // HELPERS
-      // ============================================================
-      function setWave(id, playing) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (playing) el.classList.add('playing');
-        else el.classList.remove('playing');
-      }
-
-      function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-      }
-
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')
-          return;
-        if (currentScreen === 'shadow') {
-          if (e.key === ' ') {
-            e.preventDefault();
-            shadowPlay();
-          }
-          if (e.key === 'ArrowRight') shadowNext();
-          if (e.key === 'ArrowLeft') shadowPrev();
-          if (e.key === 'l' || e.key === 'L') shadowLoop();
-        }
-        if (currentScreen === 'recall') {
-          if (e.key === ' ') {
-            e.preventDefault();
-            recallRevealed ? null : recallReveal();
-          }
-          if (e.key === 'ArrowRight' && recallRevealed) recallResult(true);
-          if (e.key === 'ArrowLeft' && recallRevealed) recallResult(false);
-          if (e.key === 'p' || e.key === 'P') recallPlayAudio();
-        }
-      });
-
-      // Load voices async
-      window.speechSynthesis.onvoiceschanged = () => {};
-
-      // ============================================================
-      // INIT
-      // ============================================================
-      renderSentenceList();
-      updateStats();
-    </script>
-  </body>
+renderSentenceList();
+updateStats();
+</script>
+</body>
 </html>
