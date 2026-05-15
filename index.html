@@ -258,12 +258,9 @@
   }
 
   .sentence-count { font-size: 11px; color: var(--muted); margin-bottom: 28px; letter-spacing: 0.06em; }
-
   .audio-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-
   .recall-reveal { display: none; }
   .recall-reveal.shown { display: block; }
-
   .result-btns { display: flex; gap: 10px; margin-top: 20px; }
   .result-btns .btn { flex: 1; justify-content: center; }
 
@@ -306,7 +303,6 @@
   .modal-title { font-family: var(--font-head); font-weight: 700; font-size: 18px; margin-bottom: 20px; }
 
   .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-
   .flex-between { display: flex; justify-content: space-between; align-items: center; }
   .flex-gap { display: flex; gap: 8px; align-items: center; }
   .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; }
@@ -548,7 +544,7 @@
         <label>Dialect</label>
         <select id="input-dialect">
           <option value="pr">Puerto Rican Spanish</option>
-          <option value="co">Colombian Spanish</option>
+          <option value="ca">Canarian Spanish</option>
         </select>
       </div>
     </div>
@@ -577,22 +573,22 @@
 <script>
 // ================================================================
 // TTS ENGINE — Google Translate proxy via Netlify function
-//
-// Calls /.netlify/functions/tts?text=... which proxies to
-// Google Translate TTS and returns an MP3. We play it with
-// the HTML5 Audio API, which works on all browsers/OS including
-// GrapheneOS with no system TTS engine required.
+// PR Spanish uses es-US, Canarian Spanish uses es-ES
 // ================================================================
 
 let currentAudio = null;
-let audioQueue = [];
 let isPlaying = false;
+
+function getTtsLang() {
+  return currentLang === 'pr' ? 'es-US' : 'es';
+}
 
 function ttsSpeak(text, onDone) {
   if (!text) { if (onDone) onDone(); return; }
   ttsStop();
 
-  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text);
+  const lang = getTtsLang();
+  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + lang;
   const audio = new Audio(url);
   currentAudio = audio;
   isPlaying = true;
@@ -603,7 +599,7 @@ function ttsSpeak(text, onDone) {
     if (onDone) onDone();
   };
 
-  audio.onerror = (e) => {
+  audio.onerror = () => {
     isPlaying = false;
     currentAudio = null;
     showTtsError('Audio error — check connection');
@@ -671,12 +667,12 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
 // ================================================================
 if (sentences.length === 0) {
   sentences = [
-    { id: 1, en: "Can I get the check please?", es_pr: "¿Me puede traer la cuenta?", es_co: "¿Me trae la cuenta, por favor?", cat: "errands" },
-    { id: 2, en: "What time does the store close?", es_pr: "¿A qué hora cierra la tienda?", es_co: "¿A qué hora cierra el almacén?", cat: "errands" },
-    { id: 3, en: "I need to think about it.", es_pr: "Tengo que pensarlo.", es_co: "Necesito pensarlo.", cat: "social" },
-    { id: 4, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_co: "Buenos días, ¿cómo estás?", cat: "daily" },
-    { id: 5, en: "I'll be there in a few minutes.", es_pr: "Llego en un ratito.", es_co: "Llego en unos minutos.", cat: "social" },
-    { id: 6, en: "Can you send me that by email?", es_pr: "¿Me lo puedes mandar por correo?", es_co: "¿Me lo puede enviar por correo?", cat: "work" },
+    { id: 1, en: "Can I get the check please?", es_pr: "¿Me puede traer la cuenta?", es_ca: "¿Me trae la cuenta, por favor?", cat: "errands" },
+    { id: 2, en: "What time does the store close?", es_pr: "¿A qué hora cierra la tienda?", es_ca: "¿A qué hora cierra el comercio?", cat: "errands" },
+    { id: 3, en: "I need to think about it.", es_pr: "Tengo que pensarlo.", es_ca: "Necesito pensarlo.", cat: "social" },
+    { id: 4, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_ca: "Buenos días, ¿cómo estás?", cat: "daily" },
+    { id: 5, en: "I'll be there in a few minutes.", es_pr: "Llego en un ratito.", es_ca: "Llego en un momentito.", cat: "social" },
+    { id: 6, en: "Can you send me that by email?", es_pr: "¿Me lo puedes mandar por correo?", es_ca: "¿Me lo puedes enviar por correo?", cat: "work" },
   ];
   saveSentences();
 }
@@ -685,7 +681,7 @@ if (sentences.length === 0) {
 // UTILS
 // ================================================================
 function saveSentences() { localStorage.setItem('fluency_sentences', JSON.stringify(sentences)); }
-function getEs(s) { return currentLang === 'pr' ? (s.es_pr || s.es_co || '') : (s.es_co || s.es_pr || ''); }
+function getEs(s) { return currentLang === 'pr' ? (s.es_pr || s.es_ca || '') : (s.es_ca || s.es_pr || ''); }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
 function updateStats() {
   document.getElementById('stat-total').textContent = sentences.length;
@@ -719,9 +715,9 @@ function showScreen(name) {
 }
 
 function toggleLang() {
-  currentLang = currentLang === 'pr' ? 'co' : 'pr';
-  document.getElementById('lang-badge').textContent = currentLang === 'pr' ? '🇵🇷 PR Spanish' : '🇨🇴 CO Spanish';
-  document.getElementById('recall-lang-label').textContent = currentLang === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
+  currentLang = currentLang === 'pr' ? 'ca' : 'pr';
+  document.getElementById('lang-badge').textContent = currentLang === 'pr' ? '🇵🇷 PR Spanish' : '🇮🇨 Canarian Spanish';
+  document.getElementById('recall-lang-label').textContent = currentLang === 'pr' ? 'Puerto Rican Spanish' : 'Canarian Spanish';
   renderSentenceList();
   if (currentScreen === 'shadow') renderShadow();
   if (currentScreen === 'recall') renderRecall();
@@ -799,8 +795,8 @@ function saveSentence() {
   if (!es) { alert('Please enter or generate a Spanish translation.'); return; }
   const id = Date.now();
   const obj = { id, en, cat };
-  if (dialect === 'pr') { obj.es_pr = es; obj.es_co = es; }
-  else { obj.es_co = es; obj.es_pr = es; }
+  if (dialect === 'pr') { obj.es_pr = es; obj.es_ca = es; }
+  else { obj.es_ca = es; obj.es_pr = es; }
   sentences.push(obj);
   saveSentences(); renderSentenceList(); closeAddModal(); updateStats();
 }
@@ -814,7 +810,7 @@ async function aiTranslate() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Translating...';
   status.innerHTML = '<span class="spinner"></span> Calling Claude...';
-  const dialectName = dialect === 'pr' ? 'Puerto Rican Spanish' : 'Colombian Spanish';
+  const dialectName = dialect === 'pr' ? 'Puerto Rican Spanish' : 'Canarian Spanish (from the Canary Islands, Spain)';
   const prompt = `Translate the following English sentence into natural, colloquial ${dialectName} as a native speaker would actually say it in everyday conversation. Do NOT use formal or textbook Spanish. Respond with ONLY the translation, nothing else.\n\nEnglish: ${en}`;
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
