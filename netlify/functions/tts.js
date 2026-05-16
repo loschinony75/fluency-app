@@ -1,6 +1,6 @@
 exports.handler = async function(event) {
   const text = event.queryStringParameters && event.queryStringParameters.text;
-  const lang = (event.queryStringParameters && event.queryStringParameters.lang) || 'es';
+  const lang = (event.queryStringParameters && event.queryStringParameters.lang) || 'es-US';
   if (!text) {
     return { statusCode: 400, body: 'Missing text parameter' };
   }
