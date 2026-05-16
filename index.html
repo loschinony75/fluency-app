@@ -73,7 +73,7 @@
     color: var(--muted);
     font-family: var(--font-mono);
     font-size: 12px;
-    padding: 6px 14px;
+    padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.15s;
@@ -84,21 +84,16 @@
   .nav-tab:hover { color: var(--text); background: var(--border); }
   .nav-tab.active { background: var(--accent); color: var(--bg); font-weight: 500; }
 
-  .lang-badge {
+  .dialect-badge {
     font-size: 11px;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 5px;
     padding: 4px 10px;
     color: var(--muted);
-    cursor: pointer;
-    transition: all 0.15s;
     flex-shrink: 0;
     white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
   }
-  .lang-badge:hover { border-color: var(--border2); color: var(--text); }
 
   @media (max-width: 600px) {
     nav {
@@ -109,7 +104,7 @@
     }
     .nav-top-row { display: flex; align-items: center; justify-content: space-between; }
     .nav-tabs { width: 100%; }
-    .nav-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 11px; }
+    .nav-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; }
   }
 
   .screen { display: none; padding: 32px 24px; max-width: 720px; margin: 0 auto; width: 100%; }
@@ -177,22 +172,31 @@
   .form-row { margin-bottom: 14px; }
   .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+  /* SENTENCE LIST */
   .sentence-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 14px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     transition: border-color 0.15s;
   }
   .sentence-item:hover { border-color: var(--border2); }
 
+  .sentence-item-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .sentence-texts { flex: 1; min-width: 0; }
-  .sentence-en { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sentence-es { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sentence-en { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .sentence-dialects { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .sentence-dialect-block { flex: 1; min-width: 0; }
+  .sentence-dialect-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .sentence-dialect-text { font-size: 12px; color: var(--accent); }
+  .sentence-dialect-text.ca { color: #a0c4ff; }
+
   .sentence-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
 
   .icon-btn {
@@ -348,20 +352,76 @@
   .waveform-bar:nth-child(8) { height: 10px; animation-delay: 0.05s; }
   @keyframes wave { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
 
-  .ai-status { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 8px; min-height: 18px; }
-
-  .tts-status {
-    font-size: 11px;
-    color: var(--muted);
-    padding: 6px 10px;
-    background: var(--surface2);
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    margin-bottom: 10px;
-    display: none;
+  /* GUIDE SCREEN */
+  .guide-section { margin-bottom: 28px; }
+  .guide-section-title {
+    font-family: var(--font-head);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
   }
-  .tts-status.visible { display: block; }
-  .tts-status.error { color: var(--danger); border-color: rgba(255,79,79,0.3); }
+  .guide-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .guide-num {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+    flex-shrink: 0;
+    width: 24px;
+  }
+  .guide-text { font-size: 13px; color: var(--text); line-height: 1.7; }
+  .guide-text span { color: var(--accent); }
+  .guide-mode-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .guide-mode-title {
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .guide-mode-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .guide-time-block {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .guide-time-label { color: var(--accent); font-weight: 500; margin-right: 6px; }
+
+  /* LISTEN dialect indicator */
+  .dialect-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  .dialect-indicator.pr { color: var(--accent); background: rgba(212,240,60,0.08); border-color: rgba(212,240,60,0.2); }
+  .dialect-indicator.ca { color: #a0c4ff; background: rgba(160,196,255,0.08); border-color: rgba(160,196,255,0.2); }
 
   @media (max-width: 600px) {
     .screen { padding: 16px 14px; }
@@ -370,6 +430,7 @@
     .form-row-2 { grid-template-columns: 1fr; }
     .btn-lg { font-size: 14px; padding: 11px 18px; }
     .modal { padding: 20px 16px; }
+    .sentence-dialects { flex-direction: column; gap: 6px; }
   }
 </style>
 </head>
@@ -378,19 +439,19 @@
 <nav>
   <div class="nav-top-row" style="display:flex;align-items:center;justify-content:space-between;width:100%">
     <div class="logo">fluency<span>.</span></div>
-    <div class="lang-badge" onclick="toggleLang()" id="lang-badge">🇵🇷 PR Spanish</div>
+    <div class="dialect-badge">🇵🇷 PR Spanish</div>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showScreen('sentences')">Sentences</button>
     <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
+    <button class="nav-tab" onclick="showScreen('guide')">Guide</button>
   </div>
 </nav>
 
 <!-- SENTENCES -->
 <div class="screen active" id="screen-sentences">
-  <div class="tts-status" id="tts-status"></div>
   <div class="flex-between mb16">
     <div>
       <div style="font-family:var(--font-head);font-size:22px;font-weight:700;">Your Sentences</div>
@@ -411,7 +472,7 @@
 
 <!-- SHADOW -->
 <div class="screen" id="screen-shadow">
-  <div class="practice-mode-title">▶ Shadowing Mode</div>
+  <div class="practice-mode-title">▶ Shadowing Mode — 🇵🇷 PR Spanish</div>
   <div id="shadow-empty" class="empty-state" style="display:none;">
     <div class="empty-state-icon">🎙</div>
     <div>No sentences yet. Add some on the Sentences tab.</div>
@@ -438,15 +499,15 @@
       <button class="btn text-sm" onclick="shadowShuffle()" style="margin-left:auto">⇄ Shuffle</button>
     </div>
     <div class="card mt24" style="border-color:rgba(212,240,60,0.15);background:rgba(212,240,60,0.04)">
-      <div style="font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Shadowing Tips</div>
-      <div class="text-muted text-sm" style="line-height:1.7">Press Play → listen → immediately repeat out loud, mimicking the exact rhythm and sound. Use Loop to repeat until it feels natural.</div>
+      <div style="font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">How to Shadow</div>
+      <div class="text-muted text-sm" style="line-height:1.7">Press Play → listen to the full sentence → immediately repeat out loud, mimicking the exact rhythm. Use Loop to repeat until it feels natural in your mouth.</div>
     </div>
   </div>
 </div>
 
 <!-- RECALL -->
 <div class="screen" id="screen-recall">
-  <div class="practice-mode-title">🧠 Active Recall Mode</div>
+  <div class="practice-mode-title">🧠 Recall Mode — 🇵🇷 PR Spanish</div>
   <div id="recall-empty" class="empty-state" style="display:none;">
     <div class="empty-state-icon">💭</div>
     <div>No sentences yet. Add some on the Sentences tab.</div>
@@ -456,7 +517,7 @@
     <div class="sentence-count" id="recall-count">— / —</div>
     <div class="card mb16" style="min-height:100px;display:flex;align-items:center;">
       <div>
-        <div class="text-muted text-sm mb8">Say this in <span id="recall-lang-label" style="color:var(--accent)">Puerto Rican Spanish</span>:</div>
+        <div class="text-muted text-sm mb8">Say this in <span style="color:var(--accent)">Puerto Rican Spanish</span>:</div>
         <div class="sentence-big" id="recall-en" style="font-size:24px">—</div>
       </div>
     </div>
@@ -490,7 +551,7 @@
     <div class="flex-between mb16">
       <div>
         <div style="font-family:var(--font-head);font-weight:600;font-size:15px;margin-bottom:4px">Background Loop</div>
-        <div class="text-muted text-sm">Auto-plays all sentences in sequence</div>
+        <div class="text-muted text-sm">Alternates between 🇵🇷 PR and 🇮🇨 Canarian Spanish</div>
       </div>
       <button class="btn btn-accent" id="listen-toggle" onclick="toggleListen()">▶ Start</button>
     </div>
@@ -503,7 +564,10 @@
     <div id="listen-now" class="text-muted text-sm">Not playing</div>
   </div>
   <div class="card" style="background:var(--surface2)">
-    <div class="text-muted text-sm mb8" style="letter-spacing:0.06em;text-transform:uppercase;font-size:11px">Now Playing</div>
+    <div class="flex-between mb8">
+      <div class="text-muted text-sm" style="letter-spacing:0.06em;text-transform:uppercase;font-size:11px">Now Playing</div>
+      <div id="listen-dialect-badge"></div>
+    </div>
     <div id="listen-en" class="text-muted" style="font-size:13px;margin-bottom:4px">—</div>
     <div id="listen-es" style="font-size:15px;font-weight:600;color:var(--accent)">—</div>
   </div>
@@ -518,6 +582,80 @@
   </div>
 </div>
 
+<!-- GUIDE -->
+<div class="screen" id="screen-guide">
+  <div style="font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:6px">How to Use Fluency</div>
+  <div class="text-muted text-sm mb16">The Language Islands Method</div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">What This App Does</div>
+    <div style="font-size:13px;color:var(--text);line-height:1.8;">
+      Fluency is built around one idea — you learn to speak by drilling personal sentences until they come out automatically. No grammar tables, no Duolingo streaks. Just sentences from your real life, repeated until they're part of you.
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">The Four Modes</div>
+    <div class="guide-mode-card">
+      <div class="guide-mode-title">📝 Sentences</div>
+      <div class="guide-mode-desc">Your sentence bank. Add sentences in English and Puerto Rican Spanish. Both PR and Canarian translations are shown side by side so you can see the differences. All drilling uses PR Spanish.</div>
+    </div>
+    <div class="guide-mode-card">
+      <div class="guide-mode-title">▶ Shadow</div>
+      <div class="guide-mode-desc">Hear the sentence in PR Spanish, then immediately repeat it out loud mimicking the exact rhythm. Use Loop on new sentences until the sound feels natural in your mouth. Do this before moving to Recall.</div>
+    </div>
+    <div class="guide-mode-card">
+      <div class="guide-mode-title">🧠 Recall</div>
+      <div class="guide-mode-desc">See the English, say the Spanish out loud from memory before revealing the answer. Mark yourself honestly — wrong means wrong. This is the hardest mode and where most of the learning happens.</div>
+    </div>
+    <div class="guide-mode-card">
+      <div class="guide-mode-title">🔊 Listen</div>
+      <div class="guide-mode-desc">Passive background listening. Alternates between PR Spanish and Canarian Spanish so your ear gets used to both accents. Use this while walking, stretching or doing light tasks.</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Your Daily Routine</div>
+    <div class="guide-time-block"><span class="guide-time-label">10 min — Shadow</span>New sentences only. Listen and repeat with Loop on until each one feels natural.</div>
+    <div class="guide-time-block"><span class="guide-time-label">20 min — Recall</span>This is your main drill. See English, produce Spanish from memory. Be honest with yourself.</div>
+    <div class="guide-time-block"><span class="guide-time-label">10 min — Listen</span>Put it on while you do something light. Let both accents wash over you passively.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">How to Build Sentences</div>
+    <div class="guide-item">
+      <div class="guide-num">1</div>
+      <div class="guide-text">Pick a topic from your real life — who you are, your work, ordering food, getting around.</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-num">2</div>
+      <div class="guide-text">Write what you'd want to say in English. Keep sentences <span>5 to 12 words</span> — short enough to memorize as one unit.</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-num">3</div>
+      <div class="guide-text">Get the Spanish translation and add it to the app. Add both a question and its answer as <span>separate sentences</span>.</div>
+    </div>
+    <div class="guide-item">
+      <div class="guide-num">4</div>
+      <div class="guide-text">Shadow it for one day before moving it to Recall. Don't rush — own each sentence completely.</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Weekly Targets</div>
+    <div class="guide-time-block"><span class="guide-time-label">Week 1–2</span>5 new sentences per day. Focus on one island — who you are.</div>
+    <div class="guide-time-block"><span class="guide-time-label">Week 3–4</span>7–10 per day. Add a second island — ordering food, getting around.</div>
+    <div class="guide-time-block"><span class="guide-time-label">Month 2+</span>10–15 per day. At this pace you reach 1,000 sentences in about 3 months.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">The Honest Part</div>
+    <div style="font-size:13px;color:var(--text);line-height:1.8;">
+      Recall sessions will feel frustrating for the first two weeks. That friction is the learning. Your brain is building new pathways under the exact pressure of real conversation. If it feels easy, you are probably reading instead of recalling. Stay consistent. 30 to 45 minutes every day beats 3 hours on the weekend.
+    </div>
+  </div>
+</div>
+
 <!-- ADD MODAL -->
 <div class="modal-bg" id="add-modal">
   <div class="modal">
@@ -527,7 +665,7 @@
     </div>
     <div class="form-row">
       <label>English sentence</label>
-      <input type="text" id="input-en" placeholder="e.g. Can I get the check please?" />
+      <input type="text" id="input-en" placeholder="e.g. I am from Brooklyn, New York." />
     </div>
     <div class="form-row-2">
       <div>
@@ -549,15 +687,10 @@
       </div>
     </div>
     <div class="form-row">
-      <label>Spanish translation (or generate with AI)</label>
-      <textarea id="input-es" placeholder="Enter translation or use AI below..."></textarea>
-      <div class="ai-status" id="ai-status"></div>
+      <label>Spanish translation</label>
+      <textarea id="input-es" placeholder="Paste the Spanish translation here..."></textarea>
     </div>
-    <div class="flex-gap" style="flex-wrap:wrap;gap:8px;margin-bottom:20px">
-      <button class="btn" onclick="aiTranslate()" id="btn-ai-translate">✨ AI Translate</button>
-      <div class="text-muted text-sm" style="font-size:11px;color:var(--muted)">Uses Claude to generate natural native speech</div>
-    </div>
-    <div class="flex-gap" style="justify-content:flex-end;gap:10px">
+    <div class="flex-gap" style="justify-content:flex-end;gap:10px;margin-top:8px">
       <button class="btn" onclick="closeAddModal()">Cancel</button>
       <button class="btn btn-accent" onclick="saveSentence()">Save Sentence</button>
     </div>
@@ -572,46 +705,23 @@
 
 <script>
 // ================================================================
-// TTS ENGINE — Google Translate proxy via Netlify function
-// PR Spanish uses es-US, Canarian Spanish uses es-ES
+// TTS ENGINE
+// Shadow & Recall: always PR Spanish (es-US)
+// Listen: alternates PR (es-US) and Canarian (es)
 // ================================================================
-
 let currentAudio = null;
 let isPlaying = false;
 
-function getTtsLang() {
-  return currentLang === 'pr' ? 'es-US' : 'es';
-}
-
-function ttsSpeak(text, onDone) {
+function ttsSpeak(text, lang, onDone) {
   if (!text) { if (onDone) onDone(); return; }
   ttsStop();
-
-  const lang = getTtsLang();
-  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + lang;
+  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + (lang || 'es-US');
   const audio = new Audio(url);
   currentAudio = audio;
   isPlaying = true;
-
-  audio.onended = () => {
-    isPlaying = false;
-    currentAudio = null;
-    if (onDone) onDone();
-  };
-
-  audio.onerror = () => {
-    isPlaying = false;
-    currentAudio = null;
-    showTtsError('Audio error — check connection');
-    if (onDone) onDone();
-  };
-
-  audio.play().catch(err => {
-    isPlaying = false;
-    currentAudio = null;
-    showTtsError('Playback blocked: ' + err.message);
-    if (onDone) onDone();
-  });
+  audio.onended = () => { isPlaying = false; currentAudio = null; if (onDone) onDone(); };
+  audio.onerror = () => { isPlaying = false; currentAudio = null; if (onDone) onDone(); };
+  audio.play().catch(() => { isPlaying = false; currentAudio = null; if (onDone) onDone(); });
 }
 
 function ttsStop() {
@@ -625,19 +735,10 @@ function ttsStop() {
   isPlaying = false;
 }
 
-function showTtsError(msg) {
-  const el = document.getElementById('tts-status');
-  if (!el) return;
-  el.textContent = '⚠ ' + msg;
-  el.classList.add('visible', 'error');
-  setTimeout(() => { el.classList.remove('visible', 'error'); }, 4000);
-}
-
 // ================================================================
 // STATE
 // ================================================================
 let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || '[]');
-let currentLang = 'pr';
 let currentCatFilter = 'all';
 
 let shadowIdx = 0;
@@ -668,11 +769,11 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
 if (sentences.length === 0) {
   sentences = [
     { id: 1, en: "Can I get the check please?", es_pr: "¿Me puede traer la cuenta?", es_ca: "¿Me trae la cuenta, por favor?", cat: "errands" },
-    { id: 2, en: "What time does the store close?", es_pr: "¿A qué hora cierra la tienda?", es_ca: "¿A qué hora cierra el comercio?", cat: "errands" },
-    { id: 3, en: "I need to think about it.", es_pr: "Tengo que pensarlo.", es_ca: "Necesito pensarlo.", cat: "social" },
-    { id: 4, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_ca: "Buenos días, ¿cómo estás?", cat: "daily" },
-    { id: 5, en: "I'll be there in a few minutes.", es_pr: "Llego en un ratito.", es_ca: "Llego en un momentito.", cat: "social" },
-    { id: 6, en: "Can you send me that by email?", es_pr: "¿Me lo puedes mandar por correo?", es_ca: "¿Me lo puedes enviar por correo?", cat: "work" },
+    { id: 2, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_ca: "Buenos días, ¿cómo estás?", cat: "daily" },
+    { id: 3, en: "I am from Brooklyn, New York.", es_pr: "Soy de Brooklyn, Nueva York.", es_ca: "Soy de Brooklyn, Nueva York.", cat: "daily" },
+    { id: 4, en: "I have two daughters who live in Germany.", es_pr: "Tengo dos hijas que viven en Alemania.", es_ca: "Tengo dos hijas viviendo en Alemania.", cat: "daily" },
+    { id: 5, en: "I wake up around six thirty.", es_pr: "Me despierto como a las seis y media.", es_ca: "Me despierto sobre las seis y media.", cat: "daily" },
+    { id: 6, en: "I want to start a coaching business.", es_pr: "Quiero empezar un negocio de coaching.", es_ca: "Quiero empezar un negocio de coaching.", cat: "work" },
   ];
   saveSentences();
 }
@@ -681,8 +782,10 @@ if (sentences.length === 0) {
 // UTILS
 // ================================================================
 function saveSentences() { localStorage.setItem('fluency_sentences', JSON.stringify(sentences)); }
-function getEs(s) { return currentLang === 'pr' ? (s.es_pr || s.es_ca || '') : (s.es_ca || s.es_pr || ''); }
+function getPR(s) { return s.es_pr || s.es_ca || ''; }
+function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
+
 function updateStats() {
   document.getElementById('stat-total').textContent = sentences.length;
   document.getElementById('stat-today').textContent = practicedToday;
@@ -714,17 +817,8 @@ function showScreen(name) {
   if (name === 'listen') renderListenNow();
 }
 
-function toggleLang() {
-  currentLang = currentLang === 'pr' ? 'ca' : 'pr';
-  document.getElementById('lang-badge').textContent = currentLang === 'pr' ? '🇵🇷 PR Spanish' : '🇮🇨 Canarian Spanish';
-  document.getElementById('recall-lang-label').textContent = currentLang === 'pr' ? 'Puerto Rican Spanish' : 'Canarian Spanish';
-  renderSentenceList();
-  if (currentScreen === 'shadow') renderShadow();
-  if (currentScreen === 'recall') renderRecall();
-}
-
 // ================================================================
-// SENTENCE LIST
+// SENTENCE LIST — shows both PR and Canarian
 // ================================================================
 function renderSentenceList() {
   const list = document.getElementById('sentence-list');
@@ -735,14 +829,25 @@ function renderSentenceList() {
   }
   list.innerHTML = fs.map(s => `
     <div class="sentence-item" id="si-${s.id}">
-      <div class="sentence-texts">
-        <div class="sentence-en">${s.en}</div>
-        <div class="sentence-es">${getEs(s)}</div>
+      <div class="sentence-item-top">
+        <div class="sentence-texts">
+          <div class="sentence-en">${s.en}</div>
+        </div>
+        <div class="sentence-actions">
+          <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
+          <button class="icon-btn" onclick="playSentence(${s.id},this)">▶</button>
+          <button class="icon-btn" onclick="deleteSentence(${s.id})" style="color:rgba(255,79,79,0.5)">✕</button>
+        </div>
       </div>
-      <div class="sentence-actions">
-        <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
-        <button class="icon-btn" onclick="playSentence(${s.id},this)">▶</button>
-        <button class="icon-btn" onclick="deleteSentence(${s.id})" style="color:rgba(255,79,79,0.5)">✕</button>
+      <div class="sentence-dialects">
+        <div class="sentence-dialect-block">
+          <div class="sentence-dialect-label">🇵🇷 Puerto Rican</div>
+          <div class="sentence-dialect-text">${getPR(s) || '—'}</div>
+        </div>
+        <div class="sentence-dialect-block">
+          <div class="sentence-dialect-label">🇮🇨 Canarian</div>
+          <div class="sentence-dialect-text ca">${getCA(s) || '—'}</div>
+        </div>
       </div>
     </div>
   `).join('');
@@ -762,7 +867,7 @@ function playSentence(id, btn) {
   ttsStop();
   btn.classList.add('playing');
   btn.textContent = '⏸';
-  ttsSpeak(getEs(s), () => {
+  ttsSpeak(getPR(s), 'es-US', () => {
     btn.classList.remove('playing');
     btn.textContent = '▶';
   });
@@ -781,7 +886,6 @@ function openAddModal() {
   document.getElementById('add-modal').classList.add('open');
   document.getElementById('input-en').value = '';
   document.getElementById('input-es').value = '';
-  document.getElementById('ai-status').innerHTML = '';
   setTimeout(() => document.getElementById('input-en').focus(), 100);
 }
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
@@ -792,49 +896,17 @@ function saveSentence() {
   const cat = document.getElementById('input-cat').value;
   const dialect = document.getElementById('input-dialect').value;
   if (!en) { alert('Please enter an English sentence.'); return; }
-  if (!es) { alert('Please enter or generate a Spanish translation.'); return; }
+  if (!es) { alert('Please enter a Spanish translation.'); return; }
   const id = Date.now();
   const obj = { id, en, cat };
-  if (dialect === 'pr') { obj.es_pr = es; obj.es_ca = es; }
-  else { obj.es_ca = es; obj.es_pr = es; }
+  if (dialect === 'pr') { obj.es_pr = es; }
+  else { obj.es_ca = es; }
   sentences.push(obj);
   saveSentences(); renderSentenceList(); closeAddModal(); updateStats();
 }
 
-async function aiTranslate() {
-  const en = document.getElementById('input-en').value.trim();
-  const dialect = document.getElementById('input-dialect').value;
-  if (!en) { alert('Enter an English sentence first.'); return; }
-  const btn = document.getElementById('btn-ai-translate');
-  const status = document.getElementById('ai-status');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Translating...';
-  status.innerHTML = '<span class="spinner"></span> Calling Claude...';
-  const dialectName = dialect === 'pr' ? 'Puerto Rican Spanish' : 'Canarian Spanish (from the Canary Islands, Spain)';
-  const prompt = `Translate the following English sentence into natural, colloquial ${dialectName} as a native speaker would actually say it in everyday conversation. Do NOT use formal or textbook Spanish. Respond with ONLY the translation, nothing else.\n\nEnglish: ${en}`;
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    const translation = data.content?.[0]?.text?.trim() || '';
-    if (translation) {
-      document.getElementById('input-es').value = translation;
-      status.innerHTML = '<span style="color:var(--success)">✓ Translation ready</span>';
-    } else {
-      status.innerHTML = '<span style="color:var(--danger)">Error: no response</span>';
-    }
-  } catch (e) {
-    status.innerHTML = '<span style="color:var(--danger)">Error — check connection</span>';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '✨ AI Translate';
-}
-
 // ================================================================
-// SHADOW MODE
+// SHADOW MODE — PR Spanish only
 // ================================================================
 function initShadow() {
   const fs = filteredSentences();
@@ -854,7 +926,7 @@ function renderShadow() {
   if (!fs.length) return;
   const s = fs[shadowIdx];
   document.getElementById('shadow-en').textContent = s.en;
-  document.getElementById('shadow-es').textContent = getEs(s);
+  document.getElementById('shadow-es').textContent = getPR(s);
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + fs.length;
   const pct = fs.length > 1 ? (shadowIdx / (fs.length - 1)) * 100 : 100;
   document.getElementById('shadow-progress').style.width = pct + '%';
@@ -874,7 +946,7 @@ function shadowPlay() {
   ttsStop();
   setWave('shadow-wave', true);
   playBtn.innerHTML = '⏹ Stop';
-  ttsSpeak(getEs(fs[shadowIdx]), () => {
+  ttsSpeak(getPR(fs[shadowIdx]), 'es-US', () => {
     if (shadowLooping) {
       shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 400);
     } else {
@@ -932,7 +1004,7 @@ function shadowShuffle() {
 }
 
 // ================================================================
-// RECALL MODE
+// RECALL MODE — PR Spanish only
 // ================================================================
 function initRecall() {
   const fs = filteredSentences();
@@ -952,7 +1024,7 @@ function renderRecall() {
   if (recallIdx >= recallShuffled.length) { initRecall(); return; }
   const s = recallShuffled[recallIdx];
   document.getElementById('recall-en').textContent = s.en;
-  document.getElementById('recall-es').textContent = getEs(s);
+  document.getElementById('recall-es').textContent = getPR(s);
   document.getElementById('recall-count').textContent = (recallIdx + 1) + ' / ' + recallShuffled.length;
   const pct = recallShuffled.length > 1 ? (recallIdx / (recallShuffled.length - 1)) * 100 : 0;
   document.getElementById('recall-progress').style.width = pct + '%';
@@ -970,7 +1042,7 @@ function recallReveal() {
 
 function recallPlayAudio() {
   if (recallIdx >= recallShuffled.length) return;
-  ttsSpeak(getEs(recallShuffled[recallIdx]));
+  ttsSpeak(getPR(recallShuffled[recallIdx]), 'es-US');
 }
 
 function recallResult(correct) {
@@ -985,7 +1057,7 @@ function recallResult(correct) {
 }
 
 // ================================================================
-// LISTEN MODE
+// LISTEN MODE — alternates PR and Canarian each sentence
 // ================================================================
 function toggleListen() { listenPlaying ? stopListen() : startListen(); }
 
@@ -1008,6 +1080,7 @@ function stopListen() {
   setWave('listen-wave', false);
   document.getElementById('listen-en').textContent = '—';
   document.getElementById('listen-es').textContent = '—';
+  document.getElementById('listen-dialect-badge').innerHTML = '';
 }
 
 function playListenNext() {
@@ -1015,10 +1088,21 @@ function playListenNext() {
   const fs = filteredSentences();
   if (!fs.length) { stopListen(); return; }
   const s = fs[listenIdx % fs.length];
+
+  // Alternate dialect each sentence
+  const usePR = (listenIdx % 2 === 0);
+  const lang = usePR ? 'es-US' : 'es';
+  const text = usePR ? getPR(s) : getCA(s);
+  const badge = usePR
+    ? '<span class="dialect-indicator pr">🇵🇷 Puerto Rican</span>'
+    : '<span class="dialect-indicator ca">🇮🇨 Canarian</span>';
+
   document.getElementById('listen-en').textContent = s.en;
-  document.getElementById('listen-es').textContent = getEs(s);
+  document.getElementById('listen-es').textContent = text;
   document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
-  ttsSpeak(getEs(s), () => {
+  document.getElementById('listen-dialect-badge').innerHTML = badge;
+
+  ttsSpeak(text, lang, () => {
     if (!listenPlaying) return;
     listenIdx++;
     const delay = parseInt(document.getElementById('listen-delay').value);
@@ -1030,6 +1114,7 @@ function renderListenNow() {
   if (!listenPlaying) {
     document.getElementById('listen-en').textContent = '—';
     document.getElementById('listen-es').textContent = '—';
+    document.getElementById('listen-dialect-badge').innerHTML = '';
   }
 }
 
