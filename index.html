@@ -3,138 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fluency — Sentence-Based Language Training</title>
+<title>Fluency — Your Spanish Coach</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0a0a0b;
-    --surface: #111114;
-    --surface2: #18181d;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.13);
-    --text: #f0ede8;
-    --muted: #7a7870;
-    --accent: #d4f03c;
-    --accent2: #b8d433;
-    --danger: #ff4f4f;
-    --success: #4fcf8a;
-    --font-head: 'Syne', sans-serif;
-    --font-mono: 'DM Mono', monospace;
+    --bg: #0a0a0b; --surface: #111114; --surface2: #18181d;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.13);
+    --text: #f0ede8; --muted: #7a7870;
+    --accent: #d4f03c; --accent2: #b8d433;
+    --danger: #ff4f4f; --success: #4fcf8a; --blue: #a0c4ff;
+    --font-head: 'Syne', sans-serif; --font-mono: 'DM Mono', monospace;
   }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 24px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    gap: 12px;
-  }
-
-  .logo {
-    font-family: var(--font-head);
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.5px;
-    color: var(--accent);
-    flex-shrink: 0;
-  }
+  /* NAV */
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; gap: 12px; }
+  .logo { font-family: var(--font-head); font-weight: 800; font-size: 18px; letter-spacing: -0.5px; color: var(--accent); flex-shrink: 0; }
   .logo span { color: var(--text); }
-
-  .nav-tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
-  }
-
-  .nav-tab {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.03em;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+  .nav-tabs { display: flex; gap: 3px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 3px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab { background: none; border: none; color: var(--muted); font-family: var(--font-mono); font-size: 11px; padding: 6px 12px; border-radius: 5px; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   .nav-tab:hover { color: var(--text); background: var(--border); }
   .nav-tab.active { background: var(--accent); color: var(--bg); font-weight: 500; }
-
-  .dialect-badge {
-    font-size: 11px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding: 4px 10px;
-    color: var(--muted);
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
+  .dialect-badge { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 4px 10px; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
 
   @media (max-width: 600px) {
-    nav {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 12px 14px;
-      gap: 10px;
-    }
+    nav { flex-direction: column; align-items: stretch; padding: 12px 14px; gap: 10px; }
     .nav-top-row { display: flex; align-items: center; justify-content: space-between; }
     .nav-tabs { width: 100%; }
-    .nav-tab { flex: 1; text-align: center; padding: 8px 2px; font-size: 10px; }
+    .nav-tab { padding: 7px 10px; font-size: 10px; }
   }
 
-  .screen { display: none; padding: 32px 24px; max-width: 720px; margin: 0 auto; width: 100%; }
+  /* SCREENS */
+  .screen { display: none; padding: 24px; max-width: 720px; margin: 0 auto; width: 100%; }
   .screen.active { display: block; }
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 12px;
-  }
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 12px; }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: 7px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+  /* BUTTONS */
+  .btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--border2); color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 8px 16px; border-radius: 7px; cursor: pointer; transition: all 0.15s; white-space: nowrap; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   .btn:hover { background: var(--surface2); }
   .btn:active { transform: scale(0.98); }
   .btn-accent { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 500; }
@@ -144,205 +54,87 @@
   .btn-lg { font-size: 15px; padding: 12px 24px; border-radius: 9px; }
   .btn-full { width: 100%; justify-content: center; }
 
-  input[type="text"], textarea, select {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 9px 13px;
-    border-radius: 7px;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.15s;
-  }
+  /* FORMS */
+  input[type="text"], textarea, select { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-family: var(--font-mono); font-size: 13px; padding: 9px 13px; border-radius: 7px; outline: none; width: 100%; transition: border-color 0.15s; }
   input[type="text"]:focus, textarea:focus, select:focus { border-color: var(--accent); }
   select option { background: var(--surface2); }
-  textarea { resize: vertical; min-height: 72px; }
-
-  label {
-    display: block;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-
+  textarea { resize: vertical; min-height: 80px; }
+  label { display: block; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
   .form-row { margin-bottom: 14px; }
   .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+  /* MODE HEADER — instruction shown at top of each tab */
+  .mode-header { background: rgba(212,240,60,0.06); border: 1px solid rgba(212,240,60,0.15); border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: var(--text); line-height: 1.6; }
+  .mode-header strong { color: var(--accent); font-family: var(--font-head); display: block; margin-bottom: 4px; }
+
+  /* MISSION */
+  .mission-header { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .mission-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+  .mission-progress { background: var(--surface2); border-radius: 4px; height: 4px; width: 100%; overflow: hidden; margin-bottom: 6px; }
+  .mission-progress-fill { background: var(--accent); height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+  .stage-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 4px 12px; border-radius: 20px; background: rgba(212,240,60,0.1); border: 1px solid rgba(212,240,60,0.2); color: var(--accent); margin-bottom: 14px; }
+
+  .mission-step { display: flex; align-items: flex-start; gap: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .mission-step:hover { border-color: var(--border2); }
+  .mission-step.done { opacity: 0.45; }
+  .mission-step.done .mission-step-title { text-decoration: line-through; }
+  .mission-check { width: 22px; height: 22px; border: 2px solid var(--border2); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; margin-top: 1px; }
+  .mission-step.done .mission-check { background: var(--success); border-color: var(--success); color: var(--bg); }
+  .mission-step-info { flex: 1; }
+  .mission-step-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 2px; }
+  .mission-step-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .mission-step-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .mission-step-time { font-size: 11px; color: var(--accent); }
+  .mission-step-go { font-size: 13px; color: var(--muted); }
+
+  /* WORD FAMILY CARD on Today tab */
+  .wf-card { background: rgba(160,196,255,0.05); border: 1px solid rgba(160,196,255,0.2); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; }
+  .wf-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 2px; }
+  .wf-subtitle { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .wf-item { font-size: 12px; color: var(--text); padding: 3px 0; border-bottom: 1px solid var(--border); line-height: 1.6; }
+  .wf-item:last-child { border-bottom: none; }
+  .wf-item span { color: var(--blue); font-weight: 500; }
+
+  .low-energy { background: var(--surface2); border-radius: 10px; padding: 12px 16px; margin-top: 14px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .low-energy strong { color: var(--accent); }
+
   /* SENTENCE LIST */
-  .sentence-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    transition: border-color 0.15s;
-  }
+  .sentence-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; transition: border-color 0.15s; }
   .sentence-item:hover { border-color: var(--border2); }
-
-  .sentence-item-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
+  .sentence-item-top { display: flex; align-items: flex-start; gap: 10px; }
   .sentence-texts { flex: 1; min-width: 0; }
-  .sentence-en { font-size: 13px; color: var(--text); margin-bottom: 4px; }
-  .sentence-dialects { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
-  .sentence-dialect-block { flex: 1; min-width: 0; }
-  .sentence-dialect-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
-  .sentence-dialect-text { font-size: 12px; color: var(--accent); }
-  .sentence-dialect-text.ca { color: #a0c4ff; }
-
-  .sentence-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
-
-  .icon-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 15px;
-    transition: color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    min-width: 38px;
-    min-height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .sentence-en { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
+  .sentence-dialects { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .sentence-dialect-block { flex: 1; min-width: 120px; }
+  .sentence-dialect-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  .sentence-dialect-text { font-size: 12px; color: var(--accent); line-height: 1.5; }
+  .sentence-dialect-text.ca { color: var(--blue); }
+  .sentence-actions { display: flex; gap: 4px; flex-shrink: 0; align-items: flex-start; }
+  .icon-btn { background: none; border: none; color: var(--muted); cursor: pointer; border-radius: 5px; font-size: 15px; transition: color 0.15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; min-width: 36px; min-height: 36px; display: inline-flex; align-items: center; justify-content: center; }
   .icon-btn:hover { color: var(--text); background: var(--border); }
   .icon-btn.playing { color: var(--accent); }
 
-  .cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-  .cat-pill {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
+  .cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .cat-pill { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: var(--font-mono); font-size: 11px; padding: 5px 12px; border-radius: 20px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
   .cat-pill.active { background: rgba(212,240,60,0.12); border-color: var(--accent); color: var(--accent); }
 
-  .practice-mode-title {
-    font-family: var(--font-head);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .sentence-big {
-    font-family: var(--font-head);
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  .sentence-big-es {
-    font-family: var(--font-head);
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--accent);
-    margin-bottom: 24px;
-  }
-
-  .sentence-count { font-size: 11px; color: var(--muted); margin-bottom: 28px; letter-spacing: 0.06em; }
+  /* PRACTICE */
+  .sentence-big { font-family: var(--font-head); font-size: 26px; font-weight: 700; line-height: 1.3; color: var(--text); margin-bottom: 10px; }
+  .sentence-big-es { font-family: var(--font-head); font-size: 24px; font-weight: 600; line-height: 1.3; color: var(--accent); margin-bottom: 20px; }
+  .sentence-count { font-size: 11px; color: var(--muted); margin-bottom: 20px; letter-spacing: 0.06em; }
   .audio-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
   .recall-reveal { display: none; }
   .recall-reveal.shown { display: block; }
   .result-btns { display: flex; gap: 10px; margin-top: 20px; }
   .result-btns .btn { flex: 1; justify-content: center; }
-
-  .stats-bar {
-    display: flex;
-    gap: 20px;
-    padding: 12px 24px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    font-size: 12px;
-    color: var(--muted);
-    flex-wrap: wrap;
-  }
-  .stats-bar span { color: var(--text); }
-
   .progress-track { background: var(--surface2); border-radius: 4px; height: 3px; width: 100%; overflow: hidden; margin-bottom: 8px; }
   .progress-fill { background: var(--accent); height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 
-  .modal-bg {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 200;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 20px;
-    overflow-y: auto;
-  }
-  .modal-bg.open { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 14px;
-    padding: 28px;
-    width: 100%;
-    max-width: 540px;
-    margin: auto;
-  }
-  .modal-title { font-family: var(--font-head); font-weight: 700; font-size: 18px; margin-bottom: 20px; }
-
-  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
-  .flex-between { display: flex; justify-content: space-between; align-items: center; }
-  .flex-gap { display: flex; gap: 8px; align-items: center; }
-  .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; }
-  .mb8 { margin-bottom: 8px; } .mb16 { margin-bottom: 16px; }
-  .text-muted { color: var(--muted); } .text-accent { color: var(--accent); } .text-sm { font-size: 12px; }
-
-  .empty-state { text-align: center; color: var(--muted); padding: 48px 16px; font-size: 13px; }
-  .empty-state-icon { font-size: 32px; margin-bottom: 12px; }
-
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid var(--border2);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loop-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: var(--accent);
-    padding: 3px 9px;
-    background: rgba(212,240,60,0.1);
-    border-radius: 5px;
-    border: 1px solid rgba(212,240,60,0.2);
-  }
-
+  /* WAVEFORM */
   .waveform { display: flex; align-items: center; gap: 3px; height: 28px; }
   .waveform-bar { width: 3px; background: var(--border2); border-radius: 2px; }
   .waveform.playing .waveform-bar { background: var(--accent); animation: wave 0.8s ease-in-out infinite alternate; }
-  .waveform-bar:nth-child(1) { height: 8px;  animation-delay: 0s; }
+  .waveform-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
   .waveform-bar:nth-child(2) { height: 14px; animation-delay: 0.1s; }
   .waveform-bar:nth-child(3) { height: 20px; animation-delay: 0.2s; }
   .waveform-bar:nth-child(4) { height: 16px; animation-delay: 0.3s; }
@@ -351,90 +143,109 @@
   .waveform-bar:nth-child(7) { height: 18px; animation-delay: 0.35s; }
   .waveform-bar:nth-child(8) { height: 10px; animation-delay: 0.05s; }
   @keyframes wave { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }
-
-  /* GUIDE SCREEN */
-  .guide-section { margin-bottom: 28px; }
-  .guide-section-title {
-    font-family: var(--font-head);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .guide-item {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 12px;
-    align-items: flex-start;
-  }
-  .guide-num {
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 18px;
-    color: var(--accent);
-    flex-shrink: 0;
-    width: 24px;
-  }
-  .guide-text { font-size: 13px; color: var(--text); line-height: 1.7; }
-  .guide-text span { color: var(--accent); }
-  .guide-mode-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-bottom: 8px;
-  }
-  .guide-mode-title {
-    font-family: var(--font-head);
-    font-weight: 600;
-    font-size: 13px;
-    margin-bottom: 4px;
-    color: var(--text);
-  }
-  .guide-mode-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
-  .guide-time-block {
-    background: var(--surface2);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: var(--text);
-    line-height: 1.6;
-  }
-  .guide-time-label { color: var(--accent); font-weight: 500; margin-right: 6px; }
-
-  /* LISTEN dialect indicator */
-  .dialect-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 5px;
-    border: 1px solid var(--border2);
-    color: var(--muted);
-    margin-left: 8px;
-  }
+  .loop-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--accent); padding: 3px 9px; background: rgba(212,240,60,0.1); border-radius: 5px; border: 1px solid rgba(212,240,60,0.2); }
+  .dialect-indicator { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border2); }
   .dialect-indicator.pr { color: var(--accent); background: rgba(212,240,60,0.08); border-color: rgba(212,240,60,0.2); }
-  .dialect-indicator.ca { color: #a0c4ff; background: rgba(160,196,255,0.08); border-color: rgba(160,196,255,0.2); }
+  .dialect-indicator.ca { color: var(--blue); background: rgba(160,196,255,0.08); border-color: rgba(160,196,255,0.2); }
+
+  /* PATTERN PICKER */
+  .pattern-picker { margin-bottom: 14px; }
+  .pattern-picker-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .pattern-pills { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; padding: 2px; }
+  .pattern-pill { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font-mono); font-size: 11px; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; white-space: nowrap; }
+  .pattern-pill:hover { color: var(--text); border-color: var(--accent); }
+  .pattern-pill.selected { background: rgba(212,240,60,0.12); border-color: var(--accent); color: var(--accent); }
+  .cognate-hint { font-size: 11px; color: var(--muted); background: var(--surface2); border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; line-height: 1.6; }
+  .cognate-hint span { color: var(--accent); }
+
+  /* GUIDE */
+  .guide-section { margin-bottom: 28px; }
+  .guide-section-title { font-family: var(--font-head); font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .guide-block { background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 10px 14px; margin-bottom: 8px; font-size: 12px; color: var(--text); line-height: 1.7; }
+  .guide-block-label { color: var(--accent); font-weight: 500; display: block; margin-bottom: 2px; }
+  .guide-block.blue { border-left-color: var(--blue); }
+  .guide-block.blue .guide-block-label { color: var(--blue); }
+
+  /* GUIDE STEPS */
+  .guide-step { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
+  .guide-step-num { font-family: var(--font-head); font-weight: 800; font-size: 16px; color: var(--accent); flex-shrink: 0; width: 24px; padding-top: 1px; }
+  .guide-step-body { flex: 1; }
+  .guide-step-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 2px; }
+  .guide-step-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* MILESTONE */
+  .milestone-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; background: var(--surface2); border: 1px solid var(--border); }
+  .milestone-item.reached { border-color: var(--success); background: rgba(79,207,138,0.05); }
+  .milestone-item.current { border-color: var(--accent); background: rgba(212,240,60,0.05); }
+  .milestone-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border2); flex-shrink: 0; }
+  .milestone-item.reached .milestone-dot { background: var(--success); }
+  .milestone-item.current .milestone-dot { background: var(--accent); }
+  .milestone-count { color: var(--accent); font-weight: 500; flex-shrink: 0; width: 80px; }
+  .milestone-item.reached .milestone-count { color: var(--success); }
+  .milestone-desc { color: var(--muted); flex: 1; }
+  .milestone-item.reached .milestone-desc { color: var(--text); }
+
+  /* FREE WORDS */
+  .free-words-group { margin-bottom: 16px; }
+  .free-words-group-title { font-size: 11px; color: var(--blue); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .free-words-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .free-word { font-size: 11px; background: rgba(160,196,255,0.08); border: 1px solid rgba(160,196,255,0.2); color: var(--blue); padding: 3px 10px; border-radius: 5px; }
+
+  /* PATTERN REFERENCE in Guide */
+  .pattern-ref { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
+  .pattern-ref-formula { font-family: var(--font-head); font-weight: 700; font-size: 13px; color: var(--accent); margin-bottom: 2px; }
+  .pattern-ref-meaning { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .pattern-ref-example { font-size: 11px; color: var(--text); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 6px; }
+  .pattern-ref-example-es { color: var(--accent); }
+
+  /* MODAL */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+  .modal-bg.open { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; padding: 24px; width: 100%; max-width: 540px; margin: auto; }
+  .modal-title { font-family: var(--font-head); font-weight: 700; font-size: 18px; margin-bottom: 16px; }
+
+  /* NOTIFICATION */
+  .notif-banner { display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; z-index: 300; max-width: 360px; width: calc(100% - 40px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+  .notif-banner.show { display: block; animation: slideIn 0.3s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-50%) translateY(-10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  .notif-title { font-family: var(--font-head); font-weight: 700; font-size: 14px; color: var(--accent); margin-bottom: 6px; }
+  .notif-body { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+  .notif-close { font-size: 11px; color: var(--muted); cursor: pointer; text-decoration: underline; }
+
+  /* MISC */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .flex-gap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .mt8 { margin-top: 8px; } .mt16 { margin-top: 16px; } .mt24 { margin-top: 24px; }
+  .mb8 { margin-bottom: 8px; } .mb16 { margin-bottom: 16px; }
+  .text-muted { color: var(--muted); } .text-accent { color: var(--accent); } .text-sm { font-size: 12px; }
+  .empty-state { text-align: center; color: var(--muted); padding: 48px 16px; font-size: 13px; }
+  .empty-state-icon { font-size: 32px; margin-bottom: 12px; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .stats-bar { display: flex; gap: 16px; padding: 10px 24px; border-top: 1px solid var(--border); background: var(--surface); font-size: 11px; color: var(--muted); flex-wrap: wrap; align-items: center; }
+  .stats-bar span { color: var(--text); }
+  .stats-stage { margin-left: auto; }
 
   @media (max-width: 600px) {
-    .screen { padding: 16px 14px; }
-    .sentence-big { font-size: 22px; }
-    .sentence-big-es { font-size: 20px; }
+    .screen { padding: 14px; }
+    .sentence-big { font-size: 20px; }
+    .sentence-big-es { font-size: 18px; }
     .form-row-2 { grid-template-columns: 1fr; }
     .btn-lg { font-size: 14px; padding: 11px 18px; }
-    .modal { padding: 20px 16px; }
-    .sentence-dialects { flex-direction: column; gap: 6px; }
+    .modal { padding: 18px 14px; }
+    .sentence-dialects { flex-direction: column; gap: 8px; }
   }
 </style>
 </head>
 <body>
+
+<div class="notif-banner" id="notif-banner">
+  <div class="notif-title">🎙 Sunday Recording</div>
+  <div class="notif-body">Hey Carlos — 2 minutes of speaking Spanish today. Just talk about your week. No script, no pressure. Save it so you can hear your progress over time.</div>
+  <span class="notif-close" onclick="dismissNotif()">Got it, I'll do it</span>
+</div>
 
 <nav>
   <div class="nav-top-row" style="display:flex;align-items:center;justify-content:space-between;width:100%">
@@ -442,7 +253,8 @@
     <div class="dialect-badge">🇵🇷 PR Spanish</div>
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showScreen('sentences')">Sentences</button>
+    <button class="nav-tab active" onclick="showScreen('mission')">Today</button>
+    <button class="nav-tab" onclick="showScreen('sentences')">Sentences</button>
     <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
@@ -450,13 +262,88 @@
   </div>
 </nav>
 
-<!-- SENTENCES -->
-<div class="screen active" id="screen-sentences">
-  <div class="flex-between mb16">
-    <div>
-      <div style="font-family:var(--font-head);font-size:22px;font-weight:700;">Your Sentences</div>
-      <div class="text-muted text-sm mt8">Build your personal language bank</div>
+<!-- TODAY -->
+<div class="screen active" id="screen-mission">
+  <div id="mission-stage-badge" class="stage-badge"></div>
+  <div class="mission-header" id="mission-greeting">Good morning, Carlos.</div>
+  <div class="mission-subtitle">Your mission for today. Each step takes you there automatically.</div>
+  <div class="mission-progress mb8"><div class="mission-progress-fill" id="mission-progress-fill" style="width:0%"></div></div>
+  <div class="text-muted text-sm mb16" id="mission-progress-label">0 of 6 steps complete</div>
+
+  <div id="todays-word-family-card"></div>
+
+  <div class="mission-step" id="mstep-0" onclick="goToStep(0,'sentences')">
+    <div class="mission-check" id="mcheck-0"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Read newest sentences</div>
+      <div class="mission-step-desc">Go to Sentences → read your 5 newest out loud slowly. Full 2 minutes before moving on.</div>
     </div>
+    <div class="mission-step-right"><div class="mission-step-time">2 min</div><div class="mission-step-go" id="mgo-0">→</div></div>
+  </div>
+
+  <div class="mission-step" id="mstep-1" onclick="goToStep(1,'sentences')">
+    <div class="mission-check" id="mcheck-1"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Build 5 new sentences</div>
+      <div class="mission-step-desc">Go to Sentences → tap + Add → pick a pattern → complete and save. Do this 5 times. Auto-completes after first save.</div>
+    </div>
+    <div class="mission-step-right"><div class="mission-step-time">10 min</div><div class="mission-step-go" id="mgo-1">→</div></div>
+  </div>
+
+  <div class="mission-step" id="mstep-2" onclick="goToStep(2,'shadow')">
+    <div class="mission-check" id="mcheck-2"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Shadow new sentences</div>
+      <div class="mission-step-desc">Go to Shadow → Play each new sentence with Loop. Repeat out loud until natural. Full 10 minutes. Auto-completes after 3 plays.</div>
+    </div>
+    <div class="mission-step-right"><div class="mission-step-time">10 min</div><div class="mission-step-go" id="mgo-2">→</div></div>
+  </div>
+
+  <div class="mission-step" id="mstep-3" onclick="goToStep(3,'recall')">
+    <div class="mission-check" id="mcheck-3"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Recall everything</div>
+      <div class="mission-step-desc">Go to Recall → see English, say Spanish out loud, reveal, mark honestly. Full 20 minutes. Auto-completes after 5 answers.</div>
+    </div>
+    <div class="mission-step-right"><div class="mission-step-time">20 min</div><div class="mission-step-go" id="mgo-3">→</div></div>
+  </div>
+
+  <div class="mission-step" id="mstep-4" onclick="goToStep(4,'listen')">
+    <div class="mission-check" id="mcheck-4"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Listen passively</div>
+      <div class="mission-step-desc">Go to Listen → press Start, put phone down, enjoy your coffee. Let it run the full 8 minutes. Auto-completes after 3 minutes.</div>
+    </div>
+    <div class="mission-step-right"><div class="mission-step-time">8 min</div><div class="mission-step-go" id="mgo-4">→</div></div>
+  </div>
+
+  <div class="mission-step" id="mstep-5" onclick="openJournal()">
+    <div class="mission-check" id="mcheck-5"></div>
+    <div class="mission-step-info">
+      <div class="mission-step-title">Spanish journal — before bed</div>
+      <div class="mission-step-desc">Tap to open → write what you did today in Spanish. Each sentence saves to your bank automatically.</div>
+    </div>
+    <div class="mission-step-right"><div class="mission-step-time">5 min</div><div class="mission-step-go" id="mgo-5">→</div></div>
+  </div>
+
+  <div class="low-energy">
+    <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection every time.
+  </div>
+
+  <div class="card mt16" style="background:var(--surface2)">
+    <div class="text-sm text-muted mb8" style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;">Before bed tonight</div>
+    <div style="font-size:12px;color:var(--text);line-height:1.7;">Put Listen on while you wind down. Passive only — no drilling. Let your brain consolidate today's sentences overnight.</div>
+  </div>
+</div>
+
+<!-- SENTENCES -->
+<div class="screen" id="screen-sentences">
+  <div class="mode-header">
+    <strong>📝 Sentences</strong>
+    First read your newest sentences out loud slowly. Then tap + Add to build new ones using a pattern.
+  </div>
+  <div class="flex-between mb16">
+    <div style="font-family:var(--font-head);font-size:18px;font-weight:700;">Your Sentence Bank</div>
     <button class="btn btn-accent" onclick="openAddModal()">+ Add</button>
   </div>
   <div class="cat-pills">
@@ -472,24 +359,22 @@
 
 <!-- SHADOW -->
 <div class="screen" id="screen-shadow">
-  <div class="practice-mode-title">▶ Shadowing Mode — 🇵🇷 PR Spanish</div>
-  <div id="shadow-empty" class="empty-state" style="display:none;">
-    <div class="empty-state-icon">🎙</div>
-    <div>No sentences yet. Add some on the Sentences tab.</div>
+  <div class="mode-header">
+    <strong>▶ Shadow</strong>
+    Press Play. Listen to the full sentence once. Then repeat out loud immediately, mimicking the exact rhythm. Use Loop until it feels natural in your mouth.
   </div>
+  <div id="shadow-empty" class="empty-state" style="display:none;"><div class="empty-state-icon">🎙</div><div>No sentences yet. Go to Sentences and add some.</div></div>
   <div id="shadow-content">
     <div class="progress-track mb8"><div class="progress-fill" id="shadow-progress" style="width:0%"></div></div>
     <div class="sentence-count" id="shadow-count">— / —</div>
     <div class="sentence-big" id="shadow-en">—</div>
     <div class="sentence-big-es" id="shadow-es">—</div>
-    <div class="audio-controls mt24">
+    <div class="audio-controls mt16">
       <button class="btn btn-accent btn-lg" onclick="shadowPlay()" id="shadow-play-btn">▶ Play</button>
       <button class="btn btn-lg" onclick="shadowLoop()" id="shadow-loop-btn">↺ Loop Off</button>
       <div class="waveform" id="shadow-wave">
-        <div class="waveform-bar"></div><div class="waveform-bar"></div>
-        <div class="waveform-bar"></div><div class="waveform-bar"></div>
-        <div class="waveform-bar"></div><div class="waveform-bar"></div>
-        <div class="waveform-bar"></div><div class="waveform-bar"></div>
+        <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+        <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
       </div>
     </div>
     <hr class="divider">
@@ -498,33 +383,29 @@
       <button class="btn" onclick="shadowNext()">Next →</button>
       <button class="btn text-sm" onclick="shadowShuffle()" style="margin-left:auto">⇄ Shuffle</button>
     </div>
-    <div class="card mt24" style="border-color:rgba(212,240,60,0.15);background:rgba(212,240,60,0.04)">
-      <div style="font-size:11px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">How to Shadow</div>
-      <div class="text-muted text-sm" style="line-height:1.7">Press Play → listen to the full sentence → immediately repeat out loud, mimicking the exact rhythm. Use Loop to repeat until it feels natural in your mouth.</div>
-    </div>
   </div>
 </div>
 
 <!-- RECALL -->
 <div class="screen" id="screen-recall">
-  <div class="practice-mode-title">🧠 Recall Mode — 🇵🇷 PR Spanish</div>
-  <div id="recall-empty" class="empty-state" style="display:none;">
-    <div class="empty-state-icon">💭</div>
-    <div>No sentences yet. Add some on the Sentences tab.</div>
+  <div class="mode-header">
+    <strong>🧠 Recall</strong>
+    See the English. Say the Spanish out loud before you reveal. Mark yourself honestly — wrong means wrong. This is where the real learning happens.
   </div>
+  <div id="recall-empty" class="empty-state" style="display:none;"><div class="empty-state-icon">💭</div><div>No sentences yet. Go to Sentences and add some.</div></div>
   <div id="recall-content">
     <div class="progress-track mb8"><div class="progress-fill" id="recall-progress" style="width:0%"></div></div>
     <div class="sentence-count" id="recall-count">— / —</div>
-    <div class="card mb16" style="min-height:100px;display:flex;align-items:center;">
+    <div class="card mb16" style="min-height:90px;display:flex;align-items:center;">
       <div>
         <div class="text-muted text-sm mb8">Say this in <span style="color:var(--accent)">Puerto Rican Spanish</span>:</div>
-        <div class="sentence-big" id="recall-en" style="font-size:24px">—</div>
+        <div class="sentence-big" id="recall-en" style="font-size:22px">—</div>
       </div>
     </div>
     <div class="recall-reveal" id="recall-reveal-block">
       <div class="card" style="border-color:rgba(212,240,60,0.2);background:rgba(212,240,60,0.04);">
         <div class="text-muted text-sm mb8">Correct answer:</div>
-        <div class="sentence-big-es" id="recall-es" style="font-size:22px;margin-bottom:12px">—</div>
+        <div class="sentence-big-es" id="recall-es" style="font-size:20px;margin-bottom:12px">—</div>
         <button class="btn" onclick="recallPlayAudio()">▶ Hear it</button>
       </div>
       <div class="result-btns">
@@ -535,7 +416,7 @@
     <div id="recall-show-btn-wrap" style="margin-top:16px">
       <button class="btn btn-accent btn-lg btn-full" onclick="recallReveal()">Reveal Answer</button>
     </div>
-    <div class="card mt24" style="background:var(--surface2)">
+    <div class="card mt16" style="background:var(--surface2)">
       <div class="flex-between">
         <span class="text-muted text-sm">Session score</span>
         <span id="recall-score" class="text-accent" style="font-family:var(--font-head);font-size:16px;font-weight:700">— / —</span>
@@ -546,26 +427,27 @@
 
 <!-- LISTEN -->
 <div class="screen" id="screen-listen">
-  <div class="practice-mode-title">🔊 Passive Listening Mode</div>
+  <div class="mode-header">
+    <strong>🔊 Listen</strong>
+    Press Start. Put the phone down. Just listen. Alternates PR Spanish and Canarian so your ear adapts to both accents without any effort.
+  </div>
   <div class="card mb16">
     <div class="flex-between mb16">
       <div>
         <div style="font-family:var(--font-head);font-weight:600;font-size:15px;margin-bottom:4px">Background Loop</div>
-        <div class="text-muted text-sm">Alternates between 🇵🇷 PR and 🇮🇨 Canarian Spanish</div>
+        <div class="text-muted text-sm">🇵🇷 PR Spanish + 🇮🇨 Canarian alternating</div>
       </div>
       <button class="btn btn-accent" id="listen-toggle" onclick="toggleListen()">▶ Start</button>
     </div>
     <div class="waveform" id="listen-wave" style="margin-bottom:14px">
-      <div class="waveform-bar"></div><div class="waveform-bar"></div>
-      <div class="waveform-bar"></div><div class="waveform-bar"></div>
-      <div class="waveform-bar"></div><div class="waveform-bar"></div>
-      <div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
+      <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
     </div>
     <div id="listen-now" class="text-muted text-sm">Not playing</div>
   </div>
   <div class="card" style="background:var(--surface2)">
     <div class="flex-between mb8">
-      <div class="text-muted text-sm" style="letter-spacing:0.06em;text-transform:uppercase;font-size:11px">Now Playing</div>
+      <div class="text-muted text-sm" style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;">Now Playing</div>
       <div id="listen-dialect-badge"></div>
     </div>
     <div id="listen-en" class="text-muted" style="font-size:13px;margin-bottom:4px">—</div>
@@ -584,85 +466,119 @@
 
 <!-- GUIDE -->
 <div class="screen" id="screen-guide">
-  <div style="font-family:var(--font-head);font-size:22px;font-weight:700;margin-bottom:6px">How to Use Fluency</div>
-  <div class="text-muted text-sm mb16">The Language Islands Method</div>
+  <div style="font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:4px">Guide</div>
+  <div class="text-muted text-sm mb24">Your reference for everything. Come here when you need direction.</div>
 
   <div class="guide-section">
-    <div class="guide-section-title">What This App Does</div>
-    <div style="font-size:13px;color:var(--text);line-height:1.8;">
-      Fluency is built around one idea — you learn to speak by drilling personal sentences until they come out automatically. No grammar tables, no Duolingo streaks. Just sentences from your real life, repeated until they're part of you.
-    </div>
+    <div class="guide-section-title">Where You Are Now</div>
+    <div class="card" style="background:var(--surface2)" id="guide-status-card"></div>
   </div>
 
   <div class="guide-section">
-    <div class="guide-section-title">The Four Modes</div>
-    <div class="guide-mode-card">
-      <div class="guide-mode-title">📝 Sentences</div>
-      <div class="guide-mode-desc">Your sentence bank. Add sentences in English and Puerto Rican Spanish. Both PR and Canarian translations are shown side by side so you can see the differences. All drilling uses PR Spanish.</div>
-    </div>
-    <div class="guide-mode-card">
-      <div class="guide-mode-title">▶ Shadow</div>
-      <div class="guide-mode-desc">Hear the sentence in PR Spanish, then immediately repeat it out loud mimicking the exact rhythm. Use Loop on new sentences until the sound feels natural in your mouth. Do this before moving to Recall.</div>
-    </div>
-    <div class="guide-mode-card">
-      <div class="guide-mode-title">🧠 Recall</div>
-      <div class="guide-mode-desc">See the English, say the Spanish out loud from memory before revealing the answer. Mark yourself honestly — wrong means wrong. This is the hardest mode and where most of the learning happens.</div>
-    </div>
-    <div class="guide-mode-card">
-      <div class="guide-mode-title">🔊 Listen</div>
-      <div class="guide-mode-desc">Passive background listening. Alternates between PR Spanish and Canarian Spanish so your ear gets used to both accents. Use this while walking, stretching or doing light tasks.</div>
-    </div>
+    <div class="guide-section-title">Milestones</div>
+    <div id="milestone-tracker"></div>
   </div>
 
   <div class="guide-section">
     <div class="guide-section-title">Your Daily Routine</div>
-    <div class="guide-time-block"><span class="guide-time-label">10 min — Shadow</span>New sentences only. Listen and repeat with Loop on until each one feels natural.</div>
-    <div class="guide-time-block"><span class="guide-time-label">20 min — Recall</span>This is your main drill. See English, produce Spanish from memory. Be honest with yourself.</div>
-    <div class="guide-time-block"><span class="guide-time-label">10 min — Listen</span>Put it on while you do something light. Let both accents wash over you passively.</div>
+    <div class="guide-step"><div class="guide-step-num">1</div><div class="guide-step-body"><div class="guide-step-title">6:30 AM — Wake up</div><div class="guide-step-desc">Say out loud: <em>Me despierto a las seis y media.</em></div></div></div>
+    <div class="guide-step"><div class="guide-step-num">2</div><div class="guide-step-body"><div class="guide-step-title">6:50 AM — Walk 20 minutes</div><div class="guide-step-desc">Listen mode on. Running commentary on what you see. <em>Hace buen tiempo. Voy a caminar. Me siento bien.</em></div></div></div>
+    <div class="guide-step"><div class="guide-step-num">3</div><div class="guide-step-body"><div class="guide-step-title">7:10 AM — Meditate</div><div class="guide-step-desc">After finishing say: <em>Acabo de meditar. Me siento tranquilo.</em></div></div></div>
+    <div class="guide-step"><div class="guide-step-num">4</div><div class="guide-step-body"><div class="guide-step-title">7:30 AM — Coffee + Study Session (55 min)</div><div class="guide-step-desc">Follow the Today tab checklist. Each step navigates you automatically.</div></div></div>
+    <div class="guide-step"><div class="guide-step-num">5</div><div class="guide-step-body"><div class="guide-step-title">During the day — Spanish commentary</div><div class="guide-step-desc">Say what you are doing in Spanish as you live your day. <em>Voy a comer algo. Acabo de terminar. Hace calor.</em></div></div></div>
+    <div class="guide-step"><div class="guide-step-num">6</div><div class="guide-step-body"><div class="guide-step-title">Before bed — Listen passively (5-10 min)</div><div class="guide-step-desc">Listen mode while winding down. Passive only. Your brain consolidates overnight.</div></div></div>
+    <div class="guide-step"><div class="guide-step-num">7</div><div class="guide-step-body"><div class="guide-step-title">Before bed — Spanish journal (5 min)</div><div class="guide-step-desc">Tap step 6 on Today tab. Write what you did in Spanish. Saves to your bank automatically.</div></div></div>
+    <div class="guide-step"><div class="guide-step-num">8</div><div class="guide-step-body"><div class="guide-step-title">Every Sunday — Record yourself (2 min)</div><div class="guide-step-desc">App reminds you. Speak Spanish for 2 minutes about your week. No script. Save every recording.</div></div></div>
   </div>
 
   <div class="guide-section">
-    <div class="guide-section-title">How to Build Sentences</div>
-    <div class="guide-item">
-      <div class="guide-num">1</div>
-      <div class="guide-text">Pick a topic from your real life — who you are, your work, ordering food, getting around.</div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-num">2</div>
-      <div class="guide-text">Write what you'd want to say in English. Keep sentences <span>5 to 12 words</span> — short enough to memorize as one unit.</div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-num">3</div>
-      <div class="guide-text">Get the Spanish translation and add it to the app. Add both a question and its answer as <span>separate sentences</span>.</div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-num">4</div>
-      <div class="guide-text">Shadow it for one day before moving it to Recall. Don't rush — own each sentence completely.</div>
+    <div class="guide-section-title">Weekly Structure</div>
+    <div class="guide-block"><span class="guide-block-label">Monday</span>Who I am island + Voy a pattern + Word family: Hablar</div>
+    <div class="guide-block"><span class="guide-block-label">Tuesday</span>Café and restaurant island + ¿Me das? pattern + Word family: Tener</div>
+    <div class="guide-block"><span class="guide-block-label">Wednesday</span>Getting around island + Fillers + Word family: Ir</div>
+    <div class="guide-block"><span class="guide-block-label">Thursday</span>Neighbors island + Opinions + Word family: Hacer</div>
+    <div class="guide-block"><span class="guide-block-label">Friday</span>Review only — no new sentences. Recall everything from the week.</div>
+    <div class="guide-block"><span class="guide-block-label">Saturday</span>Real-life islands + Connecting ideas + Word family: Querer</div>
+    <div class="guide-block"><span class="guide-block-label">Sunday</span>Listen only during walk + 2 minute recording + rest.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Stage Progression</div>
+    <div class="guide-block"><span class="guide-block-label">Stage 1 — Weeks 1-2 (0-70 sentences)</span>Who you are. Basic identity. First real conversation. 5 sentences per day.</div>
+    <div class="guide-block"><span class="guide-block-label">Stage 2 — Weeks 3-4 (70-150 sentences)</span>Survive daily life. Café, getting around, supermarket. Add conversation fillers. 7-10 per day.</div>
+    <div class="guide-block"><span class="guide-block-label">Stage 3 — Month 2 (150-300 sentences)</span>Express yourself. Opinions, routines, making friends. Start Dreaming Spanish on YouTube. 10 per day.</div>
+    <div class="guide-block"><span class="guide-block-label">Stage 4 — Month 3 (300-500 sentences)</span>Tell your story. Past tense, Army years, why you moved. Connect ideas. 10-15 per day.</div>
+    <div class="guide-block"><span class="guide-block-label">Stage 5 — Month 4+ (500+ sentences)</span>Lead and influence. Coaching language. Start Lingopie. Keep building.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Reading Progression</div>
+    <div class="guide-block"><span class="guide-block-label">Now</span>Read only your own sentences. Always out loud — never silent.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Stage 3 — Month 2</span>Dreaming Spanish on YouTube. Free, beginner level. 10-15 min in the evening.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Stage 4 — Month 3</span>BBC Mundo simple news articles. Read out loud.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Stage 5 — Month 4+</span>Lingopie ($8-12/month). Real Spanish TV with interactive subtitles.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">🆓 Free Words — You Already Know These</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">As an English speaker you already know hundreds of Spanish words. These are identical or one letter different. Use them in your sentences immediately — no studying needed.</div>
+    <div id="free-words-container"></div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Cognate Patterns — Instant Vocabulary</div>
+    <div class="card" style="background:var(--surface2)">
+      <div style="font-size:12px;color:var(--text);line-height:1.8;">
+        <div style="margin-bottom:8px;">When you don't know a Spanish word, try these patterns first — they work most of the time:</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--accent);">-tion → -ción</span> &nbsp; nation→nación, communication→comunicación</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--accent);">-ly → -mente</span> &nbsp; naturally→naturalmente, personally→personalmente</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--accent);">-ible/-able → same</span> &nbsp; possible→posible, comfortable→cómodo</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);"><span style="color:var(--accent);">-ous → -oso</span> &nbsp; famous→famoso, generous→generoso</div>
+        <div style="padding:6px 0;"><span style="color:var(--accent);">-ist → -ista</span> &nbsp; specialist→especialista, artist→artista</div>
+      </div>
     </div>
   </div>
 
   <div class="guide-section">
-    <div class="guide-section-title">Weekly Targets</div>
-    <div class="guide-time-block"><span class="guide-time-label">Week 1–2</span>5 new sentences per day. Focus on one island — who you are.</div>
-    <div class="guide-time-block"><span class="guide-time-label">Week 3–4</span>7–10 per day. Add a second island — ordering food, getting around.</div>
-    <div class="guide-time-block"><span class="guide-time-label">Month 2+</span>10–15 per day. At this pace you reach 1,000 sentences in about 3 months.</div>
+    <div class="guide-section-title">When a Word Won't Stick — Mnemonic</div>
+    <div class="card" style="background:var(--surface2)">
+      <div style="font-size:12px;color:var(--text);line-height:1.8;">Create a vivid ridiculous image connecting the sound to the meaning. Takes 10 seconds. Lasts indefinitely.<br><br><span style="color:var(--accent);">Example:</span> <em>Comer</em> (to eat) sounds like camera — imagine eating cameras. You will never forget it.<br><br>Use only when a word refuses to stick after several repetitions.</div>
+    </div>
   </div>
 
   <div class="guide-section">
-    <div class="guide-section-title">The Honest Part</div>
-    <div style="font-size:13px;color:var(--text);line-height:1.8;">
-      Recall sessions will feel frustrating for the first two weeks. That friction is the learning. Your brain is building new pathways under the exact pressure of real conversation. If it feels easy, you are probably reading instead of recalling. Stay consistent. 30 to 45 minutes every day beats 3 hours on the weekend.
-    </div>
+    <div class="guide-section-title">Sentence Patterns — Reference</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">These patterns are available inside the + Add button when you build sentences. You don't need to study them separately — just use them to build and the pattern gets drilled automatically through Shadow and Recall.</div>
+    <div id="pattern-reference-list"></div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">The Honest Rules</div>
+    <div class="guide-block"><span class="guide-block-label">Never skip a day</span>Consistency beats intensity. 55 minutes daily beats 4 hours on Saturday.</div>
+    <div class="guide-block"><span class="guide-block-label">Shadow before Recall always</span>Never try to recall something your mouth hasn't practiced yet.</div>
+    <div class="guide-block"><span class="guide-block-label">Speak out loud always</span>Silent reading is not practice. Your mouth needs the reps.</div>
+    <div class="guide-block"><span class="guide-block-label">Wrong is information not failure</span>Every wrong answer tells you where to focus tomorrow's Shadow session.</div>
+    <div class="guide-block"><span class="guide-block-label">Not feeling it today</span>Just do Listen for 5 minutes. The habit stays alive.</div>
   </div>
 </div>
 
-<!-- ADD MODAL -->
+<!-- ADD SENTENCE MODAL -->
 <div class="modal-bg" id="add-modal">
   <div class="modal">
     <div class="flex-between mb16">
       <div class="modal-title">Add Sentence</div>
       <button class="icon-btn" onclick="closeAddModal()">✕</button>
     </div>
+
+    <div class="pattern-picker">
+      <div class="pattern-picker-label">Pick a pattern (optional)</div>
+      <div class="pattern-pills" id="pattern-pills"></div>
+    </div>
+
+    <div class="cognate-hint">
+      💡 <span>Don't know the Spanish word?</span> Try the cognate pattern first — words ending in <span>-tion</span> become <span>-ción</span>, words ending in <span>-ly</span> become <span>-mente</span>. You probably already know it.
+    </div>
+
     <div class="form-row">
       <label>English sentence</label>
       <input type="text" id="input-en" placeholder="e.g. I am from Brooklyn, New York." />
@@ -688,7 +604,7 @@
     </div>
     <div class="form-row">
       <label>Spanish translation</label>
-      <textarea id="input-es" placeholder="Paste the Spanish translation here..."></textarea>
+      <textarea id="input-es" placeholder="Paste or type the Spanish translation..."></textarea>
     </div>
     <div class="flex-gap" style="justify-content:flex-end;gap:10px;margin-top:8px">
       <button class="btn" onclick="closeAddModal()">Cancel</button>
@@ -697,63 +613,347 @@
   </div>
 </div>
 
+<!-- JOURNAL MODAL -->
+<div class="modal-bg" id="journal-modal">
+  <div class="modal">
+    <div class="flex-between mb16">
+      <div class="modal-title">Daily Journal</div>
+      <button class="icon-btn" onclick="closeJournal()">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;">Write what you did today in Spanish. One sentence per line. Each one saves to your bank for drilling tomorrow.</div>
+    <div style="font-size:11px;color:var(--muted);background:var(--surface2);border-radius:6px;padding:10px 12px;margin-bottom:14px;line-height:1.8;">
+      Fui a caminar esta mañana.<br>Me tomé un café después de meditar.<br>Practiqué español por cuarenta minutos.<br>Hace buen tiempo hoy.
+    </div>
+    <div class="form-row">
+      <label>Your sentences in Spanish — one per line</label>
+      <textarea id="journal-input" placeholder="Fui a caminar esta mañana.&#10;Me tomé un café después de meditar." style="min-height:130px;"></textarea>
+    </div>
+    <div class="flex-gap" style="justify-content:flex-end;gap:10px;margin-top:8px">
+      <button class="btn" onclick="closeJournal()">Cancel</button>
+      <button class="btn btn-accent" onclick="saveJournal()">Save to bank</button>
+    </div>
+  </div>
+</div>
+
 <div class="stats-bar">
   <div>Sentences: <span id="stat-total">0</span></div>
-  <div>Practiced today: <span id="stat-today">0</span></div>
-  <div>Recall accuracy: <span id="stat-acc">—</span></div>
+  <div>Today: <span id="stat-today">0</span></div>
+  <div>Recall: <span id="stat-acc">—</span></div>
+  <div class="stats-stage"><span id="stat-stage">Stage 1</span></div>
 </div>
 
 <script>
 // ================================================================
-// TTS ENGINE
-// Shadow & Recall: always PR Spanish (es-US)
-// Listen: alternates PR (es-US) and Canarian (es)
+// TTS
 // ================================================================
 let currentAudio = null;
-let isPlaying = false;
-
 function ttsSpeak(text, lang, onDone) {
   if (!text) { if (onDone) onDone(); return; }
   ttsStop();
   const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + (lang || 'es-US');
   const audio = new Audio(url);
   currentAudio = audio;
-  isPlaying = true;
-  audio.onended = () => { isPlaying = false; currentAudio = null; if (onDone) onDone(); };
-  audio.onerror = () => { isPlaying = false; currentAudio = null; if (onDone) onDone(); };
-  audio.play().catch(() => { isPlaying = false; currentAudio = null; if (onDone) onDone(); });
+  audio.onended = () => { currentAudio = null; if (onDone) onDone(); };
+  audio.onerror = () => { currentAudio = null; if (onDone) onDone(); };
+  audio.play().catch(() => { currentAudio = null; if (onDone) onDone(); });
+}
+function ttsStop() {
+  if (currentAudio) { currentAudio.onended = null; currentAudio.onerror = null; currentAudio.pause(); currentAudio.src = ''; currentAudio = null; }
 }
 
-function ttsStop() {
-  if (currentAudio) {
-    currentAudio.onended = null;
-    currentAudio.onerror = null;
-    currentAudio.pause();
-    currentAudio.src = '';
-    currentAudio = null;
-  }
-  isPlaying = false;
+// ================================================================
+// PATTERNS DATA
+// ================================================================
+const allPatterns = [
+  { formula: "Voy a...", meaning: "I'm going to...", starter: "Voy a ", example_en: "I'm going to walk this morning.", example_es: "Voy a caminar esta mañana." },
+  { formula: "Después de...", meaning: "After doing...", starter: "Después de ", example_en: "After walking I meditate.", example_es: "Después de caminar, medito." },
+  { formula: "Antes de...", meaning: "Before doing...", starter: "Antes de ", example_en: "Before sleeping I review Spanish.", example_es: "Antes de dormir, repaso mi español." },
+  { formula: "Acabo de...", meaning: "I just did...", starter: "Acabo de ", example_en: "I just woke up.", example_es: "Acabo de despertarme." },
+  { formula: "Dejé de...", meaning: "I stopped/quit...", starter: "Dejé de ", example_en: "I stopped living in America.", example_es: "Dejé de vivir en América." },
+  { formula: "Empiezo a...", meaning: "I start doing...", starter: "Empiezo a ", example_en: "I start to feel better every day.", example_es: "Empiezo a sentirme mejor cada día." },
+  { formula: "Trato de...", meaning: "I try to...", starter: "Trato de ", example_en: "I try to practice Spanish every day.", example_es: "Trato de practicar español todos los días." },
+  { formula: "Termino de...", meaning: "I finish doing...", starter: "Termino de ", example_en: "I finish walking at seven.", example_es: "Termino de caminar a las siete." },
+  { formula: "Aprendo a...", meaning: "I learn to...", starter: "Aprendo a ", example_en: "I am learning to speak Spanish.", example_es: "Aprendo a hablar español." },
+  { formula: "Volví a...", meaning: "I did it again...", starter: "Volví a ", example_en: "I went for a walk again.", example_es: "Volví a caminar esta mañana." },
+  { formula: "Creo que...", meaning: "I think that...", starter: "Creo que ", example_en: "I think consistency is most important.", example_es: "Creo que la consistencia es lo más importante." },
+  { formula: "Me parece que...", meaning: "It seems to me that...", starter: "Me parece que ", example_en: "It seems to me people here are friendly.", example_es: "Me parece que la gente aquí es muy amable." },
+  { formula: "Me siento...", meaning: "I feel...", starter: "Me siento ", example_en: "I feel more at peace here.", example_es: "Me siento más tranquilo aquí." },
+  { formula: "Me encanta...", meaning: "I love...", starter: "Me encanta ", example_en: "I love the weather here.", example_es: "Me encanta el clima aquí." },
+  { formula: "No me gusta...", meaning: "I don't like...", starter: "No me gusta ", example_en: "I don't like losing time.", example_es: "No me gusta perder tiempo." },
+  { formula: "A ver...", meaning: "Let me see...", starter: "A ver, ", example_en: "Let me see, I think it's around the corner.", example_es: "A ver, creo que está a la vuelta de la esquina." },
+  { formula: "O sea...", meaning: "I mean...", starter: "O sea, ", example_en: "I mean, I just wanted a better life.", example_es: "O sea, solo quería una vida mejor." },
+  { formula: "Es que...", meaning: "The thing is...", starter: "Es que ", example_en: "The thing is I planned this for a long time.", example_es: "Es que llevo mucho tiempo planeando esto." },
+  { formula: "Bueno...", meaning: "Well...", starter: "Bueno, ", example_en: "Well, it was not easy but I have no regrets.", example_es: "Bueno, no fue fácil pero no me arrepiento." },
+  { formula: "Cuando era...", meaning: "When I was...", starter: "Cuando era ", example_en: "When I was young I lived in Brooklyn.", example_es: "Cuando era joven vivía en Brooklyn." },
+  { formula: "Hace años...", meaning: "Years ago...", starter: "Hace años ", example_en: "Years ago I never imagined living here.", example_es: "Hace años nunca imaginé vivir aquí." },
+  { formula: "En aquel entonces...", meaning: "Back then...", starter: "En aquel entonces ", example_en: "Back then I didn't speak any Spanish.", example_es: "En aquel entonces no hablaba nada de español." },
+  { formula: "Por eso...", meaning: "That is why...", starter: "Por eso ", example_en: "That is why I moved to the Canary Islands.", example_es: "Por eso decidí mudarme a las Islas Canarias." },
+  { formula: "Aunque...", meaning: "Even though...", starter: "Aunque ", example_en: "Even though it was hard I don't regret it.", example_es: "Aunque fue difícil no me arrepiento." },
+  { formula: "Sin embargo...", meaning: "However...", starter: "Sin embargo ", example_en: "However I still feel connected to my roots.", example_es: "Sin embargo todavía me siento conectado a mis raíces." },
+  { formula: "Lo que pasa es que...", meaning: "The thing is...", starter: "Lo que pasa es que ", example_en: "The thing is I needed a change.", example_es: "Lo que pasa es que necesitaba un cambio." },
+  { formula: "Lo mejor es...", meaning: "The best thing is...", starter: "Lo mejor es ", example_en: "The best thing is to focus on what you control.", example_es: "Lo mejor es enfocarse en lo que puedes controlar." },
+  { formula: "Te recomiendo que...", meaning: "I recommend that you...", starter: "Te recomiendo que ", example_en: "I recommend that you build a daily routine.", example_es: "Te recomiendo que construyas una rutina diaria." },
+  { formula: "Lo que yo haría es...", meaning: "What I would do is...", starter: "Lo que yo haría es ", example_en: "What I would do is start small.", example_es: "Lo que yo haría es empezar poco a poco." },
+  { formula: "¿Me das...?", meaning: "Can I have...?", starter: "¿Me das ", example_en: "Can I have a coffee please?", example_es: "¿Me das un café por favor?" },
+  { formula: "¿Dónde está...?", meaning: "Where is...?", starter: "¿Dónde está ", example_en: "Where is the bathroom?", example_es: "¿Dónde está el baño?" },
+  { formula: "¿Puedo...?", meaning: "Can I...?", starter: "¿Puedo ", example_en: "Can I sit here?", example_es: "¿Puedo sentarme aquí?" },
+  { formula: "¿Hay...?", meaning: "Is there...?", starter: "¿Hay ", example_en: "Is there free wifi here?", example_es: "¿Hay wifi gratis aquí?" },
+  { formula: "¿Tienes...?", meaning: "Do you have...?", starter: "¿Tienes ", example_en: "Do you have anything gluten free?", example_es: "¿Tienes algo sin gluten?" },
+  { formula: "¿Me puedes...?", meaning: "Can you...for me?", starter: "¿Me puedes ", example_en: "Can you help me please?", example_es: "¿Me puedes ayudar por favor?" },
+  { formula: "¿A qué hora...?", meaning: "What time...?", starter: "¿A qué hora ", example_en: "What time does the café open?", example_es: "¿A qué hora abre la cafetería?" },
+  { formula: "¿Te apetece...?", meaning: "Do you feel like...?", starter: "¿Te apetece ", example_en: "Do you feel like having a coffee?", example_es: "¿Te apetece tomar un café?" },
+];
+
+// ================================================================
+// WORD FAMILIES
+// ================================================================
+const wordFamilies = [
+  { root: "Hablar — to speak", meaning: "The most important root word", words: [
+    { w: "Hablo", en: "I speak", ex: "Hablo español todos los días." },
+    { w: "Hablas", en: "You speak", ex: "¿Hablas inglés?" },
+    { w: "Habla", en: "He/she speaks", ex: "Ella habla muy rápido." },
+    { w: "Hablando", en: "Speaking", ex: "Estoy hablando contigo." },
+    { w: "Hablador", en: "Talkative", ex: "Mi papá era muy hablador." }
+  ]},
+  { root: "Tener — to have", meaning: "One of the most used verbs", words: [
+    { w: "Tengo", en: "I have", ex: "Tengo dos hijas." },
+    { w: "Tienes", en: "You have", ex: "¿Tienes tiempo?" },
+    { w: "Tenía", en: "I had", ex: "Tenía veinte años." },
+    { w: "Tengo que", en: "I have to", ex: "Tengo que practicar español." },
+    { w: "Tiene", en: "He/she has", ex: "Ella tiene mucha energía." }
+  ]},
+  { root: "Ir — to go", meaning: "Essential for plans and movement", words: [
+    { w: "Voy", en: "I go/am going", ex: "Voy a caminar esta mañana." },
+    { w: "Vas", en: "You go", ex: "¿Vas al mercado?" },
+    { w: "Fui", en: "I went", ex: "Fui al ejército por diez años." },
+    { w: "Voy a", en: "I am going to", ex: "Voy a empezar mi negocio." },
+    { w: "Va", en: "He/she goes", ex: "Ella va al gimnasio." }
+  ]},
+  { root: "Hacer — to do/make", meaning: "Used in dozens of daily expressions", words: [
+    { w: "Hago", en: "I do/make", ex: "Hago meditación todos los días." },
+    { w: "Haces", en: "You do", ex: "¿Qué haces por la mañana?" },
+    { w: "Hace", en: "He/she does / It is", ex: "Hace buen tiempo hoy." },
+    { w: "Haciendo", en: "Doing", ex: "Estoy haciendo ejercicio." },
+    { w: "Hice", en: "I did", ex: "Hice lo que pude." }
+  ]},
+  { root: "Querer — to want/love", meaning: "Express desires and plans", words: [
+    { w: "Quiero", en: "I want", ex: "Quiero vivir en las Islas Canarias." },
+    { w: "Quieres", en: "You want", ex: "¿Qué quieres hacer hoy?" },
+    { w: "Quería", en: "I wanted", ex: "Quería una vida mejor." },
+    { w: "Querido", en: "Dear/Beloved", ex: "Mi querida familia." },
+    { w: "Querer", en: "To want/love", ex: "Querer es poder." }
+  ]},
+  { root: "Poder — can/be able to", meaning: "Express ability and possibility", words: [
+    { w: "Puedo", en: "I can", ex: "Puedo trabajar desde cualquier lugar." },
+    { w: "Puedes", en: "You can", ex: "¿Me puedes ayudar?" },
+    { w: "Podía", en: "I could", ex: "Antes no podía hablar español." },
+    { w: "Podré", en: "I will be able to", ex: "Un día podré hablar con fluidez." },
+    { w: "Puede", en: "He/she can", ex: "Todo se puede con disciplina." }
+  ]},
+  { root: "Saber — to know", meaning: "Knowledge and information", words: [
+    { w: "Sé", en: "I know", ex: "Sé lo que quiero." },
+    { w: "Sabes", en: "You know", ex: "¿Sabes dónde está el baño?" },
+    { w: "Sabía", en: "I knew", ex: "Sabía que era la decisión correcta." },
+    { w: "Sabiendo", en: "Knowing", ex: "Sabiendo lo que sé ahora todo tiene sentido." },
+    { w: "Sabe", en: "He/she knows", ex: "Ella sabe hablar tres idiomas." }
+  ]},
+  { root: "Vivir — to live", meaning: "Talk about your life", words: [
+    { w: "Vivo", en: "I live", ex: "Vivo en las Islas Canarias." },
+    { w: "Vivía", en: "I used to live", ex: "Vivía en Brooklyn de niño." },
+    { w: "Viviendo", en: "Living", ex: "Estoy viviendo mi mejor vida." },
+    { w: "Vida", en: "Life", ex: "La vida aquí es tranquila." },
+    { w: "Vives", en: "You live", ex: "¿Dónde vives ahora?" }
+  ]},
+  { root: "Trabajar — to work", meaning: "Talk about work and coaching", words: [
+    { w: "Trabajo", en: "I work", ex: "Trabajo como coach de liderazgo." },
+    { w: "Trabajé", en: "I worked", ex: "Trabajé en el ejército por diez años." },
+    { w: "Trabajando", en: "Working", ex: "Estoy trabajando en mi negocio." },
+    { w: "Trabajador", en: "Hard worker", ex: "Soy muy trabajador." },
+    { w: "Trabajas", en: "You work", ex: "¿En qué trabajas?" }
+  ]},
+  { root: "Ser / Estar — to be", meaning: "The two most important verbs", words: [
+    { w: "Soy", en: "I am (permanent)", ex: "Soy puertorriqueño." },
+    { w: "Estoy", en: "I am (temporary)", ex: "Estoy aprendiendo español." },
+    { w: "Era", en: "I was (permanent)", ex: "Era soldado." },
+    { w: "Estaba", en: "I was (temporary)", ex: "Estaba en el ejército." },
+    { w: "Siendo", en: "Being", ex: "Estoy siendo honesto conmigo mismo." }
+  ]}
+];
+
+function getTodaysFamilyIdx() {
+  const dow = new Date().getDay();
+  if (dow === 0 || dow === 5) return null;
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((new Date() - start) / 86400000);
+  return dayOfYear % wordFamilies.length;
 }
+
+// ================================================================
+// FREE WORDS DATA
+// ================================================================
+const freeWords = [
+  { group: "Adjectives — identical or one letter different", words: ["important → importante","natural → natural","normal → normal","central → central","final → final","general → general","cultural → cultural","personal → personal","original → original","principal → principal","special → especial","total → total","mental → mental","social → social","local → local","digital → digital","visual → visual","formal → formal","national → nacional","international → internacional"] },
+  { group: "Nouns you already know", words: ["hotel → hotel","hospital → hospital","animal → animal","capital → capital","canal → canal","mineral → mineral","festival → festival","canal → canal","material → material","criminal → criminal","liberal → liberal","universal → universal","ideal → ideal","moral → moral","signal → señal"] },
+  { group: "-tion words → -ción", words: ["nation → nación","communication → comunicación","motivation → motivación","organization → organización","situation → situación","information → información","education → educación","preparation → preparación","concentration → concentración","celebration → celebración","administration → administración","ambition → ambición","tradition → tradición","condition → condición","attention → atención"] },
+  { group: "-ly words → -mente", words: ["naturally → naturalmente","personally → personalmente","normally → normalmente","generally → generalmente","finally → finalmente","basically → básicamente","totally → totalmente","completely → completamente","exactly → exactamente","seriously → seriamente","honestly → honestamente","recently → recientemente","directly → directamente","simply → simplemente"] },
+  { group: "Words that are exactly the same", words: ["no → no","bar → bar","visa → visa","taxi → taxi","radio → radio","video → video","piano → piano","sofa → sofá","banana → banana","chocolate → chocolate","hospital → hospital","animal → animal","natural → natural","final → final","hotel → hotel"] }
+];
+
+// ================================================================
+// PRELOADED SENTENCES — 200 personal sentences
+// ================================================================
+const preloadedSentences = [
+  // DAILY LIFE — Who I am
+  { en: "I am from Brooklyn, New York.", es_pr: "Soy de Brooklyn, Nueva York.", cat: "daily" },
+  { en: "My family is Puerto Rican.", es_pr: "Mi familia es puertorriqueña.", cat: "daily" },
+  { en: "My father was born in Puerto Rico.", es_pr: "Mi papá nació en Puerto Rico.", cat: "daily" },
+  { en: "My mother was born in Brooklyn.", es_pr: "Mi mamá nació en Brooklyn.", cat: "daily" },
+  { en: "I lived in North Carolina and Florida.", es_pr: "Viví en Carolina del Norte y Florida.", cat: "daily" },
+  { en: "I am a veteran.", es_pr: "Soy veterano.", cat: "daily" },
+  { en: "I am disabled.", es_pr: "Estoy discapacitado.", cat: "daily" },
+  { en: "I have two daughters.", es_pr: "Tengo dos hijas.", cat: "daily" },
+  { en: "They live in Germany.", es_pr: "Ellas viven en Alemania.", cat: "daily" },
+  { en: "I wake up around six thirty.", es_pr: "Me despierto como a las seis y media.", cat: "daily" },
+  { en: "I go for a twenty minute walk.", es_pr: "Salgo a caminar como veinte minutos.", cat: "daily" },
+  { en: "After walking I meditate.", es_pr: "Después de caminar, medito.", cat: "daily" },
+  { en: "After meditating I have my coffee.", es_pr: "Después de meditar, me tomo mi café.", cat: "daily" },
+  { en: "I try to practice Spanish every day.", es_pr: "Trato de practicar español todos los días.", cat: "daily" },
+  { en: "I am learning Spanish.", es_pr: "Estoy aprendiendo español.", cat: "daily" },
+  { en: "I practice Spanish every day.", es_pr: "Practico español todos los días.", cat: "daily" },
+  { en: "I just woke up.", es_pr: "Acabo de despertarme.", cat: "daily" },
+  { en: "I just finished meditating.", es_pr: "Acabo de meditar.", cat: "daily" },
+  { en: "I feel good today.", es_pr: "Me siento bien hoy.", cat: "daily" },
+  { en: "I feel more at peace here than in America.", es_pr: "Me siento más tranquilo aquí que en América.", cat: "daily" },
+  // SOCIAL — Questions about you
+  { en: "Where are you from? — I am from Brooklyn, New York.", es_pr: "¿De dónde eres? — Soy de Brooklyn, Nueva York.", cat: "social" },
+  { en: "Where is your family from? — My family is Puerto Rican.", es_pr: "¿De dónde es tu familia? — Mi familia es puertorriqueña.", cat: "social" },
+  { en: "Were you in the Army? — Yes, I was in the Army for ten years.", es_pr: "¿Estuviste en el ejército? — Sí, estuve en el ejército por diez años.", cat: "social" },
+  { en: "What did you do in the Army? — I was in the infantry and military police.", es_pr: "¿Qué hacías en el ejército? — Estuve en la infantería y la policía militar.", cat: "social" },
+  { en: "Are you married? — No, I am not currently married.", es_pr: "¿Eres casado? — No, no estoy casado ahora mismo.", cat: "social" },
+  { en: "Do you have children? — Yes, I have two daughters who live in Germany.", es_pr: "¿Tienes hijos? — Sí, tengo dos hijas que viven en Alemania.", cat: "social" },
+  { en: "Why did you move to Spain? — I did not want to live in America anymore.", es_pr: "¿Por qué te mudaste a España? — Ya no quería vivir en América.", cat: "social" },
+  { en: "Are you learning Spanish? — Yes, I practice every day.", es_pr: "¿Estás aprendiendo español? — Sí, practico todos los días.", cat: "social" },
+  { en: "Do you like living here? — Yes, I really like living here.", es_pr: "¿Te gusta vivir aquí? — Sí, me gusta mucho vivir aquí.", cat: "social" },
+  { en: "Why don't you speak Spanish if your family is Puerto Rican?", es_pr: "¿Por qué no hablas español si tu familia es puertorriqueña? — Mis padres solo me hablaban un poco.", cat: "social" },
+  { en: "But now I am learning Spanish on my own.", es_pr: "Pero ahora estoy aprendiendo español por mi cuenta.", cat: "social" },
+  { en: "I want to connect with my Puerto Rican roots.", es_pr: "Quiero conectar con mis raíces puertorriqueñas.", cat: "social" },
+  { en: "It is never too late to learn your language.", es_pr: "Nunca es tarde para aprender tu idioma.", cat: "social" },
+  { en: "I feel proud of my Puerto Rican roots.", es_pr: "Me siento orgulloso de mis raíces puertorriqueñas.", cat: "social" },
+  { en: "Please speak slowly.", es_pr: "Por favor habla despacio.", cat: "social" },
+  { en: "I don't understand.", es_pr: "No entiendo.", cat: "social" },
+  { en: "I understand a little.", es_pr: "Entiendo un poco.", cat: "social" },
+  { en: "My Spanish is not very good yet.", es_pr: "Mi español todavía no es muy bueno.", cat: "social" },
+  { en: "Can you repeat that please?", es_pr: "¿Me puedes repetir eso por favor?", cat: "social" },
+  { en: "I just moved here.", es_pr: "Acabo de mudarme aquí.", cat: "social" },
+  { en: "I am Puerto Rican.", es_pr: "Soy puertorriqueño.", cat: "social" },
+  { en: "It is very nice here.", es_pr: "Aquí se está muy bien.", cat: "social" },
+  { en: "Do you feel like having a coffee?", es_pr: "¿Te apetece tomar un café?", cat: "social" },
+  { en: "Do you feel like going for a walk?", es_pr: "¿Te apetece salir a caminar?", cat: "social" },
+  { en: "Do you feel like eating something?", es_pr: "¿Te apetece comer algo?", cat: "social" },
+  // ERRANDS — Café and restaurant
+  { en: "A coffee please.", es_pr: "¿Me das un café por favor?", cat: "errands" },
+  { en: "A black coffee please.", es_pr: "¿Me das un café solo por favor?", cat: "errands" },
+  { en: "A coffee with milk please.", es_pr: "¿Me das un café con leche por favor?", cat: "errands" },
+  { en: "Can I have the check please?", es_pr: "¿Me das la cuenta por favor?", cat: "errands" },
+  { en: "Can I see the menu please?", es_pr: "¿Me das la carta por favor?", cat: "errands" },
+  { en: "What do you recommend?", es_pr: "¿Qué me recomienda?", cat: "errands" },
+  { en: "What is the dish of the day?", es_pr: "¿Cuál es el plato del día?", cat: "errands" },
+  { en: "Is this dish spicy?", es_pr: "¿Este plato pica?", cat: "errands" },
+  { en: "I am allergic to gluten.", es_pr: "Soy alérgico al gluten.", cat: "errands" },
+  { en: "Can I have a fork please?", es_pr: "¿Me das un tenedor por favor?", cat: "errands" },
+  { en: "Can I have a spoon please?", es_pr: "¿Me das una cuchara por favor?", cat: "errands" },
+  { en: "Can I have a knife please?", es_pr: "¿Me das un cuchillo por favor?", cat: "errands" },
+  { en: "Can I have a glass of water please?", es_pr: "¿Me das un vaso de agua por favor?", cat: "errands" },
+  { en: "A table for one please.", es_pr: "Una mesa para uno por favor.", cat: "errands" },
+  { en: "Where is the bathroom?", es_pr: "¿Dónde está el baño?", cat: "errands" },
+  { en: "Can I pay with card?", es_pr: "¿Puedo pagar con tarjeta?", cat: "errands" },
+  { en: "Can I sit here?", es_pr: "¿Puedo sentarme aquí?", cat: "errands" },
+  { en: "Is there free wifi here?", es_pr: "¿Hay wifi gratis aquí?", cat: "errands" },
+  { en: "What is the wifi password?", es_pr: "¿Cuál es la contraseña del wifi?", cat: "errands" },
+  { en: "That was delicious.", es_pr: "Estaba buenísimo.", cat: "errands" },
+  { en: "Everything was delicious thank you.", es_pr: "Todo estaba buenísimo gracias.", cat: "errands" },
+  // ERRANDS — Supermarket and pharmacy
+  { en: "Where is the bread?", es_pr: "¿Dónde está el pan?", cat: "errands" },
+  { en: "How much does this cost?", es_pr: "¿Cuánto cuesta esto?", cat: "errands" },
+  { en: "Can you help me find this?", es_pr: "¿Me puedes ayudar a encontrar esto?", cat: "errands" },
+  { en: "A bag please.", es_pr: "Una bolsa por favor.", cat: "errands" },
+  { en: "Is there a pharmacy nearby?", es_pr: "¿Hay una farmacia cerca?", cat: "errands" },
+  { en: "I have a headache.", es_pr: "Tengo dolor de cabeza.", cat: "errands" },
+  { en: "I have a stomach ache.", es_pr: "Tengo dolor de estómago.", cat: "errands" },
+  { en: "Do you have something for a headache?", es_pr: "¿Tienes algo para el dolor de cabeza?", cat: "errands" },
+  { en: "How many times a day do I take this?", es_pr: "¿Cuántas veces al día tomo esto?", cat: "errands" },
+  { en: "I am allergic to penicillin.", es_pr: "Soy alérgico a la penicilina.", cat: "errands" },
+  // ERRANDS — Getting around
+  { en: "Where is the bus stop?", es_pr: "¿Dónde está la parada de la guagua?", cat: "errands" },
+  { en: "What time does the bus leave?", es_pr: "¿A qué hora sale la guagua?", cat: "errands" },
+  { en: "Does this bus go to the center?", es_pr: "¿Esta guagua va al centro?", cat: "errands" },
+  { en: "How do I get to the beach?", es_pr: "¿Cómo se llega a la playa?", cat: "errands" },
+  { en: "Is it far from here?", es_pr: "¿Está lejos de aquí?", cat: "errands" },
+  { en: "Is it close to here?", es_pr: "¿Está cerca de aquí?", cat: "errands" },
+  { en: "Can you show me on the map?", es_pr: "¿Me puedes mostrar en el mapa?", cat: "errands" },
+  { en: "Turn left at the corner.", es_pr: "Dobla a la izquierda en la esquina.", cat: "errands" },
+  { en: "Turn right at the corner.", es_pr: "Dobla a la derecha en la esquina.", cat: "errands" },
+  { en: "Go straight ahead.", es_pr: "Sigue recto.", cat: "errands" },
+  // WORK — Coaching
+  { en: "I want to start a coaching business.", es_pr: "Quiero empezar un negocio de coaching.", cat: "work" },
+  { en: "I work as a leadership coach.", es_pr: "Trabajo como coach de liderazgo.", cat: "work" },
+  { en: "I help business owners reduce stress.", es_pr: "Ayudo a dueños de negocios a reducir el estrés.", cat: "work" },
+  { en: "I can work from anywhere.", es_pr: "Puedo trabajar desde cualquier lugar.", cat: "work" },
+  { en: "I am building my business online.", es_pr: "Estoy construyendo mi negocio en línea.", cat: "work" },
+  { en: "The best thing is to focus on what you can control.", es_pr: "Lo mejor es enfocarse en lo que puedes controlar.", cat: "work" },
+  { en: "I recommend that you build a daily routine.", es_pr: "Te recomiendo que construyas una rutina diaria.", cat: "work" },
+  { en: "What I would do is start small and be consistent.", es_pr: "Lo que yo haría es empezar poco a poco y ser consistente.", cat: "work" },
+  { en: "I recommend that you work on your mindset first.", es_pr: "Te recomiendo que trabajes en tu mentalidad primero.", cat: "work" },
+  { en: "The best thing is to build systems not rely on motivation.", es_pr: "Lo mejor es construir sistemas en lugar de depender de la motivación.", cat: "work" },
+  // FAMILY — Past and story
+  { en: "I was in the Army for ten years.", es_pr: "Estuve en el ejército por diez años.", cat: "family" },
+  { en: "I was in the infantry and military police.", es_pr: "Estuve en la infantería y la policía militar.", cat: "family" },
+  { en: "I was a paratrooper for four years.", es_pr: "Fui paracaidista por cuatro años.", cat: "family" },
+  { en: "When I was young I lived in Brooklyn.", es_pr: "Cuando era joven vivía en Brooklyn.", cat: "family" },
+  { en: "When I was in the Army I learned real discipline.", es_pr: "Cuando estaba en el ejército aprendí lo que significa la verdadera disciplina.", cat: "family" },
+  { en: "Years ago I never imagined living in the Canary Islands.", es_pr: "Hace años nunca imaginé vivir en las Islas Canarias.", cat: "family" },
+  { en: "Years ago I was a completely different person.", es_pr: "Hace años era una persona completamente diferente.", cat: "family" },
+  { en: "Back then I did not speak any Spanish.", es_pr: "En aquel entonces no hablaba nada de español.", cat: "family" },
+  { en: "That is why I decided to move to the Canary Islands.", es_pr: "Por eso decidí mudarme a las Islas Canarias.", cat: "family" },
+  { en: "Even though it was hard I don't regret leaving America.", es_pr: "Aunque fue difícil no me arrepiento de haber dejado América.", cat: "family" },
+  { en: "However I still feel connected to my Puerto Rican roots.", es_pr: "Sin embargo todavía me siento conectado a mis raíces puertorriqueñas.", cat: "family" },
+  { en: "The thing is I needed a change in my life.", es_pr: "Lo que pasa es que necesitaba un cambio en mi vida.", cat: "family" },
+  { en: "Well, I was in the Army so I am used to adapting.", es_pr: "Bueno, estuve en el ejército así que estoy acostumbrado a adaptarme.", cat: "family" },
+  { en: "I mean, I just wanted a better life.", es_pr: "O sea, solo quería una vida mejor.", cat: "family" },
+  { en: "The thing is my daughters live in Germany so I can live anywhere.", es_pr: "Es que mis hijas viven en Alemania así que puedo vivir en cualquier lugar.", cat: "family" },
+  // OPINIONS and feelings
+  { en: "I think consistency is more important than intensity.", es_pr: "Creo que la consistencia es más importante que la intensidad.", cat: "daily" },
+  { en: "I think living here is the best decision I have made.", es_pr: "Creo que vivir aquí es la mejor decisión que he tomado.", cat: "daily" },
+  { en: "It seems to me that people here are very friendly.", es_pr: "Me parece que la gente aquí es muy amable.", cat: "daily" },
+  { en: "It seems to me that Spanish is easier than I thought.", es_pr: "Me parece que el español es más fácil de lo que pensaba.", cat: "daily" },
+  { en: "I love the weather here in the Canary Islands.", es_pr: "Me encanta el clima aquí en las Islas Canarias.", cat: "daily" },
+  { en: "I love walking in the morning and having my coffee.", es_pr: "Me encanta caminar por la mañana y tomarme mi café.", cat: "daily" },
+  { en: "I don't like losing time on things I cannot control.", es_pr: "No me gusta perder tiempo en cosas que no puedo controlar.", cat: "daily" },
+  { en: "Let me see, I have been here for about three months.", es_pr: "A ver, llevo aquí como tres meses.", cat: "daily" },
+  { en: "I try to control what I can control.", es_pr: "Trato de controlar lo que puedo controlar.", cat: "daily" },
+  { en: "I'm going to move to the Canary Islands.", es_pr: "Voy a mudarme a las Islas Canarias.", cat: "daily" },
+  { en: "I'm going to start my coaching business.", es_pr: "Voy a empezar mi negocio de coaching.", cat: "daily" },
+  { en: "I am learning to understand the Canarian accent.", es_pr: "Aprendo a entender el acento canario.", cat: "daily" },
+  { en: "I stopped living in America.", es_pr: "Dejé de vivir en América.", cat: "daily" },
+  { en: "I stopped worrying about things I cannot control.", es_pr: "Dejé de preocuparme por cosas que no puedo controlar.", cat: "daily" },
+  { en: "I start to understand Spanish little by little.", es_pr: "Empiezo a entender el español poco a poco.", cat: "daily" },
+];
 
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || '[]');
+let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || 'null');
+if (!sentences) {
+  // First time — load preloaded sentences
+  sentences = preloadedSentences.map((s, i) => ({ id: Date.now() + i, ...s }));
+  localStorage.setItem('fluency_sentences', JSON.stringify(sentences));
+}
+
 let currentCatFilter = 'all';
-
-let shadowIdx = 0;
-let shadowLooping = false;
-let shadowLoopTimeout = null;
-
-let recallIdx = 0;
-let recallShuffled = [];
-let recallCorrect = 0;
-let recallTotal = 0;
-let recallRevealed = false;
-
-let listenPlaying = false;
-let listenIdx = 0;
-let listenTimer = null;
+let shadowIdx = 0, shadowLooping = false, shadowLoopTimeout = null;
+let recallIdx = 0, recallShuffled = [], recallCorrect = 0, recallTotal = 0, recallRevealed = false;
+let listenPlaying = false, listenIdx = 0, listenTimer = null, listenMissionTimer = null, listenMissionSeconds = 0;
+let shadowPlayCount = 0, recallAnswerCount = 0;
 
 let practicedToday = parseInt(localStorage.getItem('fluency_today') || '0');
 const todayKey = new Date().toDateString();
@@ -762,21 +962,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-
-// ================================================================
-// SEED DATA
-// ================================================================
-if (sentences.length === 0) {
-  sentences = [
-    { id: 1, en: "Can I get the check please?", es_pr: "¿Me puede traer la cuenta?", es_ca: "¿Me trae la cuenta, por favor?", cat: "errands" },
-    { id: 2, en: "Good morning, how are you?", es_pr: "Buenos días, ¿cómo estás?", es_ca: "Buenos días, ¿cómo estás?", cat: "daily" },
-    { id: 3, en: "I am from Brooklyn, New York.", es_pr: "Soy de Brooklyn, Nueva York.", es_ca: "Soy de Brooklyn, Nueva York.", cat: "daily" },
-    { id: 4, en: "I have two daughters who live in Germany.", es_pr: "Tengo dos hijas que viven en Alemania.", es_ca: "Tengo dos hijas viviendo en Alemania.", cat: "daily" },
-    { id: 5, en: "I wake up around six thirty.", es_pr: "Me despierto como a las seis y media.", es_ca: "Me despierto sobre las seis y media.", cat: "daily" },
-    { id: 6, en: "I want to start a coaching business.", es_pr: "Quiero empezar un negocio de coaching.", es_ca: "Quiero empezar un negocio de coaching.", cat: "work" },
-  ];
-  saveSentences();
-}
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -786,53 +972,187 @@ function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
 
+function getStage() {
+  const n = sentences.length;
+  if (n < 70) return { num: 1, label: 'Stage 1 — Foundation', focus: '5 new sentences per day. Focus: who you are.' };
+  if (n < 150) return { num: 2, label: 'Stage 2 — Daily Life', focus: '7-10 sentences per day. Focus: daily situations.' };
+  if (n < 300) return { num: 3, label: 'Stage 3 — Express Yourself', focus: '10 per day. Start Dreaming Spanish.' };
+  if (n < 500) return { num: 4, label: 'Stage 4 — Tell Your Story', focus: '10-15 per day. Past tense and connecting ideas.' };
+  return { num: 5, label: 'Stage 5 — Lead and Influence', focus: 'Coaching language. Start Lingopie.' };
+}
+
 function updateStats() {
   document.getElementById('stat-total').textContent = sentences.length;
   document.getElementById('stat-today').textContent = practicedToday;
-  const acc = recallTotal > 0 ? Math.round(recallCorrect / recallTotal * 100) + '%' : '—';
-  document.getElementById('stat-acc').textContent = acc;
+  document.getElementById('stat-acc').textContent = recallTotal > 0 ? Math.round(recallCorrect / recallTotal * 100) + '%' : '—';
+  document.getElementById('stat-stage').textContent = getStage().label;
+}
+
+function showToast(msg) {
+  let t = document.getElementById('_toast');
+  if (!t) { t = document.createElement('div'); t.id = '_toast'; t.style.cssText = 'position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--success);color:#0a0a0b;font-family:var(--font-mono);font-size:12px;font-weight:500;padding:8px 18px;border-radius:20px;z-index:400;opacity:0;transition:opacity 0.2s;pointer-events:none;white-space:nowrap;'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._t); t._t = setTimeout(() => { t.style.opacity = '0'; }, 2000);
+}
+
+// ================================================================
+// MISSION
+// ================================================================
+let sentencesVisitedTimer = null;
+
+function initMission() {
+  const stage = getStage();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning, Carlos.' : hour < 17 ? 'Good afternoon, Carlos.' : 'Good evening, Carlos.';
+  document.getElementById('mission-greeting').textContent = greeting;
+  document.getElementById('mission-stage-badge').textContent = '📍 ' + stage.label + ' — ' + stage.focus;
+  renderTodaysWordFamily();
+  renderMissionSteps();
+  updateMissionProgress();
+}
+
+function renderTodaysWordFamily() {
+  const idx = getTodaysFamilyIdx();
+  const el = document.getElementById('todays-word-family-card');
+  if (idx === null) {
+    el.innerHTML = '<div class="wf-card"><div class="wf-title">Today is review day</div><div class="wf-subtitle">No new word family. Focus on Recall and Listen.</div></div>';
+    return;
+  }
+  const fam = wordFamilies[idx];
+  el.innerHTML = `<div class="wf-card">
+    <div class="wf-title">Today's Word Family: ${fam.root}</div>
+    <div class="wf-subtitle">${fam.meaning} — read these out loud before studying</div>
+    ${fam.words.map(w => `<div class="wf-item"><span>${w.w}</span> — ${w.en} — <em style="color:var(--muted);font-size:11px">${w.ex}</em></div>`).join('')}
+  </div>`;
+}
+
+function goToStep(idx, screen) {
+  showScreen(screen);
+  if (idx === 0 && !missionSteps[0]) {
+    clearTimeout(sentencesVisitedTimer);
+    sentencesVisitedTimer = setTimeout(() => completeMissionStep(0), 2 * 60 * 1000);
+  }
+}
+
+function completeMissionStep(idx) {
+  if (missionSteps[idx]) return;
+  missionSteps[idx] = true;
+  localStorage.setItem('fluency_mission_' + todayKey, JSON.stringify(missionSteps));
+  // If currently on mission screen, re-render
+  if (currentScreen === 'mission') { renderMissionSteps(); updateMissionProgress(); }
+  showToast('Step ' + (idx + 1) + ' complete ✓');
+}
+
+function renderMissionSteps() {
+  missionSteps.forEach((done, i) => {
+    const step = document.getElementById('mstep-' + i);
+    const check = document.getElementById('mcheck-' + i);
+    const go = document.getElementById('mgo-' + i);
+    if (!step) return;
+    if (done) { step.classList.add('done'); check.textContent = '✓'; if (go) go.textContent = '✓'; }
+    else { step.classList.remove('done'); check.textContent = ''; if (go && go.textContent === '✓') go.textContent = '→'; }
+  });
+}
+
+function updateMissionProgress() {
+  const done = missionSteps.filter(Boolean).length;
+  const pct = (done / missionSteps.length) * 100;
+  document.getElementById('mission-progress-fill').style.width = pct + '%';
+  document.getElementById('mission-progress-label').textContent = done + ' of ' + missionSteps.length + ' steps complete' + (done === missionSteps.length ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
 // NAVIGATION
 // ================================================================
-let currentScreen = 'sentences';
+let currentScreen = 'mission';
 
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => {
-    if (t.textContent.toLowerCase().includes(name.substring(0, 4))) t.classList.add('active');
+    const label = t.textContent.toLowerCase();
+    if ((name === 'mission' && label === 'today') || (name !== 'mission' && label.includes(name.substring(0,4)))) t.classList.add('active');
   });
+  if (name !== 'sentences') clearTimeout(sentencesVisitedTimer);
   currentScreen = name;
   ttsStop();
   shadowLooping = false;
   if (shadowLoopTimeout) { clearTimeout(shadowLoopTimeout); shadowLoopTimeout = null; }
   updateShadowLoopBtn();
   setWave('shadow-wave', false);
-  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
+  const spb = document.getElementById('shadow-play-btn');
+  if (spb) spb.innerHTML = '▶ Play';
+  if (name === 'mission') initMission();
+  if (name === 'sentences') renderSentenceList();
   if (name === 'shadow') initShadow();
   if (name === 'recall') initRecall();
   if (name === 'listen') renderListenNow();
+  if (name === 'guide') initGuide();
 }
 
 // ================================================================
-// SENTENCE LIST — shows both PR and Canarian
+// GUIDE
+// ================================================================
+function initGuide() {
+  const n = sentences.length;
+  const stage = getStage();
+  const milestones = [
+    { count: 35, label: 'End of Week 1', desc: 'First café conversation attempted.' },
+    { count: 70, label: 'End of Week 2', desc: 'You can introduce yourself completely.' },
+    { count: 150, label: 'End of Month 1', desc: 'Basic daily interactions feel manageable.' },
+    { count: 300, label: 'End of Month 2', desc: 'You are having real conversations.' },
+    { count: 500, label: 'End of Month 3', desc: 'People stop treating you like a tourist.' },
+    { count: 1000, label: 'End of Month 6', desc: 'Conversational fluency.' }
+  ];
+
+  const next = milestones.find(m => m.count > n) || milestones[milestones.length - 1];
+  document.getElementById('guide-status-card').innerHTML = `
+    <div style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--accent);margin-bottom:4px">${stage.label}</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">${stage.focus}</div>
+    <div style="font-size:12px;color:var(--text)">You have <strong style="color:var(--accent)">${n} sentences</strong>. Next milestone: <strong>${next.label}</strong> at ${next.count} — ${Math.max(0, next.count - n)} to go.</div>
+  `;
+
+  document.getElementById('milestone-tracker').innerHTML = milestones.map(m => {
+    const reached = n >= m.count;
+    const current = !reached && milestones.find(x => x.count > n) === m;
+    return `<div class="milestone-item ${reached ? 'reached' : current ? 'current' : ''}">
+      <div class="milestone-dot"></div>
+      <div class="milestone-count">${m.count}</div>
+      <div class="milestone-desc"><strong>${m.label}</strong> — ${m.desc}</div>
+      ${reached ? '<span style="color:var(--success)">✓</span>' : ''}
+    </div>`;
+  }).join('');
+
+  // Free words
+  document.getElementById('free-words-container').innerHTML = freeWords.map(g => `
+    <div class="free-words-group">
+      <div class="free-words-group-title">${g.group}</div>
+      <div class="free-words-grid">${g.words.map(w => `<span class="free-word">${w}</span>`).join('')}</div>
+    </div>
+  `).join('');
+
+  // Pattern reference
+  document.getElementById('pattern-reference-list').innerHTML = allPatterns.map(p => `
+    <div class="pattern-ref">
+      <div class="pattern-ref-formula">${p.formula}</div>
+      <div class="pattern-ref-meaning">${p.meaning}</div>
+      <div class="pattern-ref-example">${p.example_en}<br><span class="pattern-ref-example-es">${p.example_es}</span></div>
+    </div>
+  `).join('');
+}
+
+// ================================================================
+// SENTENCE LIST
 // ================================================================
 function renderSentenceList() {
   const list = document.getElementById('sentence-list');
   const fs = filteredSentences();
-  if (!fs.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><div>No sentences here yet.<br>Press + Add to get started.</div></div>';
-    return;
-  }
+  if (!fs.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📝</div><div>No sentences here yet.<br>Tap + Add to get started.</div></div>'; return; }
   list.innerHTML = fs.map(s => `
-    <div class="sentence-item" id="si-${s.id}">
+    <div class="sentence-item">
       <div class="sentence-item-top">
-        <div class="sentence-texts">
-          <div class="sentence-en">${s.en}</div>
-        </div>
+        <div class="sentence-texts"><div class="sentence-en">${s.en}</div></div>
         <div class="sentence-actions">
           <span style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
           <button class="icon-btn" onclick="playSentence(${s.id},this)">▶</button>
@@ -840,14 +1160,8 @@ function renderSentenceList() {
         </div>
       </div>
       <div class="sentence-dialects">
-        <div class="sentence-dialect-block">
-          <div class="sentence-dialect-label">🇵🇷 Puerto Rican</div>
-          <div class="sentence-dialect-text">${getPR(s) || '—'}</div>
-        </div>
-        <div class="sentence-dialect-block">
-          <div class="sentence-dialect-label">🇮🇨 Canarian</div>
-          <div class="sentence-dialect-text ca">${getCA(s) || '—'}</div>
-        </div>
+        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇵🇷 Puerto Rican</div><div class="sentence-dialect-text">${getPR(s) || '—'}</div></div>
+        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇮🇨 Canarian</div><div class="sentence-dialect-text ca">${getCA(s) || '—'}</div></div>
       </div>
     </div>
   `).join('');
@@ -864,13 +1178,8 @@ function filterCat(cat, el) {
 function playSentence(id, btn) {
   const s = sentences.find(x => x.id === id);
   if (!s) return;
-  ttsStop();
-  btn.classList.add('playing');
-  btn.textContent = '⏸';
-  ttsSpeak(getPR(s), 'es-US', () => {
-    btn.classList.remove('playing');
-    btn.textContent = '▶';
-  });
+  ttsStop(); btn.classList.add('playing'); btn.textContent = '⏸';
+  ttsSpeak(getPR(s), 'es-US', () => { btn.classList.remove('playing'); btn.textContent = '▶'; });
 }
 
 function deleteSentence(id) {
@@ -880,14 +1189,33 @@ function deleteSentence(id) {
 }
 
 // ================================================================
-// ADD MODAL
+// ADD MODAL with pattern picker
 // ================================================================
+function initPatternPills() {
+  const container = document.getElementById('pattern-pills');
+  container.innerHTML = allPatterns.map((p, i) => `
+    <span class="pattern-pill" onclick="selectPattern(${i}, this)" title="${p.meaning}">${p.formula}</span>
+  `).join('');
+}
+
+function selectPattern(idx, el) {
+  document.querySelectorAll('.pattern-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  const starter = allPatterns[idx].starter;
+  const ta = document.getElementById('input-es');
+  ta.value = starter;
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+}
+
 function openAddModal() {
   document.getElementById('add-modal').classList.add('open');
   document.getElementById('input-en').value = '';
   document.getElementById('input-es').value = '';
+  document.querySelectorAll('.pattern-pill').forEach(p => p.classList.remove('selected'));
   setTimeout(() => document.getElementById('input-en').focus(), 100);
 }
+
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
 
 function saveSentence() {
@@ -899,22 +1227,19 @@ function saveSentence() {
   if (!es) { alert('Please enter a Spanish translation.'); return; }
   const id = Date.now();
   const obj = { id, en, cat };
-  if (dialect === 'pr') { obj.es_pr = es; }
-  else { obj.es_ca = es; }
+  if (dialect === 'pr') { obj.es_pr = es; } else { obj.es_ca = es; }
   sentences.push(obj);
   saveSentences(); renderSentenceList(); closeAddModal(); updateStats();
+  completeMissionStep(1);
+  showToast('✓ Sentence saved to your bank');
 }
 
 // ================================================================
-// SHADOW MODE — PR Spanish only
+// SHADOW — PR Spanish only
 // ================================================================
 function initShadow() {
   const fs = filteredSentences();
-  if (!fs.length) {
-    document.getElementById('shadow-empty').style.display = 'block';
-    document.getElementById('shadow-content').style.display = 'none';
-    return;
-  }
+  if (!fs.length) { document.getElementById('shadow-empty').style.display = 'block'; document.getElementById('shadow-content').style.display = 'none'; return; }
   document.getElementById('shadow-empty').style.display = 'none';
   document.getElementById('shadow-content').style.display = 'block';
   shadowIdx = Math.min(shadowIdx, fs.length - 1);
@@ -922,101 +1247,53 @@ function initShadow() {
 }
 
 function renderShadow() {
-  const fs = filteredSentences();
-  if (!fs.length) return;
+  const fs = filteredSentences(); if (!fs.length) return;
   const s = fs[shadowIdx];
   document.getElementById('shadow-en').textContent = s.en;
   document.getElementById('shadow-es').textContent = getPR(s);
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + fs.length;
-  const pct = fs.length > 1 ? (shadowIdx / (fs.length - 1)) * 100 : 100;
-  document.getElementById('shadow-progress').style.width = pct + '%';
+  document.getElementById('shadow-progress').style.width = (fs.length > 1 ? (shadowIdx / (fs.length - 1)) * 100 : 100) + '%';
 }
 
 function shadowPlay() {
-  const fs = filteredSentences();
-  if (!fs.length) return;
-  const playBtn = document.getElementById('shadow-play-btn');
-  if (playBtn.innerHTML.includes('Stop')) {
-    ttsStop();
-    shadowLooping = false; updateShadowLoopBtn();
-    setWave('shadow-wave', false);
-    playBtn.innerHTML = '▶ Play';
-    return;
-  }
-  ttsStop();
-  setWave('shadow-wave', true);
-  playBtn.innerHTML = '⏹ Stop';
+  const fs = filteredSentences(); if (!fs.length) return;
+  const btn = document.getElementById('shadow-play-btn');
+  if (btn.innerHTML.includes('Stop')) { ttsStop(); shadowLooping = false; updateShadowLoopBtn(); setWave('shadow-wave', false); btn.innerHTML = '▶ Play'; return; }
+  ttsStop(); setWave('shadow-wave', true); btn.innerHTML = '⏹ Stop';
   ttsSpeak(getPR(fs[shadowIdx]), 'es-US', () => {
-    if (shadowLooping) {
-      shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 400);
-    } else {
-      setWave('shadow-wave', false);
-      playBtn.innerHTML = '▶ Play';
-    }
+    if (shadowLooping) { shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 400); }
+    else { setWave('shadow-wave', false); btn.innerHTML = '▶ Play'; }
   });
-  practicedToday++;
-  localStorage.setItem('fluency_today', practicedToday);
-  updateStats();
+  practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
+  shadowPlayCount++;
+  if (shadowPlayCount >= 3) completeMissionStep(2);
 }
 
 function shadowLoop() {
-  shadowLooping = !shadowLooping;
-  updateShadowLoopBtn();
+  shadowLooping = !shadowLooping; updateShadowLoopBtn();
   if (shadowLooping) shadowPlay();
   else { ttsStop(); setWave('shadow-wave', false); document.getElementById('shadow-play-btn').innerHTML = '▶ Play'; }
 }
 
 function updateShadowLoopBtn() {
   const btn = document.getElementById('shadow-loop-btn');
-  if (shadowLooping) {
-    btn.innerHTML = '<span class="loop-indicator">↺ Looping</span>';
-    btn.classList.add('btn-accent');
-  } else {
-    btn.innerHTML = '↺ Loop Off';
-    btn.classList.remove('btn-accent');
-  }
+  if (shadowLooping) { btn.innerHTML = '<span class="loop-indicator">↺ Looping</span>'; btn.classList.add('btn-accent'); }
+  else { btn.innerHTML = '↺ Loop Off'; btn.classList.remove('btn-accent'); }
 }
 
-function shadowNext() {
-  const fs = filteredSentences();
-  shadowIdx = (shadowIdx + 1) % fs.length;
-  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
-  setWave('shadow-wave', false);
-  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-  renderShadow();
-}
-
-function shadowPrev() {
-  const fs = filteredSentences();
-  shadowIdx = (shadowIdx - 1 + fs.length) % fs.length;
-  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
-  setWave('shadow-wave', false);
-  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-  renderShadow();
-}
-
-function shadowShuffle() {
-  const fs = filteredSentences();
-  shadowIdx = Math.floor(Math.random() * fs.length);
-  ttsStop(); shadowLooping = false; updateShadowLoopBtn();
-  document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
-  renderShadow();
-}
+function shadowNext() { const fs = filteredSentences(); shadowIdx = (shadowIdx + 1) % fs.length; ttsStop(); shadowLooping = false; updateShadowLoopBtn(); setWave('shadow-wave', false); document.getElementById('shadow-play-btn').innerHTML = '▶ Play'; renderShadow(); }
+function shadowPrev() { const fs = filteredSentences(); shadowIdx = (shadowIdx - 1 + fs.length) % fs.length; ttsStop(); shadowLooping = false; updateShadowLoopBtn(); setWave('shadow-wave', false); document.getElementById('shadow-play-btn').innerHTML = '▶ Play'; renderShadow(); }
+function shadowShuffle() { const fs = filteredSentences(); shadowIdx = Math.floor(Math.random() * fs.length); ttsStop(); shadowLooping = false; updateShadowLoopBtn(); document.getElementById('shadow-play-btn').innerHTML = '▶ Play'; renderShadow(); }
 
 // ================================================================
-// RECALL MODE — PR Spanish only
+// RECALL — PR Spanish only
 // ================================================================
 function initRecall() {
   const fs = filteredSentences();
-  if (!fs.length) {
-    document.getElementById('recall-empty').style.display = 'block';
-    document.getElementById('recall-content').style.display = 'none';
-    return;
-  }
+  if (!fs.length) { document.getElementById('recall-empty').style.display = 'block'; document.getElementById('recall-content').style.display = 'none'; return; }
   document.getElementById('recall-empty').style.display = 'none';
   document.getElementById('recall-content').style.display = 'block';
-  recallShuffled = shuffleArray([...fs]);
-  recallIdx = 0; recallRevealed = false;
+  recallShuffled = shuffleArray([...fs]); recallIdx = 0; recallRevealed = false;
   renderRecall();
 }
 
@@ -1026,55 +1303,48 @@ function renderRecall() {
   document.getElementById('recall-en').textContent = s.en;
   document.getElementById('recall-es').textContent = getPR(s);
   document.getElementById('recall-count').textContent = (recallIdx + 1) + ' / ' + recallShuffled.length;
-  const pct = recallShuffled.length > 1 ? (recallIdx / (recallShuffled.length - 1)) * 100 : 0;
-  document.getElementById('recall-progress').style.width = pct + '%';
+  document.getElementById('recall-progress').style.width = (recallShuffled.length > 1 ? (recallIdx / (recallShuffled.length - 1)) * 100 : 0) + '%';
   document.getElementById('recall-reveal-block').classList.remove('shown');
   document.getElementById('recall-show-btn-wrap').style.display = 'block';
   recallRevealed = false;
   document.getElementById('recall-score').textContent = recallTotal > 0 ? recallCorrect + ' / ' + recallTotal : '— / —';
 }
 
-function recallReveal() {
-  document.getElementById('recall-reveal-block').classList.add('shown');
-  document.getElementById('recall-show-btn-wrap').style.display = 'none';
-  recallRevealed = true;
-}
-
-function recallPlayAudio() {
-  if (recallIdx >= recallShuffled.length) return;
-  ttsSpeak(getPR(recallShuffled[recallIdx]), 'es-US');
-}
+function recallReveal() { document.getElementById('recall-reveal-block').classList.add('shown'); document.getElementById('recall-show-btn-wrap').style.display = 'none'; recallRevealed = true; }
+function recallPlayAudio() { if (recallIdx < recallShuffled.length) ttsSpeak(getPR(recallShuffled[recallIdx]), 'es-US'); }
 
 function recallResult(correct) {
-  recallTotal++;
-  if (correct) recallCorrect++;
-  practicedToday++;
-  localStorage.setItem('fluency_today', practicedToday);
-  updateStats();
+  recallTotal++; if (correct) recallCorrect++;
+  practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
+  recallAnswerCount++;
+  if (recallAnswerCount >= 5) completeMissionStep(3);
   recallIdx++;
   if (recallIdx >= recallShuffled.length) { recallShuffled = shuffleArray([...filteredSentences()]); recallIdx = 0; }
   renderRecall();
 }
 
 // ================================================================
-// LISTEN MODE — alternates PR and Canarian each sentence
+// LISTEN — alternates PR and Canarian
 // ================================================================
 function toggleListen() { listenPlaying ? stopListen() : startListen(); }
 
 function startListen() {
-  const fs = filteredSentences();
-  if (!fs.length) return;
+  const fs = filteredSentences(); if (!fs.length) return;
   listenPlaying = true; listenIdx = 0;
   document.getElementById('listen-toggle').textContent = '⏹ Stop';
   document.getElementById('listen-now').textContent = 'Playing...';
   setWave('listen-wave', true);
+  listenMissionSeconds = 0;
+  clearInterval(listenMissionTimer);
+  listenMissionTimer = setInterval(() => {
+    listenMissionSeconds++;
+    if (listenMissionSeconds >= 180) { completeMissionStep(4); clearInterval(listenMissionTimer); }
+  }, 1000);
   playListenNext();
 }
 
 function stopListen() {
-  listenPlaying = false;
-  ttsStop();
-  clearTimeout(listenTimer);
+  listenPlaying = false; ttsStop(); clearTimeout(listenTimer); clearInterval(listenMissionTimer);
   document.getElementById('listen-toggle').textContent = '▶ Start';
   document.getElementById('listen-now').textContent = 'Not playing';
   setWave('listen-wave', false);
@@ -1085,55 +1355,65 @@ function stopListen() {
 
 function playListenNext() {
   if (!listenPlaying) return;
-  const fs = filteredSentences();
-  if (!fs.length) { stopListen(); return; }
+  const fs = filteredSentences(); if (!fs.length) { stopListen(); return; }
   const s = fs[listenIdx % fs.length];
-
-  // Alternate dialect each sentence
-  const usePR = (listenIdx % 2 === 0);
+  const usePR = listenIdx % 2 === 0;
   const lang = usePR ? 'es-US' : 'es';
   const text = usePR ? getPR(s) : getCA(s);
-  const badge = usePR
-    ? '<span class="dialect-indicator pr">🇵🇷 Puerto Rican</span>'
-    : '<span class="dialect-indicator ca">🇮🇨 Canarian</span>';
-
   document.getElementById('listen-en').textContent = s.en;
   document.getElementById('listen-es').textContent = text;
   document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
-  document.getElementById('listen-dialect-badge').innerHTML = badge;
-
+  document.getElementById('listen-dialect-badge').innerHTML = usePR ? '<span class="dialect-indicator pr">🇵🇷 Puerto Rican</span>' : '<span class="dialect-indicator ca">🇮🇨 Canarian</span>';
   ttsSpeak(text, lang, () => {
     if (!listenPlaying) return;
     listenIdx++;
-    const delay = parseInt(document.getElementById('listen-delay').value);
-    listenTimer = setTimeout(playListenNext, delay);
+    listenTimer = setTimeout(playListenNext, parseInt(document.getElementById('listen-delay').value));
   });
 }
 
 function renderListenNow() {
-  if (!listenPlaying) {
-    document.getElementById('listen-en').textContent = '—';
-    document.getElementById('listen-es').textContent = '—';
-    document.getElementById('listen-dialect-badge').innerHTML = '';
-  }
+  if (!listenPlaying) { document.getElementById('listen-en').textContent = '—'; document.getElementById('listen-es').textContent = '—'; document.getElementById('listen-dialect-badge').innerHTML = ''; }
 }
+
+// ================================================================
+// JOURNAL
+// ================================================================
+function openJournal() {
+  document.getElementById('journal-modal').classList.add('open');
+  document.getElementById('journal-input').value = '';
+  setTimeout(() => document.getElementById('journal-input').focus(), 100);
+}
+function closeJournal() { document.getElementById('journal-modal').classList.remove('open'); }
+
+function saveJournal() {
+  const raw = document.getElementById('journal-input').value.trim();
+  if (!raw) { alert('Write at least one sentence in Spanish.'); return; }
+  const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 2);
+  if (!lines.length) { alert('Write at least one sentence in Spanish.'); return; }
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  lines.forEach((es, i) => {
+    sentences.push({ id: Date.now() + i, en: '📓 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily' });
+  });
+  saveSentences(); renderSentenceList(); updateStats();
+  closeJournal(); completeMissionStep(5);
+  showToast('✓ ' + lines.length + ' sentence' + (lines.length > 1 ? 's' : '') + ' added to your bank');
+}
+
+// ================================================================
+// SUNDAY NOTIFICATION
+// ================================================================
+function checkSundayNotification() {
+  if (new Date().getDay() !== 0) return;
+  if (localStorage.getItem('fluency_sunday_notif') === todayKey) return;
+  setTimeout(() => document.getElementById('notif-banner').classList.add('show'), 2000);
+}
+function dismissNotif() { document.getElementById('notif-banner').classList.remove('show'); localStorage.setItem('fluency_sunday_notif', todayKey); }
 
 // ================================================================
 // HELPERS
 // ================================================================
-function setWave(id, playing) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  playing ? el.classList.add('playing') : el.classList.remove('playing');
-}
-
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
+function setWave(id, playing) { const el = document.getElementById(id); if (el) playing ? el.classList.add('playing') : el.classList.remove('playing'); }
+function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -1151,8 +1431,14 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ================================================================
+// INIT
+// ================================================================
+initPatternPills();
 renderSentenceList();
 updateStats();
+initMission();
+checkSundayNotification();
 </script>
 </body>
 </html>
