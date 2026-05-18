@@ -942,11 +942,12 @@ const preloadedSentences = [
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || 'null');
-if (!sentences) {
-  // First time — load preloaded sentences
-  sentences = preloadedSentences.map((s, i) => ({ id: Date.now() + i, ...s }));
-  localStorage.setItem('fluency_sentences', JSON.stringify(sentences));
+let sentences = JSON.parse(localStorage.getItem('fluency_sentences') || '[]');
+const preloadVersion = 'v2';
+if (localStorage.getItem('fluency_preload') !== preloadVersion) {
+  const existingEn = new Set(sentences.map(s => s.en.toLowerCase().trim()));
+  const toAdd = preloadedSentences.filter(s => !existingEn.has(s.en.toLowerCase().trim())).map((s, i) => ({ id: Date.now() + i, ...s }));
+  sentences = [...sentences, ...toAdd]; localStorage.setItem("fluency_sentences", JSON.stringify(sentences)); localStorage.setItem("fluency_preload", preloadVersion);
 }
 
 let currentCatFilter = 'all';
