@@ -1177,7 +1177,7 @@ function filterCat(cat, el) {
 }
 
 function playSentence(id, btn) {
-  const s = sentences.find(x => x.id === id);
+  const s = sentences.find(x => x.id == id);
   if (!s) return;
   ttsStop(); btn.classList.add('playing'); btn.textContent = '⏸';
   ttsSpeak(getPR(s), 'es-US', () => { btn.classList.remove('playing'); btn.textContent = '▶'; });
@@ -1185,7 +1185,7 @@ function playSentence(id, btn) {
 
 function deleteSentence(id) {
   if (!confirm('Delete this sentence?')) return;
-  sentences = sentences.filter(s => s.id !== id);
+  sentences = sentences.filter(s => s.id != id);
   saveSentences(); renderSentenceList(); updateStats();
 }
 
