@@ -650,7 +650,7 @@ let currentAudio = null;
 function ttsSpeak(text, lang, onDone) {
   if (!text) { if (onDone) onDone(); return; }
   ttsStop();
-  const url = '/.netlify/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + (lang || 'es-US');
+  const url = '/functions/tts?text=' + encodeURIComponent(text) + '&lang=' + (lang || 'es-US');
   const audio = new Audio(url);
   currentAudio = audio;
   audio.onended = () => { currentAudio = null; if (onDone) onDone(); };
