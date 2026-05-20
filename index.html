@@ -743,8 +743,33 @@ const SRS_INTERVALS = {
 };
 
 function getShadowQueue() {
-  // Next 10 sentences that haven't been shadowed yet
-  return sentences.filter(s => !s.shadowDone).slice(0, 10);
+  // Interleaved queue — mixes categories every session
+  // Each batch of 10: 3 Daily Life, 2 Social, 2 Errands, 2 Work, 1 Family
+  // Within each category, oldest unshadowed first (by id)
+  const cats = ['daily', 'daily', 'daily', 'social', 'social', 'errands', 'errands', 'work', 'work', 'family'];
+  const pools = {};
+  ['daily','social','errands','work','family'].forEach(cat => {
+    pools[cat] = sentences.filter(s => !s.shadowDone && s.cat === cat).sort((a,b) => a.id - b.id);
+  });
+  const queue = [];
+  const used = { daily:0, social:0, errands:0, work:0, family:0 };
+  for (const cat of cats) {
+    const pool = pools[cat] || [];
+    if (pool[used[cat]]) {
+      queue.push(pool[used[cat]]);
+      used[cat]++;
+    }
+  }
+  // If any slots empty (category exhausted) fill from remaining unshadowed
+  if (queue.length < 10) {
+    const inQueue = new Set(queue.map(s => s.id));
+    const remaining = sentences.filter(s => !s.shadowDone && !inQueue.has(s.id));
+    for (const s of remaining) {
+      if (queue.length >= 10) break;
+      queue.push(s);
+    }
+  }
+  return queue;
 }
 
 function getRecallQueue() {
@@ -1103,7 +1128,12 @@ let sentencesTimer = null;
 function initToday() {
   const hour = new Date().getHours();
   document.getElementById('today-greeting').textContent = hour < 12 ? 'Good morning, Carlos.' : hour < 17 ? 'Good afternoon, Carlos.' : 'Good evening, Carlos.';
-  document.getElementById('today-subtitle').textContent = 'Here is what you are working on today.';
+  const newCount = getNewCount();
+  const dueCount = getDueCount();
+  const subtitle = newCount > 0
+    ? newCount + ' to shadow · ' + dueCount + ' due for recall · all islands active'
+    : dueCount + ' due for recall today';
+  document.getElementById('today-subtitle').textContent = subtitle;
 
   // Stats
   document.getElementById('stat-owned').textContent = getOwnedCount();
@@ -1329,9 +1359,11 @@ function initShadow() {
 function renderShadow() {
   if (!shadowQueue.length) return;
   const s = shadowQueue[shadowIdx];
+  const catLabels = { daily: '🗓 Daily Life', social: '💬 Social', errands: '🛒 Errands', work: '💼 Work', family: '👨‍👧 Family' };
+  const catLabel = catLabels[s.cat] || s.cat;
   document.getElementById('shadow-en').textContent = s.en;
   document.getElementById('shadow-es').textContent = getPR(s);
-  document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + ' new sentences';
+  document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + '  ·  ' + catLabel;
   document.getElementById('shadow-progress').style.width = (shadowQueue.length > 1 ? (shadowIdx / (shadowQueue.length - 1)) * 100 : 100) + '%';
 }
 
