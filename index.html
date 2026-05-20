@@ -916,12 +916,10 @@ const preloadedSentences = [
   { en: "My father was born in Puerto Rico.", es_pr: "Mi papá nació en Puerto Rico.", cat: "daily" },
   { en: "My mother was born in Brooklyn.", es_pr: "Mi mamá nació en Brooklyn.", cat: "daily" },
   { en: "I lived in North Carolina and Florida.", es_pr: "Viví en Carolina del Norte y Florida.", cat: "daily" },
-  { en: "I am a veteran.", es_pr: "Soy veterano.", cat: "daily" },
+  { en: "I am a disabled veteran.", es_pr: "Soy un veterano discapacitado.", cat: "daily" },
   { en: "I am disabled.", es_pr: "Estoy discapacitado.", cat: "daily" },
-  { en: "I have two daughters.", es_pr: "Tengo dos hijas.", cat: "daily" },
-  { en: "They live in Germany.", es_pr: "Ellas viven en Alemania.", cat: "daily" },
+  { en: "I have two daughters who live in Germany.", es_pr: "Tengo dos hijas que viven en Alemania.", cat: "daily" },
   { en: "I wake up around six thirty.", es_pr: "Me despierto como a las seis y media.", cat: "daily" },
-  { en: "I go for a twenty minute walk.", es_pr: "Salgo a caminar como veinte minutos.", cat: "daily" },
   { en: "After walking I meditate.", es_pr: "Después de caminar, medito.", cat: "daily" },
   { en: "After meditating I have my coffee.", es_pr: "Después de meditar, me tomo mi café.", cat: "daily" },
   { en: "I try to practice Spanish every day.", es_pr: "Trato de practicar español todos los días.", cat: "daily" },
@@ -999,12 +997,42 @@ const preloadedSentences = [
   { en: "Well, I was in the Army so I am used to adapting.", es_pr: "Bueno, estuve en el ejército así que estoy acostumbrado a adaptarme.", cat: "family" },
   { en: "I mean, I just wanted a better life.", es_pr: "O sea, solo quería una vida mejor.", cat: "family" },
   { en: "I feel proud of my Puerto Rican roots.", es_pr: "Me siento orgulloso de mis raíces puertorriqueñas.", cat: "family" },
+  // PERSONAL — Birthdays and age
+  { en: "My birthday is August third.", es_pr: "Mi cumpleaños es el tres de agosto.", cat: "daily" },
+  { en: "I was born in nineteen seventy five.", es_pr: "Nací en mil novecientos setenta y cinco.", cat: "daily" },
+  { en: "My father's birthday is June twenty second.", es_pr: "El cumpleaños de mi papá es el veintidós de junio.", cat: "family" },
+  { en: "My mother's birthday is June twenty fifth.", es_pr: "El cumpleaños de mi mamá es el veinticinco de junio.", cat: "family" },
+  { en: "My oldest daughter's birthday is March fourteenth.", es_pr: "El cumpleaños de mi hija mayor es el catorce de marzo.", cat: "family" },
+  { en: "My youngest daughter's birthday is July seventeenth.", es_pr: "El cumpleaños de mi hija menor es el diecisiete de julio.", cat: "family" },
+  { en: "When is your birthday? — My birthday is August third.", es_pr: "¿Cuándo es tu cumpleaños? — Mi cumpleaños es el tres de agosto.", cat: "social" },
+  { en: "How old are you? — I am forty nine years old.", es_pr: "¿Cuántos años tienes? — Tengo cuarenta y nueve años.", cat: "social" },
+  // PERSONAL — Army service
+  { en: "I joined the Army in December nineteen ninety five.", es_pr: "Me uní al ejército en diciembre de mil novecientos noventa y cinco.", cat: "family" },
+  { en: "I left the Army in two thousand and five.", es_pr: "Salí del ejército en dos mil cinco.", cat: "family" },
+  { en: "I served for ten years.", es_pr: "Serví por diez años.", cat: "family" },
+  { en: "When did you join the Army? — I joined in December nineteen ninety five.", es_pr: "¿Cuándo entraste al ejército? — Entré en diciembre de mil novecientos noventa y cinco.", cat: "social" },
+  { en: "When did you get out? — I got out in two thousand and five.", es_pr: "¿Cuándo saliste? — Salí en dos mil cinco.", cat: "social" },
+  // PERSONAL — Leadership and philosophy
+  { en: "I love leadership and philosophy.", es_pr: "Me encanta el liderazgo y la filosofía.", cat: "daily" },
+  { en: "I believe in Stoic philosophy.", es_pr: "Creo en la filosofía estoica.", cat: "daily" },
+  { en: "I focus on what I can control.", es_pr: "Me enfoco en lo que puedo controlar.", cat: "daily" },
+  { en: "Leadership is about serving others.", es_pr: "El liderazgo se trata de servir a los demás.", cat: "work" },
+  { en: "Philosophy helps me live a better life.", es_pr: "La filosofía me ayuda a vivir una vida mejor.", cat: "daily" },
+  { en: "What do you like? — I love leadership and philosophy.", es_pr: "¿Qué te gusta? — Me encanta el liderazgo y la filosofía.", cat: "social" },
+  { en: "What do you believe in? — I believe that discipline creates freedom.", es_pr: "¿En qué crees? — Creo que la disciplina crea libertad.", cat: "social" },
+  { en: "The Stoics taught me to focus on what I can control.", es_pr: "Los estoicos me enseñaron a enfocarme en lo que puedo controlar.", cat: "daily" },
+  // PERSONAL — Daughters
+  { en: "My oldest daughter was born in two thousand and five.", es_pr: "Mi hija mayor nació en dos mil cinco.", cat: "family" },
+  { en: "My youngest daughter was born in two thousand and eight.", es_pr: "Mi hija menor nació en dos mil ocho.", cat: "family" },
+  { en: "I miss my daughters very much.", es_pr: "Extraño mucho a mis hijas.", cat: "family" },
+  { en: "I visit my daughters in Germany.", es_pr: "Visito a mis hijas en Alemania.", cat: "family" },
+  { en: "My daughters were born in Germany.", es_pr: "Mis hijas nacieron en Alemania.", cat: "family" },
 ];
 
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_v3') || 'null');
+let sentences = JSON.parse(localStorage.getItem('fluency_v5') || 'null');
 if (!sentences) {
   sentences = preloadedSentences.map((s, i) => ({
     id: Date.now() + i,
@@ -1014,7 +1042,7 @@ if (!sentences) {
     nextReview: null,
     reviewCount: 0
   }));
-  localStorage.setItem('fluency_v3', JSON.stringify(sentences));
+  localStorage.setItem('fluency_v5', JSON.stringify(sentences));
 }
 
 let currentCatFilter = 'all';
@@ -1035,7 +1063,7 @@ let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey
 // ================================================================
 // UTILS
 // ================================================================
-function saveSentences() { localStorage.setItem('fluency_v3', JSON.stringify(sentences)); }
+function saveSentences() { localStorage.setItem('fluency_v5', JSON.stringify(sentences)); }
 function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
