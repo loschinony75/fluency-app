@@ -325,14 +325,14 @@
   <div class="today-subtitle" id="today-subtitle" style="margin-bottom:12px;"></div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 4 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 7 steps complete</div>
 
   <!-- Step 1 — Shadow (blue) -->
   <div class="mission-step shadow-step" id="mstep-0" onclick="goToStep(0,'shadow')">
     <div class="ms-check" id="mcheck-0"></div>
     <div class="ms-body">
-      <div class="ms-title">Listen and repeat out loud</div>
-      <div class="ms-desc">Tap → Play → listen once → repeat out loud → Loop until natural.</div>
+      <div class="ms-title">Shadow — listen and repeat</div>
+      <div class="ms-desc">Tap → Play → listen once → repeat out loud → Loop until automatic. Auto-completes after 3 plays.</div>
     </div>
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
   </div>
@@ -341,8 +341,8 @@
   <div class="mission-step recall-step" id="mstep-1" onclick="goToStep(1,'recall')">
     <div class="ms-check" id="mcheck-1"></div>
     <div class="ms-body">
-      <div class="ms-title">Cover Spanish and say it from memory</div>
-      <div class="ms-desc">Tap → see English → say Spanish out loud → reveal → rate honestly.</div>
+      <div class="ms-title">Recall — say it from memory</div>
+      <div class="ms-desc">Tap → see English → say Spanish out loud → reveal → rate honestly. Auto-completes after 5 answers.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
   </div>
@@ -351,20 +351,52 @@
   <div class="mission-step listen-step" id="mstep-2" onclick="goToStep(2,'listen')">
     <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
-      <div class="ms-title">Put it on and just listen</div>
-      <div class="ms-desc">Tap → press Start → put phone down → just listen.</div>
+      <div class="ms-title">Listen — put phone down</div>
+      <div class="ms-desc">Tap → press Start → put phone down → just listen. Auto-completes after 3 minutes.</div>
     </div>
     <div class="ms-right"><div class="ms-time">8 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
-  <!-- Step 4 — Journal (warm) -->
-  <div class="mission-step journal-step" id="mstep-3" onclick="openJournal()">
+  <!-- Step 4 — Variations (blue) -->
+  <div class="mission-step shadow-step" id="mstep-3" onclick="document.getElementById('today-variations').scrollIntoView({behavior:'smooth'})">
     <div class="ms-check" id="mcheck-3"></div>
     <div class="ms-body">
-      <div class="ms-title">Write your day in Spanish — before bed</div>
-      <div class="ms-desc">Tap → write your day in Spanish → auto-saves to Library.</div>
+      <div class="ms-title">Variations — add today's to Shadow</div>
+      <div class="ms-desc">Scroll down → tap Add all to Shadow queue → done. Auto-completes when added.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-3">→</div></div>
+    <div class="ms-right"><div class="ms-time">2 min</div><div class="ms-arrow" id="mgo-3">↓</div></div>
+  </div>
+
+  <div id="today-variations" style="margin-bottom:8px;"></div>
+
+  <!-- Step 5 — Reading (success green) -->
+  <div class="mission-step" id="mstep-4" onclick="completeMissionStep(4)" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
+    <div class="ms-check" id="mcheck-4" style="border-color:var(--success);color:var(--success);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--success);">Reading — 3-day article method</div>
+      <div class="ms-desc">lingua.com/spanish/reading — Day 1 meaning, Day 2 out loud, Day 3 shadow writing. Tap when done.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
+  </div>
+
+  <!-- Step 6 — Dreaming Spanish (purple) -->
+  <div class="mission-step listen-step" id="mstep-5" onclick="completeMissionStep(5)">
+    <div class="ms-check" id="mcheck-5"></div>
+    <div class="ms-body">
+      <div class="ms-title">Dreaming Spanish — active watching</div>
+      <div class="ms-desc">YouTube → Dreaming Spanish Superbeginner. Pause on phrases that connect to your life. Say your personal version out loud. Tap when done.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
+  </div>
+
+  <!-- Step 7 — Journal (warm) -->
+  <div class="mission-step journal-step" id="mstep-6" onclick="openJournal()">
+    <div class="ms-check" id="mcheck-6"></div>
+    <div class="ms-body">
+      <div class="ms-title">Journal — write your day in Spanish</div>
+      <div class="ms-desc">Tap → write what you did today → auto-saves to Library for tomorrow's Shadow. Before bed.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-6">→</div></div>
   </div>
 
   <div class="stats-row" style="margin-top:16px;">
@@ -374,7 +406,6 @@
     <div class="stat-chip" style="border-color:rgba(196,160,255,0.3);background:rgba(196,160,255,0.05)"><div class="stat-chip-num" id="stat-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Day Streak</div></div>
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
-  <div id="today-variations"></div>
 
   <div class="low-energy">
     <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
@@ -398,6 +429,16 @@
       <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">10 min</span><span class="routine-text"><strong style="color:var(--blue)">Shadow</strong> — listen and repeat out loud until natural</span></div>
       <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">20 min</span><span class="routine-text"><strong style="color:var(--accent)">Recall</strong> — say it from memory, rate honestly</span></div>
       <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">8 min</span><span class="routine-text"><strong style="color:var(--purple)">Listen</strong> — put phone down, just let it play</span></div>
+      <div class="routine-divider">📖 Reading — 30 min (same article for 3 days)</div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 1</span><span class="routine-text">Read article once for meaning. Note 3 unknown words. Look up on WordReference.com. Add 1-2 as sentences to Library.</span></div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 2</span><span class="routine-text">Read same article out loud. Focus on rhythm and flow. No stopping for words.</span></div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 3</span><span class="routine-text">Shadow writing — article open, pick one paragraph, swap in your own life, write your version. Add 2 best sentences to Library.</span></div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 4</span><span class="routine-text">New article. Start again. Sentences from old article stay in Shadow and Recall indefinitely.</span></div>
+      <div class="routine-divider">🎧 Dreaming Spanish — 30 min</div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Daily</span><span class="routine-text">YouTube — Dreaming Spanish Superbeginner. Watch actively. Pause on phrases that connect to your life. Say your personal version out loud.</span></div>
+      <div class="routine-divider">💬 Conversation — 60 min</div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">3x/week</span><span class="routine-text">iTalki — PR or Canarian tutor. Bring 5 newest sentences. Let them correct naturally.</span></div>
+      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">4x/week</span><span class="routine-text">Self-talk — describe your morning, answer questions people ask you, talk about plans, free talk. Keep going through mistakes.</span></div>
       <div class="routine-divider">During the day</div>
       <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">All day</span><span class="routine-text">Spanish commentary — say what you are doing as you do it</span></div>
       <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">Anytime</span><span class="routine-text">Listen passively during errands, cooking, any light task</span></div>
@@ -639,6 +680,18 @@
     <div class="guide-block"><span class="guide-block-label">Stage 3 — 150-300 owned</span>Express yourself. Opinions, making friends. Start Dreaming Spanish on YouTube.</div>
     <div class="guide-block"><span class="guide-block-label">Stage 4 — 300-500 owned</span>Tell your story. Past tense, Army years, why you moved.</div>
     <div class="guide-block"><span class="guide-block-label">Stage 5 — 500+ owned</span>Lead and influence. Coaching language. Start Lingopie.</div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-section-title">Reading — The 3-Day Method</div>
+    <div class="guide-block"><span class="guide-block-label">Where to read</span>lingua.com/spanish/reading — free, beginner level, quiz after each article. One article every 3 days.</div>
+    <div class="guide-block"><span class="guide-block-label">Day 1 — Meaning</span>Read once for meaning. Note 3 unknown words. Look up on WordReference.com. Add 1-2 as sentences to Library.</div>
+    <div class="guide-block"><span class="guide-block-label">Day 2 — Out loud</span>Read the same article out loud. Rhythm and natural phrasing. No stopping for unknown words.</div>
+    <div class="guide-block"><span class="guide-block-label">Day 3 — Shadow writing</span>Article stays open. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 best sentences to Library.</div>
+    <div class="guide-block"><span class="guide-block-label">Day 4 — New article</span>Move on. Sentences you pulled keep drilling in Shadow and Recall indefinitely.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Month 2</span>Short Stories in Spanish for Beginners by Olly Richards — Amazon Kindle. Same 3-day method.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Month 3</span>Wikipedia in Spanish — military history, Stoicism, Puerto Rico, Canary Islands. You know the topics — brain fills gaps automatically.</div>
+    <div class="guide-block blue"><span class="guide-block-label">Month 4+</span>El Principito, Meditaciones by Marco Aurelio in Spanish, Breve Historia series on Amazon.</div>
   </div>
 
   <div class="guide-section">
@@ -1391,7 +1444,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -1484,8 +1537,8 @@ function renderMissionSteps() {
 
 function updateMissionProgress() {
   const done = missionSteps.filter(Boolean).length;
-  document.getElementById('today-progress').style.width = (done / missionSteps.length * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of ' + missionSteps.length + ' steps complete' + (done === missionSteps.length ? ' — Mission complete! 🎉' : '');
+  document.getElementById('today-progress').style.width = (done / 7 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 7 steps complete' + (done === 7 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -1957,7 +2010,7 @@ function saveJournal() {
     sentences.push({ id: Date.now() + i, en: '📓 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily', status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 });
   });
   saveSentences(); renderLibrary(); updateStats();
-  closeJournal(); completeMissionStep(3);
+  closeJournal(); completeMissionStep(6);
   showToast('✓ ' + lines.length + ' sentence' + (lines.length > 1 ? 's' : '') + ' added — Shadow them next');
 }
 
@@ -2188,20 +2241,22 @@ const variationRules = [
 ];
 
 function generateVariations() {
-  // Generate one variation per tense so every session covers all tenses
-  // Tense order rotates daily so you get variety
   const tenseOrder = ['past', 'future', 'conditional', 'negative', 'question'];
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0)) / 86400000);
-  // Rotate which tenses show today based on day of year
   const todayTenses = [
     tenseOrder[dayOfYear % 5],
     tenseOrder[(dayOfYear + 1) % 5],
     tenseOrder[(dayOfYear + 2) % 5],
   ];
 
-  const candidates = sentences.filter(s => s.shadowDone && s.es_pr);
-  const result = [];
+  // Prefer shadowed sentences, fall back to all sentences
+  let candidates = sentences.filter(s => s.shadowDone && s.es_pr);
+  if (candidates.length < 5) {
+    // Not enough shadowed yet — use all sentences with es_pr
+    candidates = sentences.filter(s => s.es_pr);
+  }
 
+  const result = [];
   for (const tense of todayTenses) {
     const rulesForTense = variationRules.filter(r => r.tense === tense);
     let found = false;
@@ -2229,17 +2284,6 @@ function renderTodaysVariations() {
   const el = document.getElementById('today-variations');
   if (!el) return;
 
-  const shadowed = sentences.filter(s => s.shadowDone).length;
-
-  // If nothing shadowed yet — show a helpful prompt instead
-  if (shadowed === 0) {
-    el.innerHTML = `<div class="wf-card">
-      <div class="wf-title" style="color:var(--blue)">Today's Focus</div>
-      <div class="wf-sub">Start by Shadowing your first sentences. Once you have shadowed some, variations of them will appear here for deeper drilling.</div>
-    </div>`;
-    return;
-  }
-
   const variations = generateVariations();
 
   if (!variations.length) {
@@ -2251,8 +2295,8 @@ function renderTodaysVariations() {
   }
 
   el.innerHTML = `<div class="wf-card">
-    <div class="wf-title" style="color:var(--blue)">Today's Variations</div>
-    <div class="wf-sub" style="margin-bottom:10px">These are built from sentences you already know. Shadow them until automatic — same method, deeper grammar.</div>
+    <div class="wf-title" style="color:var(--blue)">📍 Step 4 — Today's Variations</div>
+    <div class="wf-sub" style="margin-bottom:10px">Built from sentences you already shadowed. Tap the button below to add all three to your Shadow queue.</div>
     ${variations.map((v, i) => {
       const tenseColors = { past: 'var(--warn)', future: 'var(--accent)', conditional: 'var(--purple)', negative: 'var(--danger)', question: 'var(--success)' };
       const tenseLabels = { past: '⏮ Past', future: '⏭ Future', conditional: '💭 Conditional', negative: '✗ Negative', question: '? Question' };
@@ -2279,8 +2323,8 @@ function renderTodaysVariations() {
         ${grammarNote ? `<div style="font-size:10px;color:${color};opacity:0.7;font-style:italic">📖 ${grammarNote}</div>` : ''}
       </div>`;
     }).join('')}
-    <button onclick="addVariationsToShadow()" class="btn" style="width:100%;justify-content:center;margin-top:8px;background:rgba(160,196,255,0.1);border-color:rgba(160,196,255,0.3);color:var(--blue)">
-      + Add all to Shadow queue
+    <button onclick="addVariationsToShadow()" class="btn" style="width:100%;justify-content:center;margin-top:8px;background:var(--blue);border-color:var(--blue);color:var(--bg);font-weight:600;">
+      ✓ Add all 3 to Shadow queue — completes Step 4
     </button>
   </div>`;
 
@@ -2315,6 +2359,7 @@ function addVariationsToShadow() {
   saveSentences();
   updateStats();
   showToast(added + ' variation' + (added > 1 ? 's' : '') + ' added to Shadow queue', 'var(--blue)');
+  completeMissionStep(3);
   renderTodaysVariations();
   if (currentScreen === 'shadow') initShadow();
 }
