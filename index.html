@@ -169,8 +169,8 @@
   .progress-fill { background: var(--accent); height: 100%; border-radius: 4px; transition: width 0.3s ease; }
 
   /* SPACED REPETITION BUTTONS */
-  .srs-buttons { display: flex; gap: 8px; margin-top: 18px; }
-  .srs-buttons .btn { flex: 1; justify-content: center; flex-direction: column; gap: 2px; padding: 12px 8px; }
+  .srs-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+  .srs-buttons .btn { justify-content: center; flex-direction: column; gap: 2px; padding: 12px 8px; }
   .srs-sub { font-size: 10px; color: var(--muted); }
 
   /* RECALL REVEAL */
@@ -286,7 +286,7 @@
     .btn-lg { font-size: 14px; padding: 10px 18px; }
     .modal { padding: 16px 14px; }
     .sentence-dialects { flex-direction: column; gap: 6px; }
-    .srs-buttons { gap: 6px; }
+
   }
 
   .routine-item { display: flex; gap: 10px; padding: 7px 0; border-left: 3px solid var(--border2); padding-left: 10px; margin-bottom: 4px; }
@@ -314,25 +314,15 @@
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
     <button class="nav-tab" onclick="showScreen('library')">Library</button>
-    <button class="nav-tab" onclick="showScreen('progress')">Progress</button>
     <button class="nav-tab" onclick="showScreen('guide')">Guide</button>
+    <button class="nav-tab" onclick="showScreen('progress')">Progress</button>
   </div>
 </nav>
 
 <!-- TODAY -->
 <div class="screen active" id="screen-today">
   <div class="today-greeting" id="today-greeting">Good morning, Carlos.</div>
-  <div class="today-subtitle" id="today-subtitle">Here is what you are working on today.</div>
-
-  <div class="stats-row">
-    <div class="stat-chip owned"><div class="stat-chip-num" id="stat-owned">0</div><div class="stat-chip-label">Owned</div></div>
-    <div class="stat-chip due"><div class="stat-chip-num" id="stat-due">0</div><div class="stat-chip-label">Due Today</div></div>
-    <div class="stat-chip new-s"><div class="stat-chip-num" id="stat-new">0</div><div class="stat-chip-label">New</div></div>
-    <div class="stat-chip" style="border-color:rgba(196,160,255,0.3);background:rgba(196,160,255,0.05)"><div class="stat-chip-num" id="stat-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Day Streak</div></div>
-  </div>
-  <div id="week-chart" style="margin-bottom:14px;"></div>
-
-  <div id="today-variations"></div>
+  <div class="today-subtitle" id="today-subtitle" style="margin-bottom:12px;"></div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
   <div class="text-muted text-sm mb16" id="today-progress-label">0 of 4 steps complete</div>
@@ -342,7 +332,7 @@
     <div class="ms-check" id="mcheck-0"></div>
     <div class="ms-body">
       <div class="ms-title">Listen and repeat out loud</div>
-      <div class="ms-desc">Go to Shadow → hear each sentence → repeat out loud immediately → use Loop until your mouth owns it. Today's 10 new sentences only.</div>
+      <div class="ms-desc">Tap → Play → listen once → repeat out loud → Loop until natural.</div>
     </div>
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
   </div>
@@ -352,7 +342,7 @@
     <div class="ms-check" id="mcheck-1"></div>
     <div class="ms-body">
       <div class="ms-title">Cover Spanish and say it from memory</div>
-      <div class="ms-desc">Go to Recall → see English → say Spanish out loud before revealing → rate yourself honestly. Only sentences you have already shadowed.</div>
+      <div class="ms-desc">Tap → see English → say Spanish out loud → reveal → rate honestly.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
   </div>
@@ -362,7 +352,7 @@
     <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
       <div class="ms-title">Put it on and just listen</div>
-      <div class="ms-desc">Go to Listen → press Start → put phone down → enjoy your coffee. Both PR and Canarian alternating. No active studying.</div>
+      <div class="ms-desc">Tap → press Start → put phone down → just listen.</div>
     </div>
     <div class="ms-right"><div class="ms-time">8 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
@@ -372,10 +362,19 @@
     <div class="ms-check" id="mcheck-3"></div>
     <div class="ms-body">
       <div class="ms-title">Write your day in Spanish — before bed</div>
-      <div class="ms-desc">Tap to open → write what you did today in Spanish → saves directly to your library for tomorrow's Shadow session.</div>
+      <div class="ms-desc">Tap → write your day in Spanish → auto-saves to Library.</div>
     </div>
     <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-3">→</div></div>
   </div>
+
+  <div class="stats-row" style="margin-top:16px;">
+    <div class="stat-chip owned"><div class="stat-chip-num" id="stat-owned">0</div><div class="stat-chip-label">Owned</div></div>
+    <div class="stat-chip due"><div class="stat-chip-num" id="stat-due">0</div><div class="stat-chip-label">Due Today</div></div>
+    <div class="stat-chip new-s"><div class="stat-chip-num" id="stat-new">0</div><div class="stat-chip-label">New</div></div>
+    <div class="stat-chip" style="border-color:rgba(196,160,255,0.3);background:rgba(196,160,255,0.05)"><div class="stat-chip-num" id="stat-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Day Streak</div></div>
+  </div>
+  <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
+  <div id="today-variations"></div>
 
   <div class="low-energy">
     <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
@@ -425,7 +424,7 @@
     <div class="sentence-big-es" id="shadow-es" style="color:var(--blue)">—</div>
     <div class="audio-controls mt16">
       <button class="btn btn-lg" style="background:rgba(160,196,255,0.1);border-color:rgba(160,196,255,0.3);color:var(--blue)" onclick="shadowPlay()" id="shadow-play-btn">▶ Play</button>
-      <button class="btn btn-lg" onclick="shadowLoop()" id="shadow-loop-btn">↺ Loop Off</button>
+      <button class="btn btn-lg" onclick="shadowLoop()" id="shadow-loop-btn">↺ Loop: Off</button>
       <div class="waveform" id="shadow-wave">
         <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
         <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
@@ -435,7 +434,7 @@
     <div class="flex-gap mb16">
       <button class="btn" onclick="shadowPrev()">← Prev</button>
       <button class="btn" onclick="shadowNext()">Next →</button>
-      <button class="btn" onclick="markShadowedAndNext()" style="margin-left:auto;background:rgba(160,196,255,0.1);border-color:rgba(160,196,255,0.3);color:var(--blue)">✓ Ready for Recall →</button>
+      <button class="btn btn-lg" onclick="markShadowedAndNext()" style="margin-left:auto;background:var(--blue);border-color:var(--blue);color:var(--bg);font-weight:600;">✓ Ready for Recall</button>
     </div>
     <div style="font-size:11px;color:var(--muted);line-height:1.7;background:var(--surface2);border-radius:8px;padding:10px 13px;">
       Only mark <span style="color:var(--blue)">Ready for Recall</span> when the sentence comes out of your mouth automatically without thinking. If you still need to think — keep looping.
@@ -545,11 +544,9 @@
 
 <!-- LIBRARY -->
 <div class="screen" id="screen-library">
-  <div style="font-size:11px;color:var(--muted);background:var(--surface2);border-radius:8px;padding:10px 13px;margin-bottom:16px;line-height:1.7;">
-    📚 This is your sentence library. Sentences live here. Learning happens in Shadow and Recall — not here. Use + Add to grow your collection.
-  </div>
+
   <div class="flex-between mb16">
-    <div style="font-family:var(--font-head);font-size:18px;font-weight:700;">Your Library</div>
+    <div style="font-family:var(--font-head);font-size:18px;font-weight:700;">Library</div>
     <button class="btn btn-accent" onclick="openAddModal()">+ Add</button>
   </div>
   <div style="margin-bottom:12px;">
@@ -734,7 +731,7 @@
       <button class="icon-btn" onclick="closeJournal()">✕</button>
     </div>
     <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px;">Write what you did today in Spanish. One sentence per line. Each one saves to your Library and enters the Shadow queue tomorrow.</div>
-    <div style="font-size:11px;color:var(--muted);background:var(--surface2);border-radius:6px;padding:9px 12px;margin-bottom:12px;line-height:1.8;">
+    <div style="font-size:11px;color:var(--muted);background:var(--surface2);border-radius:6px;padding:9px 12px;margin-bottom:12px;line-height:1.8;" id="journal-examples">
       Fui a caminar esta mañana.<br>Me tomé un café después de meditar.<br>Practiqué español por cuarenta minutos.
     </div>
     <div class="form-row">
@@ -756,6 +753,20 @@
 </div>
 
 <script>
+
+// ================================================================
+// SECURITY — sanitize sentence data before rendering into HTML
+// ================================================================
+function sanitize(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // ================================================================
 // TTS
 // ================================================================
@@ -1564,8 +1575,8 @@ function renderLibrary() {
           <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
             <span class="sentence-status ${statusClass}">${statusLabel}</span>${shadowedLabel}
           </div>
-          <div class="sentence-en">${s.en}</div>
-          ${s.mnemonic ? `<div style="font-size:11px;color:var(--purple);margin-top:3px;">💡 ${s.mnemonic}</div>` : ''}
+          <div class="sentence-en">${sanitize(s.en)}</div>
+          ${s.mnemonic ? `<div style="font-size:11px;color:var(--purple);margin-top:3px;">💡 ${sanitize(s.mnemonic)}</div>` : ''}
         </div>
         <div class="sentence-actions">
           <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
@@ -1574,8 +1585,8 @@ function renderLibrary() {
         </div>
       </div>
       <div class="sentence-dialects">
-        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇵🇷 Puerto Rican</div><div class="sentence-dialect-text">${getPR(s) || '—'}</div></div>
-        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇮🇨 Canarian</div><div class="sentence-dialect-text ca">${getCA(s) || '—'}</div></div>
+        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇵🇷 Puerto Rican</div><div class="sentence-dialect-text">${sanitize(getPR(s)) || '—'}</div></div>
+        <div class="sentence-dialect-block"><div class="sentence-dialect-label">🇮🇨 Canarian</div><div class="sentence-dialect-text ca">${sanitize(getCA(s)) || '—'}</div></div>
       </div>
     </div>`;
   }).join('');
@@ -1713,8 +1724,8 @@ function shadowLoop() {
 
 function updateShadowLoopBtn() {
   const btn = document.getElementById('shadow-loop-btn');
-  if (shadowLooping) { btn.innerHTML = '<span class="loop-indicator">↺ Looping</span>'; btn.classList.add('btn-accent'); }
-  else { btn.innerHTML = '↺ Loop Off'; btn.classList.remove('btn-accent'); }
+  if (shadowLooping) { btn.innerHTML = '↺ Loop: On'; btn.style.background = 'var(--blue)'; btn.style.color = 'var(--bg)'; btn.style.borderColor = 'var(--blue)'; }
+  else { btn.innerHTML = '↺ Loop: Off'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }
 }
 
 function markShadowedAndNext() {
