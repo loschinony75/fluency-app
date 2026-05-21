@@ -26,10 +26,10 @@
     --font-head: 'Syne', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
-  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; padding-top: 90px; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-mono); font-size: 14px; min-height: 100vh; }
 
   /* NAV */
-  nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: fixed; top: 0; left: 0; right: 0; z-index: 100; gap: 12px; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; gap: 12px; }
   .logo { font-family: var(--font-head); font-weight: 800; font-size: 18px; letter-spacing: -0.5px; color: var(--accent); flex-shrink: 0; }
   .logo span { color: var(--text); }
   .nav-tabs { display: flex; gap: 3px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 3px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
@@ -40,14 +40,13 @@
   .dialect-badge { font-size: 11px; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 4px 10px; color: var(--muted); flex-shrink: 0; white-space: nowrap; }
   @media (max-width: 600px) {
     nav { flex-direction: column; align-items: stretch; padding: 12px 14px; gap: 10px; }
-    body { padding-top: 120px; }
     .nav-top-row { display: flex; align-items: center; justify-content: space-between; }
     .nav-tabs { width: 100%; }
     .nav-tab { padding: 7px 8px; font-size: 10px; }
   }
 
   /* SCREENS */
-  .screen { display: none; padding: 20px 24px 60px; max-width: 720px; margin: 0 auto; width: 100%; }
+  .screen { display: none; padding: 20px 24px; max-width: 720px; margin: 0 auto; width: 100%; }
   .screen.active { display: block; }
 
   /* CARDS */
@@ -274,7 +273,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* BOTTOM STATS */
-  .stats-bar { display: flex; gap: 14px; padding: 9px 24px; border-top: 1px solid var(--border); background: var(--surface); font-size: 11px; color: var(--muted); flex-wrap: wrap; align-items: center; position: fixed; bottom: 0; left: 0; right: 0; z-index: 99; }
+  .stats-bar { display: flex; gap: 14px; padding: 9px 24px; border-top: 1px solid var(--border); background: var(--surface); font-size: 11px; color: var(--muted); flex-wrap: wrap; align-items: center; }
   .stats-bar span { color: var(--text); }
   .stats-bar .stage { margin-left: auto; color: var(--accent); }
 
@@ -1570,7 +1569,7 @@ function initRecall() {
     const toShadow = getNewCount();
     const el = document.getElementById('recall-empty');
     el.innerHTML = toShadow > 0
-      ? '<div class="empty-state-icon">💭</div><div>No sentences ready for Recall yet.<br><br>Shadow some sentences first — that is always the first step.<br><br><span style="color:var(--blue)">' + toShadow + ' sentences are waiting in Shadow.</span><br><br><button class="btn" style="margin-top:8px" onclick="showScreen('shadow')">Go to Shadow →</button></div>'
+      ? '<div class="empty-state-icon">💭</div><div>No sentences ready for Recall yet.<br><br>Shadow some sentences first — that is always the first step.<br><br><span style="color:var(--blue)">' + toShadow + ' sentences are waiting in Shadow.</span><br><br><button class="btn" style="margin-top:8px" onclick="showScreen(&quot;shadow&quot;)">Go to Shadow →</button></div>'
       : '<div class="empty-state-icon">🎉</div><div>Nothing due for review right now.<br><br>All caught up. Come back later today or tomorrow.</div>';
     el.style.display = 'block';
     return;
