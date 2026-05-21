@@ -201,7 +201,8 @@
   .dialect-indicator.ca { color: var(--blue); background: rgba(160,196,255,0.08); border-color: rgba(160,196,255,0.2); }
 
   /* PATTERN PICKER */
-  .pattern-pills { display: flex; flex-wrap: wrap; gap: 5px; max-height: 110px; overflow-y: auto; padding: 2px; margin-bottom: 12px; }
+  .pattern-pills { display: flex; flex-wrap: wrap; gap: 5px; max-height: 110px; overflow-y: auto; padding: 2px 2px 8px; margin-bottom: 4px; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+  .pattern-pills-hint { font-size: 10px; color: var(--muted); text-align: right; margin-bottom: 10px; }
   .pattern-pill { background: var(--surface2); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border-radius: 5px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; white-space: nowrap; }
   .pattern-pill:hover { color: var(--text); border-color: var(--accent); }
   .pattern-pill.selected { background: rgba(212,240,60,0.12); border-color: var(--accent); color: var(--accent); }
@@ -649,6 +650,7 @@
     </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Pick a pattern to pre-fill the Spanish field:</div>
     <div class="pattern-pills" id="pattern-pills"></div>
+    <div class="pattern-pills-hint">↕ scroll to see all patterns</div>
     <div class="cognate-hint">💡 <span>Don't know the word?</span> Try cognate patterns first — <span>-tion → -ción</span>, <span>-ly → -mente</span>. You probably already know it.</div>
     <div class="form-row">
       <label>English sentence</label>
@@ -980,7 +982,7 @@ const preloadedSentences = [
   { en: "A black coffee please.", es_pr: "¿Me das un café solo por favor?", cat: "errands" },
   { en: "Can I have the check please?", es_pr: "¿Me das la cuenta por favor?", cat: "errands" },
   { en: "Can I see the menu please?", es_pr: "¿Me das la carta por favor?", cat: "errands" },
-  { en: "What do you recommend?", es_pr: "¿Qué me recomienda?", cat: "errands" },
+  { en: "What do you recommend?", es_pr: "¿Qué me recomiendas?", cat: "errands" },
   { en: "Is this dish spicy?", es_pr: "¿Este plato pica?", cat: "errands" },
   { en: "I am allergic to gluten.", es_pr: "Soy alérgico al gluten.", cat: "errands" },
   { en: "Can I have a fork please?", es_pr: "¿Me das un tenedor por favor?", cat: "errands" },
@@ -996,9 +998,9 @@ const preloadedSentences = [
   { en: "How do I get to the beach?", es_pr: "¿Cómo se llega a la playa?", cat: "errands" },
   { en: "Is it far from here?", es_pr: "¿Está lejos de aquí?", cat: "errands" },
   { en: "Can you show me on the map?", es_pr: "¿Me puedes mostrar en el mapa?", cat: "errands" },
-  { en: "Go straight ahead.", es_pr: "Sigue recto.", cat: "errands" },
-  { en: "Turn left at the corner.", es_pr: "Dobla a la izquierda en la esquina.", cat: "errands" },
-  { en: "Turn right at the corner.", es_pr: "Dobla a la derecha en la esquina.", cat: "errands" },
+  { en: "Keep going straight ahead.", es_pr: "Sigue pa'lante.", cat: "errands" },
+  { en: "Turn left at the corner.", es_pr: "Dale a la izquierda en la esquina.", cat: "errands" },
+  { en: "Turn right at the corner.", es_pr: "Dale a la derecha en la esquina.", cat: "errands" },
   { en: "Is there a pharmacy nearby?", es_pr: "¿Hay una farmacia cerca?", cat: "errands" },
   { en: "I have a headache.", es_pr: "Tengo dolor de cabeza.", cat: "errands" },
   { en: "Do you have something for a headache?", es_pr: "¿Tienes algo para el dolor de cabeza?", cat: "errands" },
@@ -1052,12 +1054,116 @@ const preloadedSentences = [
   { en: "I miss my daughters very much.", es_pr: "Extraño mucho a mis hijas.", cat: "family" },
   { en: "I visit my daughters in Germany.", es_pr: "Visito a mis hijas en Alemania.", cat: "family" },
   { en: "My daughters were born in Germany.", es_pr: "Mis hijas nacieron en Alemania.", cat: "family" },
+  // PR AUTHENTIC — Directions
+  { en: "Do you know where the pharmacy is?", es_pr: "¿Tú sabes dónde queda la farmacia?", es_ca: "¿Sabes dónde está la farmacia?", cat: "errands" },
+  { en: "It is right there close by.", es_pr: "Queda ahí cerquita.", es_ca: "Está ahí cerquita.", cat: "errands" },
+  { en: "Go down that street and turn right.", es_pr: "Baja por esa calle y dale a la derecha.", es_ca: "Baja por esa calle y gira a la derecha.", cat: "errands" },
+  { en: "When you get to the traffic light turn left.", es_pr: "Cuando llegues al semáforo dale a la izquierda.", es_ca: "Cuando llegues al semáforo gira a la izquierda.", cat: "errands" },
+  { en: "It is right next to the café.", es_pr: "Queda al lado de la cafetería.", es_ca: "Está al lado de la cafetería.", cat: "errands" },
+  { en: "Keep going and you will see it.", es_pr: "Sigue pa'lante y lo vas a ver.", es_ca: "Sigue adelante y lo verás.", cat: "errands" },
+  // CANARIAN VOCABULARY SWAPS — know both versions
+  { en: "An orange please. — In Canary Islands say naranja not china.", es_pr: "Una china por favor.", es_ca: "Una naranja por favor.", cat: "errands" },
+  { en: "Where are my earrings? — In Canary Islands say pendientes not pantallas.", es_pr: "¿Dónde están mis pantallas?", es_ca: "¿Dónde están mis pendientes?", cat: "daily" },
+  { en: "I don't have any money. — In Canary Islands say dinero or pasta not chavos.", es_pr: "No tengo chavos.", es_ca: "No tengo dinero.", cat: "daily" },
+  { en: "Where did I leave my phone? — In Canary Islands say móvil not celular.", es_pr: "¿Dónde dejé mi celular?", es_ca: "¿Dónde dejé mi móvil?", cat: "daily" },
+  { en: "I need to take a taxi or the bus.", es_pr: "Necesito coger un taxi o la guagua.", es_ca: "Necesito coger un taxi o la guagua.", cat: "errands" },
+  // CONVERSATION GLUE — Explaining reasons
+  { en: "The reason why I moved to the Canary Islands is that I didn't want to live in America anymore.", es_pr: "La razón por la que me mudé a las Islas Canarias es que ya no quería vivir en América.", cat: "social" },
+  { en: "That is why I practice Spanish every single day.", es_pr: "Es por eso que practico español todos los días.", cat: "daily" },
+  { en: "Due to my disability I receive benefits from the VA.", es_pr: "Debido a mi discapacidad recibo beneficios del VA.", cat: "daily" },
+  { en: "As a result of my Army service I have nerve pain.", es_pr: "Como resultado de mi servicio militar tengo dolor de nervios.", cat: "family" },
+  { en: "The thing is I needed a change in my life.", es_pr: "Lo que pasa es que necesitaba un cambio en mi vida.", cat: "social" },
+  // CONVERSATION GLUE — Adding information
+  { en: "I was in the infantry and also in the military police.", es_pr: "Estuve en la infantería y además en la policía militar.", cat: "family" },
+  { en: "I meditate every morning and I also go for a walk.", es_pr: "Medito todas las mañanas y también salgo a caminar.", cat: "daily" },
+  { en: "Not only did I serve ten years but I was also a paratrooper.", es_pr: "No solo serví diez años sino que también fui paracaidista.", cat: "family" },
+  { en: "Apart from that I am building a coaching business.", es_pr: "Aparte de eso estoy construyendo un negocio de coaching.", cat: "work" },
+  { en: "I love philosophy and furthermore I try to live by it every day.", es_pr: "Me encanta la filosofía y además trato de vivirla todos los días.", cat: "daily" },
+  // CONVERSATION GLUE — Contrasting
+  { en: "Even though I have pain I still go for a walk every morning.", es_pr: "Aunque tengo dolor igual salgo a caminar todas las mañanas.", cat: "daily" },
+  { en: "On the other hand living here gives me peace of mind.", es_pr: "Por otro lado vivir aquí me da tranquilidad mental.", cat: "daily" },
+  { en: "Despite that I don't regret leaving America.", es_pr: "A pesar de eso no me arrepiento de haber dejado América.", cat: "social" },
+  { en: "I miss my daughters but on the other hand I visit them in Germany.", es_pr: "Extraño a mis hijas pero por otro lado las visito en Alemania.", cat: "family" },
+  // CONVERSATION GLUE — Sequencing
+  { en: "First I wake up, then I walk, then I meditate and finally I have my coffee.", es_pr: "Primero me despierto, luego camino, después medito y al final me tomo mi café.", cat: "daily" },
+  { en: "To start with I want to tell you a little about myself.", es_pr: "Para empezar quiero contarte un poco sobre mí.", cat: "social" },
+  { en: "First I was in the infantry and then I moved to military police.", es_pr: "Primero estuve en la infantería y luego pasé a la policía militar.", cat: "family" },
+  { en: "In the end I decided that my health was more important.", es_pr: "Al final decidí que mi salud era más importante.", cat: "social" },
+  // CONVERSATION GLUE — Buying time
+  { en: "Let me see, how do I explain this.", es_pr: "A ver, cómo te explico esto.", cat: "social" },
+  { en: "The truth is I am still learning Spanish.", es_pr: "La verdad es que todavía estoy aprendiendo español.", cat: "social" },
+  { en: "Let me think, I believe it was in nineteen ninety five.", es_pr: "Déjame pensar, creo que fue en mil novecientos noventa y cinco.", cat: "social" },
+  { en: "As I was saying, I joined the Army in December.", es_pr: "Como te decía, me uní al ejército en diciembre.", cat: "family" },
+  { en: "Well, it is not easy but I keep going every day.", es_pr: "Bueno, no es fácil pero sigo adelante todos los días.", cat: "daily" },
+  // CONVERSATION GLUE — Checking understanding
+  { en: "You know what I mean?", es_pr: "¿Sabes lo que quiero decir?", cat: "social" },
+  { en: "Do you understand me?", es_pr: "¿Me entiendes?", cat: "social" },
+  { en: "It was a big change, right?", es_pr: "Fue un cambio grande, ¿no?", cat: "social" },
+  { en: "That makes sense, right?", es_pr: "Tiene sentido, ¿verdad?", cat: "social" },
+  // CONVERSATION GLUE — Agreement and disagreement
+  { en: "Exactly, that is what I believe.", es_pr: "Exactamente, eso es lo que creo.", cat: "social" },
+  { en: "You are right, consistency is everything.", es_pr: "Tienes razón, la consistencia lo es todo.", cat: "work" },
+  { en: "I agree, discipline creates freedom.", es_pr: "Estoy de acuerdo, la disciplina crea libertad.", cat: "daily" },
+  { en: "I disagree, motivation alone is not enough.", es_pr: "No estoy de acuerdo, la motivación sola no es suficiente.", cat: "work" },
+  { en: "It depends on the person and the situation.", es_pr: "Depende de la persona y la situación.", cat: "work" },
+  // CONVERSATION GLUE — Transitioning
+  { en: "By the way, how long have you lived here?", es_pr: "Por cierto, ¿cuánto tiempo llevas viviendo aquí?", cat: "social" },
+  { en: "Speaking of that, I also love Stoic philosophy.", es_pr: "Hablando de eso, también me encanta la filosofía estoica.", cat: "social" },
+  { en: "Before I forget, I have a VA appointment on Thursday.", es_pr: "Antes de que se me olvide, tengo una cita en el VA el jueves.", cat: "errands" },
+  { en: "Changing the subject, what do you think about living here?", es_pr: "Cambiando de tema, ¿qué piensas sobre vivir aquí?", cat: "social" },
+  // BODY PARTS and health
+  { en: "I have pain in my spine.", es_pr: "Tengo dolor en la columna.", cat: "errands" },
+  { en: "My neck hurts today.", es_pr: "Me duele el cuello hoy.", cat: "errands" },
+  { en: "My knees bother me when I walk a lot.", es_pr: "Las rodillas me molestan cuando camino mucho.", cat: "errands" },
+  { en: "I have nerve pain.", es_pr: "Tengo dolor de nervios.", cat: "errands" },
+  { en: "I have tinnitus — a ringing in my ears.", es_pr: "Tengo tinnitus — un zumbido en los oídos.", cat: "errands" },
+  { en: "I deal with depression and anxiety.", es_pr: "Lidio con la depresión y la ansiedad.", cat: "daily" },
+  { en: "Meditation helps me with my anxiety.", es_pr: "La meditación me ayuda con la ansiedad.", cat: "daily" },
+  { en: "I take medication every day.", es_pr: "Tomo medicamentos todos los días.", cat: "errands" },
+  { en: "I have an appointment at the VA.", es_pr: "Tengo una cita en el VA.", cat: "errands" },
+  { en: "My doctor is at the VA.", es_pr: "Mi médico está en el VA.", cat: "errands" },
+  // FOOD and drink
+  { en: "Every morning I make a blueberry smoothie.", es_pr: "Todas las mañanas me hago un batido de arándanos.", cat: "daily" },
+  { en: "My smoothie has blueberries, kefir and protein powder.", es_pr: "Mi batido tiene arándanos, kéfir y proteína en polvo.", cat: "daily" },
+  { en: "I don't eat lunch.", es_pr: "No almuerzo.", cat: "daily" },
+  { en: "Dinner is different every day.", es_pr: "La cena es diferente todos los días.", cat: "daily" },
+  { en: "At the café I usually order chicken.", es_pr: "En el café generalmente pido pollo.", cat: "errands" },
+  { en: "I drink a lot of water during the day.", es_pr: "Tomo mucha agua durante el día.", cat: "daily" },
+  // COLORS
+  { en: "My favorite color is blue.", es_pr: "Mi color favorito es el azul.", cat: "daily" },
+  { en: "I usually wear black or gray.", es_pr: "Generalmente uso negro o gris.", cat: "daily" },
+  { en: "I wear shorts and a T-shirt every day.", es_pr: "Uso shorts y t-shirt todos los días.", cat: "daily" },
+  { en: "My sneakers are black.", es_pr: "Mis tenis son negros.", cat: "daily" },
+  // HOUSEHOLD — high priority
+  { en: "I am going to take a shower.", es_pr: "Me voy a bañar.", cat: "daily" },
+  { en: "I sit on the sofa and watch TV.", es_pr: "Me siento en el sofá y veo la televisión.", cat: "daily" },
+  { en: "I turn on the fan when it is hot.", es_pr: "Enciendo el ventilador cuando hace calor.", cat: "daily" },
+  { en: "I turn on the air conditioning in the summer.", es_pr: "Enciendo el aire acondicionado en el verano.", cat: "daily" },
+  { en: "I vacuum the floor every week.", es_pr: "Paso la aspiradora todas las semanas.", cat: "daily" },
+  // DAYS and time
+  { en: "My appointment is on Thursday.", es_pr: "Mi cita es el jueves.", cat: "errands" },
+  { en: "I rest on Sundays.", es_pr: "Descanso los domingos.", cat: "daily" },
+  { en: "It is hot in the summer.", es_pr: "Hace calor en el verano.", cat: "daily" },
+  { en: "It is cool in the winter.", es_pr: "Hace fresco en el invierno.", cat: "daily" },
+  // NUMBERS and money
+  { en: "It costs one hundred dollars.", es_pr: "Cuesta cien dólares.", cat: "errands" },
+  { en: "It costs one thousand dollars.", es_pr: "Cuesta mil dólares.", cat: "errands" },
+  // MINDSET and COACHING
+  { en: "Mindset is everything in coaching.", es_pr: "La mentalidad lo es todo en el coaching.", cat: "work" },
+  { en: "Good habits build a good life.", es_pr: "Los buenos hábitos construyen una buena vida.", cat: "work" },
+  { en: "I help people get the best out of themselves.", es_pr: "Ayudo a las personas a sacar lo mejor de sí mismas.", cat: "work" },
+  { en: "Your habits define who you are.", es_pr: "Tus hábitos definen quién eres.", cat: "work" },
+  { en: "What is your biggest challenge right now?", es_pr: "¿Cuál es tu mayor reto ahora mismo?", cat: "work" },
+  { en: "What habits are holding you back?", es_pr: "¿Qué hábitos te están frenando?", cat: "work" },
+  { en: "Small daily actions create big results.", es_pr: "Las pequeñas acciones diarias crean grandes resultados.", cat: "work" },
+  { en: "What does success mean to you?", es_pr: "¿Qué significa el éxito para ti?", cat: "work" },
+  { en: "A strong mindset starts with self awareness.", es_pr: "Una mentalidad fuerte empieza con el autoconocimiento.", cat: "work" },
 ];
 
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_v5') || 'null');
+let sentences = JSON.parse(localStorage.getItem('fluency_v7') || 'null');
 if (!sentences) {
   sentences = preloadedSentences.map((s, i) => ({
     id: Date.now() + i,
@@ -1067,7 +1173,7 @@ if (!sentences) {
     nextReview: null,
     reviewCount: 0
   }));
-  localStorage.setItem('fluency_v5', JSON.stringify(sentences));
+  localStorage.setItem('fluency_v7', JSON.stringify(sentences));
 }
 
 let currentCatFilter = 'all';
@@ -1088,7 +1194,7 @@ let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey
 // ================================================================
 // UTILS
 // ================================================================
-function saveSentences() { localStorage.setItem('fluency_v5', JSON.stringify(sentences)); }
+function saveSentences() { localStorage.setItem('fluency_v7', JSON.stringify(sentences)); }
 function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
@@ -1123,7 +1229,7 @@ function showToast(msg, color) {
 // ================================================================
 // TODAY TAB
 // ================================================================
-let sentencesTimer = null;
+let sentencesTimer = null; // kept for reference, shadow completion is activity-based
 
 function initToday() {
   const hour = new Date().getHours();
@@ -1156,10 +1262,8 @@ function initToday() {
 
 function goToStep(idx, screen) {
   showScreen(screen);
-  if (idx === 0 && !missionSteps[0]) {
-    clearTimeout(sentencesTimer);
-    sentencesTimer = setTimeout(() => completeMissionStep(0), 2 * 60 * 1000);
-  }
+  // Shadow step (0) completes via shadowPlayCount in shadowPlay()
+  // No timer needed — completion is activity-based
 }
 
 function completeMissionStep(idx) {
@@ -1402,9 +1506,16 @@ function markShadowedAndNext() {
     sentences[idx].status = 'learning';
     saveSentences();
   }
+  // Remove from current queue immediately so it doesn't show as stale
+  shadowQueue.splice(shadowIdx, 1);
   showToast('✓ Ready for Recall', 'var(--blue)');
-  shadowNext();
-  // Update today stats
+  // Adjust index if we removed the last item
+  if (shadowIdx >= shadowQueue.length) shadowIdx = Math.max(0, shadowQueue.length - 1);
+  if (shadowQueue.length) {
+    renderShadow();
+  } else {
+    shadowNext(); // triggers session complete logic
+  }
   document.getElementById('stat-new').textContent = getNewCount();
   updateStats();
 }
@@ -1414,11 +1525,26 @@ function shadowNext() {
   setWave('shadow-wave', false); document.getElementById('shadow-play-btn').innerHTML = '▶ Play';
   if (shadowIdx < shadowQueue.length - 1) { shadowIdx++; renderShadow(); }
   else {
-    // Reload queue in case more were marked
+    // Reload queue with fresh unshadowed sentences
+    const prevIds = new Set(shadowQueue.map(s => s.id));
     shadowQueue = getShadowQueue();
+    // Check if queue has genuinely new sentences or same ones not yet marked
+    const hasNew = shadowQueue.some(s => !prevIds.has(s.id));
     shadowIdx = 0;
-    if (shadowQueue.length) renderShadow();
-    else { document.getElementById('shadow-empty').style.display = 'block'; document.getElementById('shadow-content').style.display = 'none'; }
+    if (shadowQueue.length && hasNew) {
+      renderShadow();
+    } else if (shadowQueue.length) {
+      // Same sentences — show session complete nudge
+      const el = document.getElementById('shadow-empty');
+      el.innerHTML = '<div class="empty-state-icon">🎙</div><div style="text-align:center"><strong style="color:var(--blue)">Session of 10 complete.</strong><br><br>Mark sentences <span style="color:var(--blue)">Ready for Recall</span> when they come out of your mouth without thinking. Keep looping the ones that still feel unnatural.<br><br><button class="btn" style="margin-top:12px;background:rgba(160,196,255,0.1);border-color:rgba(160,196,255,0.3);color:var(--blue)" onclick="initShadow()">Continue Shadowing</button></div>';
+      el.style.display = 'block';
+      document.getElementById('shadow-content').style.display = 'none';
+    } else {
+      const el = document.getElementById('shadow-empty');
+      el.innerHTML = '<div class="empty-state-icon">✅</div><div>All sentences shadowed.<br><br>Go to Recall to start drilling them from memory.</div>';
+      el.style.display = 'block';
+      document.getElementById('shadow-content').style.display = 'none';
+    }
   }
 }
 
@@ -1440,7 +1566,12 @@ function initRecall() {
   document.getElementById('recall-content').style.display = 'none';
 
   if (!recallQueue.length) {
-    document.getElementById('recall-empty').style.display = 'block';
+    const toShadow = getNewCount();
+    const el = document.getElementById('recall-empty');
+    el.innerHTML = toShadow > 0
+      ? '<div class="empty-state-icon">💭</div><div>No sentences ready for Recall yet.<br><br>Shadow some sentences first — that is always the first step.<br><br><span style="color:var(--blue)">' + toShadow + ' sentences are waiting in Shadow.</span><br><br><button class="btn" style="margin-top:8px" onclick="showScreen('shadow')">Go to Shadow →</button></div>'
+      : '<div class="empty-state-icon">🎉</div><div>Nothing due for review right now.<br><br>All caught up. Come back later today or tomorrow.</div>';
+    el.style.display = 'block';
     return;
   }
   document.getElementById('recall-content').style.display = 'block';
@@ -1532,8 +1663,9 @@ function stopListen() {
 
 function playListenNext() {
   if (!listenPlaying) return;
-  if (!sentences.length) { stopListen(); return; }
-  const s = sentences[listenIdx % sentences.length];
+  const shadowed = sentences.filter(s => s.shadowDone);
+  if (!shadowed.length) { stopListen(); return; }
+  const s = shadowed[listenIdx % shadowed.length];
   const usePR = listenIdx % 2 === 0;
   const lang = usePR ? 'es-US' : 'es';
   const text = usePR ? getPR(s) : getCA(s);
