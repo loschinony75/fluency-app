@@ -60,6 +60,7 @@
   .btn-accent:hover { background: var(--accent2); border-color: var(--accent2); color: var(--bg); }
   .btn-danger { background: rgba(255,79,79,0.12); border-color: rgba(255,79,79,0.3); color: var(--danger); }
   .btn-success { background: rgba(79,207,138,0.12); border-color: rgba(79,207,138,0.3); color: var(--success); }
+  .btn-blue { background: rgba(160,196,255,0.12); border-color: rgba(160,196,255,0.3); color: var(--blue); }
   .btn-warn { background: rgba(240,164,64,0.12); border-color: rgba(240,164,64,0.3); color: var(--warn); }
   .btn-lg { font-size: 15px; padding: 12px 24px; border-radius: 9px; }
   .btn-full { width: 100%; justify-content: center; }
@@ -313,6 +314,7 @@
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
     <button class="nav-tab" onclick="showScreen('library')">Library</button>
+    <button class="nav-tab" onclick="showScreen('progress')">Progress</button>
     <button class="nav-tab" onclick="showScreen('guide')">Guide</button>
   </div>
 </nav>
@@ -326,9 +328,11 @@
     <div class="stat-chip owned"><div class="stat-chip-num" id="stat-owned">0</div><div class="stat-chip-label">Owned</div></div>
     <div class="stat-chip due"><div class="stat-chip-num" id="stat-due">0</div><div class="stat-chip-label">Due Today</div></div>
     <div class="stat-chip new-s"><div class="stat-chip-num" id="stat-new">0</div><div class="stat-chip-label">New</div></div>
+    <div class="stat-chip" style="border-color:rgba(196,160,255,0.3);background:rgba(196,160,255,0.05)"><div class="stat-chip-num" id="stat-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Day Streak</div></div>
   </div>
+  <div id="week-chart" style="margin-bottom:14px;"></div>
 
-  <div id="today-word-family"></div>
+  <div id="today-variations"></div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
   <div class="text-muted text-sm mb16" id="today-progress-label">0 of 4 steps complete</div>
@@ -416,6 +420,7 @@
   <div id="shadow-content" style="display:none;">
     <div class="progress-track mb8"><div class="progress-fill" id="shadow-progress" style="width:0%"></div></div>
     <div class="sentence-count" id="shadow-count">— / —</div>
+    <div style="font-size:11px;margin-bottom:12px;" id="shadow-play-count"><span style="color:var(--muted)">not played yet</span></div>
     <div class="sentence-big" id="shadow-en">—</div>
     <div class="sentence-big-es" id="shadow-es" style="color:var(--blue)">—</div>
     <div class="audio-controls mt16">
@@ -464,21 +469,26 @@
       <div class="card" style="border-color:rgba(212,240,60,0.2);background:rgba(212,240,60,0.04);">
         <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Correct answer:</div>
         <div class="sentence-big-es" id="recall-es" style="font-size:19px;margin-bottom:10px">—</div>
+        <div id="recall-mnemonic" style="display:none;font-size:11px;color:var(--purple);margin-bottom:8px;padding:6px 10px;background:rgba(196,160,255,0.08);border-radius:6px;border:1px solid rgba(196,160,255,0.2)"></div>
         <button class="btn" onclick="recallPlayAudio()">▶ Hear it</button>
       </div>
       <div style="font-size:12px;color:var(--muted);text-align:center;margin:14px 0 8px;">Can you say it without thinking?</div>
       <div class="srs-buttons">
         <button class="btn btn-danger btn-lg" onclick="recallRate('missed')">
           ✗ Missed
-          <span class="srs-sub">Back soon</span>
+          <span class="srs-sub">1 hour</span>
         </button>
-        <button class="btn btn-warn btn-lg" onclick="recallRate('learning')">
-          ~ Got it
-          <span class="srs-sub">Had to think</span>
+        <button class="btn btn-warn btn-lg" onclick="recallRate('slow')">
+          ~ Slow
+          <span class="srs-sub">2 days</span>
+        </button>
+        <button class="btn btn-blue btn-lg" onclick="recallRate('learning')">
+          ✓ Got it
+          <span class="srs-sub">4 days</span>
         </button>
         <button class="btn btn-success btn-lg" onclick="recallRate('owned')">
-          ⚡ Automatic
-          <span class="srs-sub">No thinking</span>
+          ⚡ Auto
+          <span class="srs-sub">7 days</span>
         </button>
       </div>
     </div>
@@ -542,6 +552,9 @@
     <div style="font-family:var(--font-head);font-size:18px;font-weight:700;">Your Library</div>
     <button class="btn btn-accent" onclick="openAddModal()">+ Add</button>
   </div>
+  <div style="margin-bottom:12px;">
+    <input type="text" id="library-search" placeholder="Search sentences..." oninput="renderLibrary()" style="border-radius:8px;" />
+  </div>
   <div class="cat-pills">
     <div class="cat-pill active" onclick="filterCat('all',this)">All</div>
     <div class="cat-pill" onclick="filterCat('daily',this)">Daily Life</div>
@@ -551,6 +564,31 @@
     <div class="cat-pill" onclick="filterCat('family',this)">Family</div>
   </div>
   <div id="sentence-list"></div>
+</div>
+
+<!-- PROGRESS -->
+<div class="screen" id="screen-progress">
+  <div style="font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:4px">Your Progress</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Honest data on where you are and how far you have come.</div>
+
+  <div class="stats-row" style="margin-bottom:20px">
+    <div class="stat-chip owned"><div class="stat-chip-num" id="prog-owned">0</div><div class="stat-chip-label">Owned</div></div>
+    <div class="stat-chip due"><div class="stat-chip-num" id="prog-learning">0</div><div class="stat-chip-label">Learning</div></div>
+    <div class="stat-chip new-s"><div class="stat-chip-num" id="prog-new">0</div><div class="stat-chip-label">New</div></div>
+    <div class="stat-chip" style="border-color:rgba(196,160,255,0.3)"><div class="stat-chip-num" id="prog-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Streak</div></div>
+  </div>
+
+  <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Last 7 Days</div>
+  <div id="prog-week-chart" style="margin-bottom:20px"></div>
+
+  <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">By Category</div>
+  <div id="prog-category-chart" style="margin-bottom:20px"></div>
+
+  <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Milestone Progress</div>
+  <div id="prog-milestone" style="margin-bottom:20px"></div>
+
+  <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Next Milestone</div>
+  <div id="prog-next" class="card" style="background:var(--surface2)"></div>
 </div>
 
 <!-- GUIDE -->
@@ -677,6 +715,10 @@
       <label>Spanish translation</label>
       <textarea id="input-es" placeholder="Paste or type the Spanish translation..."></textarea>
     </div>
+    <div class="form-row">
+      <label>Mnemonic — optional memory trick</label>
+      <input type="text" id="input-mnemonic" placeholder="e.g. Comer sounds like camera — imagine eating cameras" />
+    </div>
     <div class="flex-gap" style="justify-content:flex-end;gap:10px;margin-top:8px">
       <button class="btn" onclick="closeAddModal()">Cancel</button>
       <button class="btn btn-accent" onclick="saveSentence()">Save to Library</button>
@@ -739,9 +781,10 @@ function ttsStop() {
 //   shadowDone: bool — has it been shadowed at least once
 // ================================================================
 const SRS_INTERVALS = {
-  missed:   1 * 60 * 60 * 1000,        // 1 hour
-  learning: 24 * 60 * 60 * 1000,       // 1 day
-  owned:    7 * 24 * 60 * 60 * 1000,   // 7 days
+  missed:   1 * 60 * 60 * 1000,          // 1 hour
+  slow:     2 * 24 * 60 * 60 * 1000,     // 2 days
+  learning: 4 * 24 * 60 * 60 * 1000,     // 4 days
+  owned:    7 * 24 * 60 * 60 * 1000,     // 7 days
 };
 
 function getShadowQueue() {
@@ -1054,6 +1097,153 @@ const preloadedSentences = [
   { en: "I miss my daughters very much.", es_pr: "Extraño mucho a mis hijas.", cat: "family" },
   { en: "I visit my daughters in Germany.", es_pr: "Visito a mis hijas en Alemania.", cat: "family" },
   { en: "My daughters were born in Germany.", es_pr: "Mis hijas nacieron en Alemania.", cat: "family" },
+  // EMOTIONS and reactions
+  { en: "I am very happy today.", es_pr: "Estoy muy contento hoy.", cat: "daily" },
+  { en: "I feel frustrated when I can't express myself in Spanish.", es_pr: "Me siento frustrado cuando no puedo expresarme en español.", cat: "daily" },
+  { en: "I am proud of my progress.", es_pr: "Estoy orgulloso de mi progreso.", cat: "daily" },
+  { en: "That worries me a little.", es_pr: "Eso me preocupa un poco.", cat: "daily" },
+  { en: "That surprised me.", es_pr: "Eso me sorprendió.", cat: "daily" },
+  { en: "I am excited about moving to the Canary Islands.", es_pr: "Estoy emocionado por mudarme a las Islas Canarias.", cat: "daily" },
+  { en: "That makes me very happy.", es_pr: "Eso me alegra mucho.", cat: "daily" },
+  { en: "I feel calm after meditating.", es_pr: "Me siento tranquilo después de meditar.", cat: "daily" },
+  { en: "I am nervous about my appointment.", es_pr: "Estoy nervioso por mi cita.", cat: "daily" },
+  { en: "What a shame.", es_pr: "Qué pena.", cat: "social" },
+  { en: "How wonderful.", es_pr: "Qué maravilla.", cat: "social" },
+  { en: "I can't believe it.", es_pr: "No me lo puedo creer.", cat: "social" },
+  { en: "That is incredible.", es_pr: "Eso es increíble.", cat: "social" },
+  { en: "How interesting.", es_pr: "Qué interesante.", cat: "social" },
+  { en: "Seriously?", es_pr: "¿En serio?", cat: "social" },
+  { en: "That is amazing.", es_pr: "Eso es impresionante.", cat: "social" },
+  { en: "I feel motivated every morning.", es_pr: "Me siento motivado todas las mañanas.", cat: "daily" },
+  { en: "I miss Brooklyn sometimes.", es_pr: "A veces extraño Brooklyn.", cat: "daily" },
+  { en: "I feel grateful for my life.", es_pr: "Me siento agradecido por mi vida.", cat: "daily" },
+  { en: "That bothers me.", es_pr: "Eso me molesta.", cat: "daily" },
+  // TALKING ABOUT TIME
+  { en: "Two weeks ago I arrived in the Canary Islands.", es_pr: "Hace dos semanas llegué a las Islas Canarias.", cat: "daily" },
+  { en: "Last year I was still living in America.", es_pr: "El año pasado todavía vivía en América.", cat: "daily" },
+  { en: "When I was a child I lived in Brooklyn.", es_pr: "Cuando era niño vivía en Brooklyn.", cat: "family" },
+  { en: "Back in those days everything was different.", es_pr: "En aquella época todo era diferente.", cat: "family" },
+  { en: "In a few months I will speak Spanish fluently.", es_pr: "En unos meses voy a hablar español con fluidez.", cat: "daily" },
+  { en: "I have been here for about three months.", es_pr: "Llevo aquí como tres meses.", cat: "social" },
+  { en: "I have been learning Spanish for two months.", es_pr: "Llevo dos meses aprendiendo español.", cat: "social" },
+  { en: "I used to live in Florida before moving here.", es_pr: "Antes vivía en Florida antes de mudarme aquí.", cat: "daily" },
+  { en: "Every day I get a little better.", es_pr: "Cada día me pongo un poco mejor.", cat: "daily" },
+  { en: "It has been ten years since I left the Army.", es_pr: "Han pasado diez años desde que salí del ejército.", cat: "family" },
+  { en: "I have not spoken Spanish since I was a child.", es_pr: "No había hablado español desde que era niño.", cat: "social" },
+  { en: "Recently I started meditating every morning.", es_pr: "Recientemente empecé a meditar todas las mañanas.", cat: "daily" },
+  { en: "For a long time I wanted to make this change.", es_pr: "Desde hace mucho tiempo quería hacer este cambio.", cat: "daily" },
+  { en: "Someday I will be completely fluent in Spanish.", es_pr: "Algún día voy a hablar español con total fluidez.", cat: "daily" },
+  // FUTURE PLANNING
+  { en: "My plan is to stay in the Canary Islands permanently.", es_pr: "Mi plan es quedarme en las Islas Canarias de forma permanente.", cat: "daily" },
+  { en: "I hope to build my coaching business here.", es_pr: "Espero construir mi negocio de coaching aquí.", cat: "work" },
+  { en: "When I get settled here I want to meet new people.", es_pr: "Cuando me establezca aquí quiero conocer gente nueva.", cat: "social" },
+  { en: "If everything goes well I will renew my residency.", es_pr: "Si todo va bien voy a renovar mi residencia.", cat: "daily" },
+  { en: "I want to eventually work with Spanish speaking clients.", es_pr: "Eventualmente quiero trabajar con clientes que hablen español.", cat: "work" },
+  { en: "My goal is to own one thousand sentences in Spanish.", es_pr: "Mi meta es tener mil oraciones en español.", cat: "daily" },
+  { en: "I plan to visit my daughters in Germany next year.", es_pr: "Planeo visitar a mis hijas en Alemania el próximo año.", cat: "family" },
+  { en: "One day I want to give coaching sessions in Spanish.", es_pr: "Un día quiero dar sesiones de coaching en español.", cat: "work" },
+  { en: "I am working toward financial freedom.", es_pr: "Estoy trabajando hacia la libertad financiera.", cat: "work" },
+  { en: "My vision is to help people transform their lives.", es_pr: "Mi visión es ayudar a las personas a transformar sus vidas.", cat: "work" },
+  { en: "I am building something that will last.", es_pr: "Estoy construyendo algo que va a durar.", cat: "work" },
+  { en: "In five years I see myself fully established here.", es_pr: "En cinco años me veo completamente establecido aquí.", cat: "daily" },
+  // COACHING VOCABULARY in Spanish
+  { en: "What is stopping you from moving forward?", es_pr: "¿Qué te está impidiendo avanzar?", cat: "work" },
+  { en: "What would your life look like if you solved this problem?", es_pr: "¿Cómo sería tu vida si resolvieras este problema?", cat: "work" },
+  { en: "What do you need to let go of?", es_pr: "¿Qué necesitas soltar?", cat: "work" },
+  { en: "What is your biggest fear right now?", es_pr: "¿Cuál es tu mayor miedo ahora mismo?", cat: "work" },
+  { en: "You have more strength than you think.", es_pr: "Tienes más fortaleza de la que crees.", cat: "work" },
+  { en: "The first step is always the hardest.", es_pr: "El primer paso siempre es el más difícil.", cat: "work" },
+  { en: "Your mindset determines your results.", es_pr: "Tu mentalidad determina tus resultados.", cat: "work" },
+  { en: "Growth happens outside your comfort zone.", es_pr: "El crecimiento ocurre fuera de tu zona de confort.", cat: "work" },
+  { en: "What action can you take today?", es_pr: "¿Qué acción puedes tomar hoy?", cat: "work" },
+  { en: "I believe in your ability to change.", es_pr: "Creo en tu capacidad de cambiar.", cat: "work" },
+  { en: "A leader serves before they command.", es_pr: "Un líder sirve antes de mandar.", cat: "work" },
+  { en: "Clarity comes from action not from thinking.", es_pr: "La claridad viene de la acción no del pensamiento.", cat: "work" },
+  { en: "What does your best version look like?", es_pr: "¿Cómo es tu mejor versión?", cat: "work" },
+  { en: "Accountability is the foundation of growth.", es_pr: "La responsabilidad es la base del crecimiento.", cat: "work" },
+  { en: "You cannot change what you do not acknowledge.", es_pr: "No puedes cambiar lo que no reconoces.", cat: "work" },
+  // SURVIVAL — Emergency
+  { en: "Help me please.", es_pr: "Ayúdame por favor.", cat: "errands" },
+  { en: "Call the police.", es_pr: "Llama a la policía.", cat: "errands" },
+  { en: "Call an ambulance.", es_pr: "Llama a una ambulancia.", cat: "errands" },
+  { en: "I need a doctor.", es_pr: "Necesito un médico.", cat: "errands" },
+  { en: "I need help.", es_pr: "Necesito ayuda.", cat: "errands" },
+  { en: "It is an emergency.", es_pr: "Es una emergencia.", cat: "errands" },
+  { en: "I am lost.", es_pr: "Estoy perdido.", cat: "errands" },
+  { en: "I had an accident.", es_pr: "Tuve un accidente.", cat: "errands" },
+  { en: "Someone stole my wallet.", es_pr: "Alguien me robó la cartera.", cat: "errands" },
+  { en: "I lost my passport.", es_pr: "Perdí mi pasaporte.", cat: "errands" },
+  // SURVIVAL — Medical
+  { en: "I am having a panic attack.", es_pr: "Estoy teniendo un ataque de pánico.", cat: "errands" },
+  { en: "I am in a lot of pain.", es_pr: "Tengo mucho dolor.", cat: "errands" },
+  { en: "I am allergic to penicillin.", es_pr: "Soy alérgico a la penicilina.", cat: "errands" },
+  { en: "I take medication every day for my spine.", es_pr: "Tomo medicamentos todos los días para la columna.", cat: "errands" },
+  { en: "I need to sit down.", es_pr: "Necesito sentarme.", cat: "errands" },
+  { en: "I feel dizzy.", es_pr: "Me siento mareado.", cat: "errands" },
+  { en: "I cannot walk well today.", es_pr: "No puedo caminar bien hoy.", cat: "errands" },
+  { en: "Where is the nearest hospital?", es_pr: "¿Dónde está el hospital más cercano?", cat: "errands" },
+  { en: "Where is the nearest pharmacy?", es_pr: "¿Dónde está la farmacia más cercana?", cat: "errands" },
+  // SURVIVAL — Basic needs
+  { en: "I don't speak Spanish well yet.", es_pr: "Todavía no hablo bien el español.", cat: "social" },
+  { en: "Do you speak English?", es_pr: "¿Hablas inglés?", cat: "social" },
+  { en: "Can you help me please?", es_pr: "¿Me puedes ayudar por favor?", cat: "social" },
+  { en: "I need water.", es_pr: "Necesito agua.", cat: "errands" },
+  { en: "I am hungry.", es_pr: "Tengo hambre.", cat: "errands" },
+  { en: "I am thirsty.", es_pr: "Tengo sed.", cat: "errands" },
+  { en: "How much does this cost?", es_pr: "¿Cuánto cuesta esto?", cat: "errands" },
+  { en: "Please write it down.", es_pr: "Por favor escríbelo.", cat: "social" },
+  { en: "Please speak more slowly.", es_pr: "Por favor habla más despacio.", cat: "social" },
+  // SURVIVAL — Documents and bureaucracy
+  { en: "I need to get a copy of my father's birth certificate. His birth date is June twenty second nineteen fifty.", es_pr: "Necesito obtener una copia del acta de nacimiento de mi papá. Su fecha de nacimiento es el veintidós de junio de mil novecientos cincuenta.", es_ca: "Necesito obtener una copia del certificado de nacimiento de mi papá. Su fecha de nacimiento es el veintidós de junio de mil novecientos cincuenta.", cat: "errands" },
+  { en: "I need this document notarized.", es_pr: "Necesito que este documento sea notariado.", cat: "errands" },
+  { en: "Where is the notary office?", es_pr: "¿Dónde está la notaría?", cat: "errands" },
+  { en: "I need an official translation.", es_pr: "Necesito una traducción oficial.", cat: "errands" },
+  { en: "Where can I make a photocopy?", es_pr: "¿Dónde puedo hacer una fotocopia?", cat: "errands" },
+  { en: "I need to fill out this form.", es_pr: "Necesito llenar este formulario.", cat: "errands" },
+  { en: "Can you explain this document to me?", es_pr: "¿Me puedes explicar este documento?", cat: "errands" },
+  { en: "I do not understand this form.", es_pr: "No entiendo este formulario.", cat: "errands" },
+  // SURVIVAL — Money and banking
+  { en: "Where is the nearest ATM?", es_pr: "¿Dónde está el cajero automático más cercano?", cat: "errands" },
+  { en: "My card is not working.", es_pr: "Mi tarjeta no funciona.", cat: "errands" },
+  { en: "Can I pay in cash?", es_pr: "¿Puedo pagar en efectivo?", cat: "errands" },
+  { en: "I need to open a bank account.", es_pr: "Necesito abrir una cuenta bancaria.", cat: "errands" },
+  { en: "I need to transfer money.", es_pr: "Necesito transferir dinero.", cat: "errands" },
+  // SURVIVAL — Transportation
+  { en: "I missed the bus.", es_pr: "Perdí la guagua.", es_ca: "Perdí la guagua.", cat: "errands" },
+  { en: "What time is the next bus?", es_pr: "¿A qué hora es la próxima guagua?", cat: "errands" },
+  { en: "I need a taxi.", es_pr: "Necesito un taxi.", cat: "errands" },
+  { en: "I am going to the airport.", es_pr: "Voy al aeropuerto.", cat: "errands" },
+  { en: "How long until we arrive?", es_pr: "¿Cuánto falta para llegar?", cat: "errands" },
+  // TIE CARD and residency
+  { en: "I need to pick up my TIE card.", es_pr: "Necesito recoger mi tarjeta TIE.", cat: "errands" },
+  { en: "Where do I pick up my TIE card?", es_pr: "¿Dónde recojo mi tarjeta TIE?", cat: "errands" },
+  { en: "I have an appointment at the immigration office.", es_pr: "Tengo una cita en la oficina de extranjería.", cat: "errands" },
+  { en: "I need to register as a resident.", es_pr: "Necesito registrarme como residente.", cat: "errands" },
+  { en: "I am a legal resident of Spain.", es_pr: "Soy residente legal de España.", cat: "daily" },
+  { en: "I need to renew my residency card.", es_pr: "Necesito renovar mi tarjeta de residencia.", cat: "errands" },
+  { en: "My appointment is at the police station.", es_pr: "Mi cita es en la comisaría.", cat: "errands" },
+  { en: "I need my passport and two photos.", es_pr: "Necesito mi pasaporte y dos fotos.", cat: "errands" },
+  // TAXI and directions
+  { en: "Take me to this address please.", es_pr: "Llévame a esta dirección por favor.", cat: "errands" },
+  { en: "I need to go to the police station.", es_pr: "Necesito ir a la comisaría.", cat: "errands" },
+  { en: "How much does it cost to get there?", es_pr: "¿Cuánto cuesta llegar hasta allá?", es_ca: "¿Cuánto cuesta llegar hasta allí?", cat: "errands" },
+  { en: "How long does it take to get there?", es_pr: "¿Cuánto tiempo tarda en llegar?", cat: "errands" },
+  { en: "Can you take me to the center of town?", es_pr: "¿Me puedes llevar al centro?", cat: "errands" },
+  { en: "Stop here please.", es_pr: "Para aquí por favor.", cat: "errands" },
+  { en: "Can you wait for me here?", es_pr: "¿Me puedes esperar aquí?", cat: "errands" },
+  { en: "I am going to the supermarket.", es_pr: "Voy al supermercado.", cat: "errands" },
+  { en: "I need to go to the town hall.", es_pr: "Necesito ir al ayuntamiento.", cat: "errands" },
+  // COOKING
+  { en: "I am making dinner.", es_pr: "Estoy haciendo la cena.", cat: "daily" },
+  { en: "I am going to make dinner.", es_pr: "Voy a hacer la cena.", cat: "daily" },
+  { en: "I am cooking right now.", es_pr: "Estoy cocinando ahora mismo.", cat: "daily" },
+  { en: "I just finished making dinner.", es_pr: "Acabo de hacer la cena.", cat: "daily" },
+  { en: "Dinner is almost ready.", es_pr: "La cena está casi lista.", cat: "daily" },
+  { en: "I like to cook at home.", es_pr: "Me gusta cocinar en casa.", cat: "daily" },
+  { en: "I am going to cook chicken tonight.", es_pr: "Voy a cocinar pollo esta noche.", cat: "daily" },
+  { en: "I need to go to the supermarket to buy food.", es_pr: "Necesito ir al supermercado a comprar comida.", cat: "errands" },
+  { en: "What are you making for dinner?", es_pr: "¿Qué estás haciendo de cena?", cat: "social" },
+  { en: "I made dinner already.", es_pr: "Ya hice la cena.", cat: "daily" },
   // PR AUTHENTIC — Directions
   { en: "Do you know where the pharmacy is?", es_pr: "¿Tú sabes dónde queda la farmacia?", es_ca: "¿Sabes dónde está la farmacia?", cat: "errands" },
   { en: "It is right there close by.", es_pr: "Queda ahí cerquita.", es_ca: "Está ahí cerquita.", cat: "errands" },
@@ -1163,7 +1353,7 @@ const preloadedSentences = [
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_v7') || 'null');
+let sentences = JSON.parse(localStorage.getItem('fluency_v9') || 'null');
 if (!sentences) {
   sentences = preloadedSentences.map((s, i) => ({
     id: Date.now() + i,
@@ -1173,11 +1363,12 @@ if (!sentences) {
     nextReview: null,
     reviewCount: 0
   }));
-  localStorage.setItem('fluency_v7', JSON.stringify(sentences));
+  localStorage.setItem('fluency_v9', JSON.stringify(sentences));
 }
 
 let currentCatFilter = 'all';
 let shadowQueue = [], shadowIdx = 0, shadowLooping = false, shadowLoopTimeout = null;
+let shadowPlayCounts = {}; // tracks plays per sentence id this session
 let recallQueue = [], recallIdx = 0, recallCorrect = 0, recallTotal = 0, recallRevealed = false;
 let listenPlaying = false, listenIdx = 0, listenTimer = null, listenMissionTimer = null, listenMissionSeconds = 0;
 let shadowPlayCount = 0, recallAnswerCount = 0;
@@ -1194,7 +1385,7 @@ let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey
 // ================================================================
 // UTILS
 // ================================================================
-function saveSentences() { localStorage.setItem('fluency_v7', JSON.stringify(sentences)); }
+function saveSentences() { localStorage.setItem('fluency_v9', JSON.stringify(sentences)); }
 function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
@@ -1245,16 +1436,11 @@ function initToday() {
   document.getElementById('stat-owned').textContent = getOwnedCount();
   document.getElementById('stat-due').textContent = getDueCount();
   document.getElementById('stat-new').textContent = getNewCount();
+  document.getElementById('stat-streak').textContent = getStreak();
+  renderWeekChart();
 
-  // Word family
-  const fidx = getTodaysFamilyIdx();
-  const wfEl = document.getElementById('today-word-family');
-  if (fidx !== null) {
-    const fam = wordFamilies[fidx];
-    wfEl.innerHTML = `<div class="wf-card"><div class="wf-title">Today's Word Family: ${fam.root}</div><div class="wf-sub">${fam.meaning} — read these out loud before studying</div>${fam.words.map(w => `<div class="wf-item"><span>${w.w}</span> — ${w.en} — <em style="color:var(--muted);font-size:10px">${w.ex}</em></div>`).join('')}</div>`;
-  } else {
-    wfEl.innerHTML = '<div class="wf-card"><div class="wf-title">Review day</div><div class="wf-sub">No new word family today. Focus on Recall.</div></div>';
-  }
+  // Variations — replace static word family with actionable variation sentences
+  renderTodaysVariations();
 
   renderMissionSteps();
   updateMissionProgress();
@@ -1319,6 +1505,7 @@ function showScreen(name) {
   if (name === 'listen') renderListenNow();
   if (name === 'library') renderLibrary();
   if (name === 'guide') initGuide();
+  if (name === 'progress') initProgress();
 }
 
 // ================================================================
@@ -1356,7 +1543,16 @@ function initGuide() {
 // ================================================================
 function renderLibrary() {
   const list = document.getElementById('sentence-list');
-  const fs = filteredSentences();
+  const searchEl = document.getElementById('library-search');
+  const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+  let fs = filteredSentences();
+  if (query) {
+    fs = fs.filter(s =>
+      s.en.toLowerCase().includes(query) ||
+      (s.es_pr && s.es_pr.toLowerCase().includes(query)) ||
+      (s.es_ca && s.es_ca.toLowerCase().includes(query))
+    );
+  }
   if (!fs.length) { list.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📚</div><div>No sentences here yet.<br>Tap + Add to get started.</div></div>'; return; }
   list.innerHTML = fs.map(s => {
     const statusLabel = s.status === 'owned' ? '✅ Owned' : s.status === 'learning' ? '🔄 Learning' : '🆕 New';
@@ -1369,6 +1565,7 @@ function renderLibrary() {
             <span class="sentence-status ${statusClass}">${statusLabel}</span>${shadowedLabel}
           </div>
           <div class="sentence-en">${s.en}</div>
+          ${s.mnemonic ? `<div style="font-size:11px;color:var(--purple);margin-top:3px;">💡 ${s.mnemonic}</div>` : ''}
         </div>
         <div class="sentence-actions">
           <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)">${s.cat}</span>
@@ -1425,6 +1622,7 @@ function openAddModal() {
   document.getElementById('add-modal').classList.add('open');
   document.getElementById('input-en').value = '';
   document.getElementById('input-es').value = '';
+  if (document.getElementById('input-mnemonic')) document.getElementById('input-mnemonic').value = '';
   document.querySelectorAll('.pattern-pill').forEach(p => p.classList.remove('selected'));
   setTimeout(() => document.getElementById('input-en').focus(), 100);
 }
@@ -1437,8 +1635,10 @@ function saveSentence() {
   const dialect = document.getElementById('input-dialect').value;
   if (!en) { alert('Please enter an English sentence.'); return; }
   if (!es) { alert('Please enter a Spanish translation.'); return; }
+  const mnemonic = document.getElementById('input-mnemonic') ? document.getElementById('input-mnemonic').value.trim() : '';
   const obj = { id: Date.now(), en, cat, status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 };
   if (dialect === 'pr') { obj.es_pr = es; } else { obj.es_ca = es; }
+  if (mnemonic) obj.mnemonic = mnemonic;
   sentences.push(obj);
   saveSentences(); renderLibrary(); closeAddModal(); updateStats();
   showToast('✓ Saved to Library — Shadow it next');
@@ -1449,6 +1649,15 @@ function saveSentence() {
 // ================================================================
 function initShadow() {
   shadowQueue = getShadowQueue();
+  // Prepend one warm-up sentence (an owned sentence) at the start
+  const warmUp = sentences.filter(s => s.status === 'owned' && s.shadowDone);
+  if (warmUp.length) {
+    const w = warmUp[Math.floor(Math.random() * warmUp.length)];
+    // Only prepend if not already in queue
+    if (!shadowQueue.find(s => s.id === w.id)) {
+      shadowQueue = [{ ...w, _warmup: true }, ...shadowQueue];
+    }
+  }
   shadowIdx = 0;
   if (!shadowQueue.length) {
     document.getElementById('shadow-empty').style.display = 'block';
@@ -1464,10 +1673,14 @@ function renderShadow() {
   if (!shadowQueue.length) return;
   const s = shadowQueue[shadowIdx];
   const catLabels = { daily: '🗓 Daily Life', social: '💬 Social', errands: '🛒 Errands', work: '💼 Work', family: '👨‍👧 Family' };
-  const catLabel = catLabels[s.cat] || s.cat;
+  const catLabel = s._warmup ? '🔥 Warm-up — you own this' : (catLabels[s.cat] || s.cat);
+  const plays = shadowPlayCounts[s.id] || 0;
+  const playsLabel = plays === 0 ? 'not played yet' : plays === 1 ? '1 play' : plays + ' plays';
+  const playsColor = plays >= 7 ? 'var(--success)' : plays >= 4 ? 'var(--accent)' : 'var(--muted)';
   document.getElementById('shadow-en').textContent = s.en;
   document.getElementById('shadow-es').textContent = getPR(s);
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + '  ·  ' + catLabel;
+  document.getElementById('shadow-play-count').innerHTML = '<span style="color:' + playsColor + '">' + playsLabel + '</span>' + (plays < 7 ? ' <span style="color:var(--muted)">— aim for 7+</span>' : ' <span style="color:var(--success)">— ready to mark</span>');
   document.getElementById('shadow-progress').style.width = (shadowQueue.length > 1 ? (shadowIdx / (shadowQueue.length - 1)) * 100 : 100) + '%';
 }
 
@@ -1483,6 +1696,13 @@ function shadowPlay() {
   practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
   shadowPlayCount++;
   if (shadowPlayCount >= 3) completeMissionStep(0);
+  markPracticedToday();
+  // Track per-sentence play count
+  if (shadowQueue[shadowIdx]) {
+    const sid = shadowQueue[shadowIdx].id;
+    shadowPlayCounts[sid] = (shadowPlayCounts[sid] || 0) + 1;
+    renderShadow();
+  }
 }
 
 function shadowLoop() {
@@ -1559,6 +1779,14 @@ function shadowPrev() {
 // ================================================================
 function initRecall() {
   recallQueue = getRecallQueue();
+  // Prepend one warm-up sentence (a strongly owned sentence)
+  const warmUps = sentences.filter(s => s.status === 'owned' && s.reviewCount >= 3);
+  if (warmUps.length && recallQueue.length) {
+    const w = warmUps[Math.floor(Math.random() * warmUps.length)];
+    if (!recallQueue.find(s => s.id === w.id)) {
+      recallQueue = [{ ...w, _warmup: true }, ...recallQueue];
+    }
+  }
   recallIdx = 0; recallRevealed = false; recallCorrect = 0; recallTotal = 0;
 
   document.getElementById('recall-empty').style.display = 'none';
@@ -1591,7 +1819,13 @@ function renderRecall() {
   const s = recallQueue[recallIdx];
   document.getElementById('recall-en').textContent = s.en;
   document.getElementById('recall-es').textContent = getPR(s);
-  document.getElementById('recall-count').textContent = (recallIdx + 1) + ' / ' + recallQueue.length;
+  const mnemonicEl = document.getElementById('recall-mnemonic');
+  if (mnemonicEl) {
+    if (s.mnemonic) { mnemonicEl.textContent = '💡 ' + s.mnemonic; mnemonicEl.style.display = 'block'; }
+    else { mnemonicEl.style.display = 'none'; }
+  }
+  const isWarmup = recallQueue[recallIdx] && recallQueue[recallIdx]._warmup;
+  document.getElementById('recall-count').textContent = (recallIdx + 1) + ' / ' + recallQueue.length + (isWarmup ? '  · 🔥 Warm-up' : '');
   document.getElementById('recall-progress').style.width = (recallQueue.length > 1 ? (recallIdx / (recallQueue.length - 1)) * 100 : 0) + '%';
   document.getElementById('recall-reveal-block').classList.remove('shown');
   document.getElementById('recall-reveal-btn-wrap').style.display = 'block';
@@ -1610,9 +1844,9 @@ function recallPlayAudio() {
 }
 
 function recallRate(rating) {
-  // rating: 'missed' | 'learning' | 'owned'
+  // rating: 'missed' | 'slow' | 'learning' | 'owned'
   recallTotal++;
-  if (rating === 'owned') recallCorrect++;
+  if (rating === 'owned' || rating === 'learning') recallCorrect++;
 
   const s = recallQueue[recallIdx];
   const idx = sentences.findIndex(x => x.id === s.id);
@@ -1620,6 +1854,10 @@ function recallRate(rating) {
     sentences[idx].status = rating === 'owned' ? 'owned' : 'learning';
     sentences[idx].nextReview = Date.now() + SRS_INTERVALS[rating];
     sentences[idx].reviewCount = (sentences[idx].reviewCount || 0) + 1;
+    // Track daily history for streak
+    const todayStr = new Date().toISOString().slice(0,10);
+    if (!sentences[idx].history) sentences[idx].history = {};
+    sentences[idx].history[todayStr] = (sentences[idx].history[todayStr] || 0) + 1;
     saveSentences();
   }
 
@@ -1739,8 +1977,11 @@ document.addEventListener('keydown', e => {
   }
   if (currentScreen === 'recall') {
     if (e.key === ' ') { e.preventDefault(); if (!recallRevealed) recallReveal(); }
+    if (e.key === '1' && recallRevealed) recallRate('missed');
+    if (e.key === '2' && recallRevealed) recallRate('slow');
+    if (e.key === '3' && recallRevealed) recallRate('learning');
+    if (e.key === '4' && recallRevealed) recallRate('owned');
     if (e.key === 'ArrowLeft' && recallRevealed) recallRate('missed');
-    if (e.key === 'ArrowDown' && recallRevealed) recallRate('learning');
     if (e.key === 'ArrowRight' && recallRevealed) recallRate('owned');
     if (e.key === 'p' || e.key === 'P') recallPlayAudio();
   }
@@ -1758,6 +1999,463 @@ function toggleRoutine() {
     arrow.textContent = '▼ tap to expand';
   }
 }
+
+// ================================================================
+// VARIATIONS ENGINE
+// Generates variation sentences from owned/learning sentences
+// and pushes them into the Shadow queue
+// ================================================================
+
+// Variation templates — each takes a base sentence and generates alternatives
+const variationRules = [
+
+  // ── PAST TENSE ──────────────────────────────────────────────
+
+  // Voy a → Fui a (going to → went)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    generate: s => ({ en: 'I went ' + s.en.replace(/I'?m? going to /i,''), es_pr: 'Fui a ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
+
+  // Estoy → Estaba (I am doing → I was doing)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Estoy '),
+    generate: s => ({ en: 'I was ' + s.en.replace(/I'?m? /i,''), es_pr: 'Estaba ' + s.es_pr.replace('Estoy ',''), cat: s.cat }) },
+
+  // Tengo → Tenía (I have → I had)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
+    generate: s => ({ en: 'I had ' + s.en.replace('I have ',''), es_pr: 'Tenía ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
+
+  // Quiero → Quería (I want → I wanted)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
+    generate: s => ({ en: 'I wanted ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Quería ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
+
+  // Necesito → Necesitaba (I need → I needed)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'I needed ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Necesitaba ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
+
+  // Soy → Era (I am → I was, permanent)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
+    generate: s => ({ en: 'I was ' + s.en.replace('I am ',''), es_pr: 'Era ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
+
+  // Me siento → Me sentí (I feel → I felt)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
+    generate: s => ({ en: 'I felt ' + s.en.replace('I feel ',''), es_pr: 'Me sentí ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
+
+  // Puedo → Podía (I can → I could)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
+    generate: s => ({ en: 'I could ' + s.en.replace('I can ',''), es_pr: 'Podía ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
+
+  // Trabajo → Trabajaba (I work → I worked/used to work)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Trabajo '),
+    generate: s => ({ en: 'I used to work ' + s.en.replace('I work ',''), es_pr: 'Trabajaba ' + s.es_pr.replace('Trabajo ',''), cat: s.cat }) },
+
+  // Vivo → Vivía (I live → I used to live)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Vivo '),
+    generate: s => ({ en: 'I used to live ' + s.en.replace('I live ',''), es_pr: 'Vivía ' + s.es_pr.replace('Vivo ',''), cat: s.cat }) },
+
+  // Me encanta → Me encantaba (I love → I used to love)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Me encanta '),
+    generate: s => ({ en: 'I used to love ' + s.en.replace('I love ',''), es_pr: 'Me encantaba ' + s.es_pr.replace('Me encanta ',''), cat: s.cat }) },
+
+  // ── FUTURE ──────────────────────────────────────────────────
+
+  // Soy → Voy a ser (I am → I am going to be)
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
+    generate: s => ({ en: 'I am going to be ' + s.en.replace('I am ',''), es_pr: 'Voy a ser ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
+
+  // Tengo → Voy a tener (I have → I am going to have)
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
+    generate: s => ({ en: 'I am going to have ' + s.en.replace('I have ',''), es_pr: 'Voy a tener ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
+
+  // Trabajo → Voy a trabajar
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Trabajo '),
+    generate: s => ({ en: 'I am going to work ' + s.en.replace('I work ',''), es_pr: 'Voy a trabajar ' + s.es_pr.replace('Trabajo ',''), cat: s.cat }) },
+
+  // Puedo → Voy a poder
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
+    generate: s => ({ en: 'I am going to be able to ' + s.en.replace('I can ',''), es_pr: 'Voy a poder ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
+
+  // Me siento → Voy a sentirme
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
+    generate: s => ({ en: 'I am going to feel ' + s.en.replace('I feel ',''), es_pr: 'Voy a sentirme ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
+
+  // Necesito → Voy a necesitar
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'I am going to need ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Voy a necesitar ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
+
+  // ── CONDITIONAL ─────────────────────────────────────────────
+
+  // Voy a → Me gustaría (I am going to → I would like to)
+  { tense: 'conditional',
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    generate: s => ({ en: 'I would like to ' + s.en.replace(/I'?m? going to /i,''), es_pr: 'Me gustaría ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
+
+  // Quiero → Quisiera (I want → I would like, polite)
+  { tense: 'conditional',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
+    generate: s => ({ en: 'I would like ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Quisiera ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
+
+  // Puedo → Podría (I can → I could / I would be able to)
+  { tense: 'conditional',
+    match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
+    generate: s => ({ en: 'I would be able to ' + s.en.replace('I can ',''), es_pr: 'Podría ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
+
+  // Tengo → Tendría (I have → I would have)
+  { tense: 'conditional',
+    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
+    generate: s => ({ en: 'I would have ' + s.en.replace('I have ',''), es_pr: 'Tendría ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
+
+  // ── NEGATIVE ────────────────────────────────────────────────
+
+  // Voy a → No voy a
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    generate: s => ({ en: "I am not going to " + s.en.replace(/I'?m? going to /i,''), es_pr: 'No voy a ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
+
+  // Tengo → No tengo
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
+    generate: s => ({ en: 'I do not have ' + s.en.replace('I have ',''), es_pr: 'No tengo ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
+
+  // Puedo → No puedo
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
+    generate: s => ({ en: 'I cannot ' + s.en.replace('I can ',''), es_pr: 'No puedo ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
+
+  // Soy → No soy
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
+    generate: s => ({ en: 'I am not ' + s.en.replace('I am ',''), es_pr: 'No soy ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
+
+  // Me siento → No me siento
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
+    generate: s => ({ en: 'I do not feel ' + s.en.replace('I feel ',''), es_pr: 'No me siento ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
+
+  // ── QUESTION FORM ────────────────────────────────────────────
+
+  // Tengo → ¿Tienes? (I have → Do you have?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
+    generate: s => ({ en: 'Do you have ' + s.en.replace('I have ','') + '?', es_pr: '¿Tienes ' + s.es_pr.replace('Tengo ','') + '?', cat: s.cat }) },
+
+  // Puedo → ¿Puedes? (I can → Can you?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
+    generate: s => ({ en: 'Can you ' + s.en.replace('I can ','') + '?', es_pr: '¿Puedes ' + s.es_pr.replace('Puedo ','') + '?', cat: s.cat }) },
+
+  // Voy a → ¿Vas a? (I am going to → Are you going to?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    generate: s => ({ en: 'Are you going to ' + s.en.replace(/I'?m? going to /i,'') + '?', es_pr: '¿Vas a ' + s.es_pr.replace('Voy a ','') + '?', cat: s.cat }) },
+
+  // Quiero → ¿Quieres? (I want → Do you want?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
+    generate: s => ({ en: 'Do you want ' + s.en.replace(/I want(ed)? /i,'') + '?', es_pr: '¿Quieres ' + s.es_pr.replace('Quiero ','') + '?', cat: s.cat }) },
+
+  // Necesito → ¿Necesitas? (I need → Do you need?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'Do you need ' + s.en.replace(/I need(ed)? /i,'') + '?', es_pr: '¿Necesitas ' + s.es_pr.replace('Necesito ','') + '?', cat: s.cat }) },
+
+];
+
+function generateVariations() {
+  // Generate one variation per tense so every session covers all tenses
+  // Tense order rotates daily so you get variety
+  const tenseOrder = ['past', 'future', 'conditional', 'negative', 'question'];
+  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  // Rotate which tenses show today based on day of year
+  const todayTenses = [
+    tenseOrder[dayOfYear % 5],
+    tenseOrder[(dayOfYear + 1) % 5],
+    tenseOrder[(dayOfYear + 2) % 5],
+  ];
+
+  const candidates = sentences.filter(s => s.shadowDone && s.es_pr);
+  const result = [];
+
+  for (const tense of todayTenses) {
+    const rulesForTense = variationRules.filter(r => r.tense === tense);
+    let found = false;
+    for (const s of candidates) {
+      for (const rule of rulesForTense) {
+        if (!rule.match(s)) continue;
+        const variation = rule.generate(s);
+        if (!variation || !variation.es_pr) continue;
+        const exists = sentences.some(x =>
+          x.es_pr && x.es_pr.toLowerCase().trim() === variation.es_pr.toLowerCase().trim()
+        );
+        if (!exists) {
+          result.push({ ...variation, tense, baseId: s.id, baseSentence: s.es_pr });
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+  }
+  return result;
+}
+
+function renderTodaysVariations() {
+  const el = document.getElementById('today-variations');
+  if (!el) return;
+
+  const shadowed = sentences.filter(s => s.shadowDone).length;
+
+  // If nothing shadowed yet — show a helpful prompt instead
+  if (shadowed === 0) {
+    el.innerHTML = `<div class="wf-card">
+      <div class="wf-title" style="color:var(--blue)">Today's Focus</div>
+      <div class="wf-sub">Start by Shadowing your first sentences. Once you have shadowed some, variations of them will appear here for deeper drilling.</div>
+    </div>`;
+    return;
+  }
+
+  const variations = generateVariations();
+
+  if (!variations.length) {
+    el.innerHTML = `<div class="wf-card">
+      <div class="wf-title" style="color:var(--blue)">All variations drilled</div>
+      <div class="wf-sub">Keep Shadowing and Recalling. New variations will appear as you own more sentences.</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="wf-card">
+    <div class="wf-title" style="color:var(--blue)">Today's Variations</div>
+    <div class="wf-sub" style="margin-bottom:10px">These are built from sentences you already know. Shadow them until automatic — same method, deeper grammar.</div>
+    ${variations.map((v, i) => {
+      const tenseColors = { past: 'var(--warn)', future: 'var(--accent)', conditional: 'var(--purple)', negative: 'var(--danger)', question: 'var(--success)' };
+      const tenseLabels = { past: '⏮ Past', future: '⏭ Future', conditional: '💭 Conditional', negative: '✗ Negative', question: '? Question' };
+      const color = tenseColors[v.tense] || 'var(--blue)';
+      const label = tenseLabels[v.tense] || v.tense;
+      // Get grammar note
+      const grammarNotes = {
+        past: { 'Fui a ': 'Fui = went (past of Voy)', 'Estaba ': 'Estaba = was doing (past of Estoy)', 'Tenía ': 'Tenía = had (past of Tengo)', 'Quería ': 'Quería = wanted (past of Quiero)', 'Necesitaba ': 'Necesitaba = needed (past of Necesito)', 'Era ': 'Era = was (past of Soy)', 'Me sentí ': 'Me sentí = felt (past of Me siento)', 'Podía ': 'Podía = could (past of Puedo)', 'Trabajaba ': 'Trabajaba = used to work', 'Vivía ': 'Vivía = used to live', 'Me encantaba ': 'Me encantaba = used to love' },
+        future: { 'Voy a ser ': 'future of Soy', 'Voy a tener ': 'future of Tengo', 'Voy a trabajar ': 'future of Trabajo', 'Voy a poder ': 'future of Puedo', 'Voy a sentirme ': 'future of Me siento', 'Voy a necesitar ': 'future of Necesito' },
+        conditional: { 'Me gustaría ': 'I would like (polite)', 'Quisiera ': 'I would like (very polite)', 'Podría ': 'I could / would be able to', 'Tendría ': 'I would have' },
+        negative: { 'No voy a ': 'negative future', 'No tengo ': 'I do not have', 'No puedo ': 'I cannot', 'No soy ': 'I am not', 'No me siento ': 'I do not feel' },
+        question: { '¿Tienes ': 'Do you have? (you-form)', '¿Puedes ': 'Can you? (you-form)', '¿Vas a ': 'Are you going to? (you-form)', '¿Quieres ': 'Do you want? (you-form)', '¿Necesitas ': 'Do you need? (you-form)' }
+      };
+      const tenseNotes = grammarNotes[v.tense] || {};
+      const noteKey = Object.keys(tenseNotes).find(k => v.es_pr.startsWith(k));
+      const grammarNote = noteKey ? tenseNotes[noteKey] : '';
+      return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <div style="font-size:10px;color:var(--muted);">Based on: <em>${v.baseSentence}</em></div>
+          <span style="font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.05);color:${color};border:1px solid ${color};opacity:0.8">${label}</span>
+        </div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:2px;">${v.en}</div>
+        <div style="font-size:13px;color:${color};font-weight:500;margin-bottom:${grammarNote ? '4px' : '0'}">${v.es_pr}</div>
+        ${grammarNote ? `<div style="font-size:10px;color:${color};opacity:0.7;font-style:italic">📖 ${grammarNote}</div>` : ''}
+      </div>`;
+    }).join('')}
+    <button onclick="addVariationsToShadow()" class="btn" style="width:100%;justify-content:center;margin-top:8px;background:rgba(160,196,255,0.1);border-color:rgba(160,196,255,0.3);color:var(--blue)">
+      + Add all to Shadow queue
+    </button>
+  </div>`;
+
+  // Store current variations for adding to queue
+  window._currentVariations = variations;
+}
+
+function addVariationsToShadow() {
+  const variations = window._currentVariations;
+  if (!variations || !variations.length) return;
+  let added = 0;
+  variations.forEach((v, i) => {
+    // Check not already added
+    const exists = sentences.some(s =>
+      s.es_pr && s.es_pr.toLowerCase().trim() === v.es_pr.toLowerCase().trim()
+    );
+    if (!exists) {
+      sentences.push({
+        id: Date.now() + i,
+        en: v.en,
+        es_pr: v.es_pr,
+        cat: v.cat,
+        status: 'new',
+        shadowDone: false,
+        nextReview: null,
+        reviewCount: 0,
+        isVariation: true
+      });
+      added++;
+    }
+  });
+  saveSentences();
+  updateStats();
+  showToast(added + ' variation' + (added > 1 ? 's' : '') + ' added to Shadow queue', 'var(--blue)');
+  renderTodaysVariations();
+  if (currentScreen === 'shadow') initShadow();
+}
+
+
+
+// ================================================================
+// PROGRESS SCREEN
+// ================================================================
+function initProgress() {
+  const owned = getOwnedCount();
+  const learning = sentences.filter(s => s.status === 'learning').length;
+  const newCount = getNewCount();
+  const total = sentences.length;
+  const streak = getStreak();
+
+  document.getElementById('prog-owned').textContent = owned;
+  document.getElementById('prog-learning').textContent = learning;
+  document.getElementById('prog-new').textContent = newCount;
+  document.getElementById('prog-streak').textContent = streak;
+
+  // Week chart
+  const practiced = JSON.parse(localStorage.getItem('fluency_practiced_days') || '[]');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+  let weekBars = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0,10);
+    const dayName = days[d.getDay()];
+    const isToday = i === 0;
+    const done = practiced.includes(dateStr);
+    weekBars += `<div style="flex:1;text-align:center;">
+      <div style="height:32px;background:${done ? 'var(--purple)' : 'var(--border2)'};border-radius:4px;margin-bottom:4px;${isToday ? 'border:2px solid var(--purple)' : ''}"></div>
+      <div style="font-size:9px;color:${isToday ? 'var(--purple)' : 'var(--muted)'}">${dayName}</div>
+    </div>`;
+  }
+  document.getElementById('prog-week-chart').innerHTML = `<div style="display:flex;gap:4px;align-items:flex-end;background:var(--surface2);border-radius:8px;padding:12px;">${weekBars}</div>`;
+
+  // Category breakdown
+  const cats = { daily: 'Daily Life', social: 'Social', errands: 'Errands', work: 'Work', family: 'Family' };
+  let catHtml = '';
+  for (const [key, label] of Object.entries(cats)) {
+    const catSentences = sentences.filter(s => s.cat === key);
+    const catOwned = catSentences.filter(s => s.status === 'owned').length;
+    const catTotal = catSentences.length;
+    const pct = catTotal > 0 ? Math.round(catOwned / catTotal * 100) : 0;
+    catHtml += `<div style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+        <span style="color:var(--text)">${label}</span>
+        <span style="color:var(--muted)">${catOwned} / ${catTotal} owned (${pct}%)</span>
+      </div>
+      <div style="background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;">
+        <div style="width:${pct}%;background:var(--success);height:100%;border-radius:4px;transition:width 0.4s"></div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('prog-category-chart').innerHTML = catHtml;
+
+  // Milestone progress
+  const milestones = [70, 150, 300, 500, 1000];
+  const nextMilestone = milestones.find(m => owned < m) || 1000;
+  const prevMilestone = milestones[milestones.indexOf(nextMilestone) - 1] || 0;
+  const pct = Math.round((owned - prevMilestone) / (nextMilestone - prevMilestone) * 100);
+  document.getElementById('prog-milestone').innerHTML = `
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+      <span style="color:var(--muted)">${prevMilestone} owned</span>
+      <span style="color:var(--accent);font-weight:500">${owned} owned</span>
+      <span style="color:var(--muted)">${nextMilestone} owned</span>
+    </div>
+    <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;">
+      <div style="width:${Math.min(pct,100)}%;background:var(--accent);height:100%;border-radius:4px;transition:width 0.4s"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center">${Math.max(0, nextMilestone - owned)} sentences to next milestone</div>
+  `;
+
+  // Next milestone message
+  const stageMessages = {
+    70: 'Stage 1 complete — you can introduce yourself completely in Spanish.',
+    150: 'Stage 2 complete — basic daily interactions feel manageable.',
+    300: 'Stage 3 complete — you are having real conversations.',
+    500: 'Stage 4 complete — people stop treating you like a tourist.',
+    1000: 'Stage 5 complete — conversational fluency.'
+  };
+  document.getElementById('prog-next').innerHTML = `
+    <div style="font-size:13px;color:var(--accent);font-weight:500;margin-bottom:4px">At ${nextMilestone} owned sentences:</div>
+    <div style="font-size:12px;color:var(--text)">${stageMessages[nextMilestone] || 'Keep building.'}</div>
+  `;
+}
+
+// ================================================================
+// STREAK and WEEKLY CHART
+// ================================================================
+function getStreak() {
+  const practiced = JSON.parse(localStorage.getItem('fluency_practiced_days') || '[]');
+  if (!practiced.length) return 0;
+  const today = new Date().toISOString().slice(0,10);
+  const sorted = [...new Set(practiced)].sort().reverse();
+  if (sorted[0] !== today) {
+    // Check if yesterday was practiced (grace period)
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+    if (sorted[0] !== yesterday) return 0;
+  }
+  let streak = 0;
+  let checkDate = new Date();
+  for (let i = 0; i < 365; i++) {
+    const dateStr = checkDate.toISOString().slice(0,10);
+    if (sorted.includes(dateStr)) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function markPracticedToday() {
+  const today = new Date().toISOString().slice(0,10);
+  const practiced = JSON.parse(localStorage.getItem('fluency_practiced_days') || '[]');
+  if (!practiced.includes(today)) {
+    practiced.push(today);
+    localStorage.setItem('fluency_practiced_days', JSON.stringify(practiced));
+  }
+}
+
+function renderWeekChart() {
+  const el = document.getElementById('week-chart');
+  if (!el) return;
+  const practiced = JSON.parse(localStorage.getItem('fluency_practiced_days') || '[]');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = new Date();
+  const bars = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().slice(0,10);
+    const dayName = days[d.getDay()];
+    const isToday = i === 0;
+    const practiced_day = practiced.includes(dateStr);
+    bars.push({ dateStr, dayName, isToday, practiced_day });
+  }
+  el.innerHTML = `<div style="display:flex;gap:4px;align-items:flex-end;background:var(--surface2);border-radius:8px;padding:10px 12px;margin-bottom:14px;">
+    ${bars.map(b => `
+      <div style="flex:1;text-align:center;">
+        <div style="height:24px;background:${b.practiced_day ? 'var(--purple)' : 'var(--border2)'};border-radius:3px;margin-bottom:4px;${b.isToday ? 'border:1px solid var(--purple)' : ''}"></div>
+        <div style="font-size:9px;color:${b.isToday ? 'var(--purple)' : 'var(--muted)'}">${b.dayName}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
 // ================================================================
 // INIT
 // ================================================================
