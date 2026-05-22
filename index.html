@@ -2073,170 +2073,185 @@ function toggleRoutine() {
 // Variation templates — each takes a base sentence and generates alternatives
 const variationRules = [
 
-  // ── PAST TENSE ──────────────────────────────────────────────
+  // ── PAST TENSE ────────────────────────────────────────────────
+  // Only for actions, feelings, states — NOT permanent identity facts
 
-  // Voy a → Fui a (going to → went)
+  // Voy a → Fui a (I went)
   { tense: 'past',
-    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a ') && !s.es_pr.includes('ser '),
     generate: s => ({ en: 'I went ' + s.en.replace(/I'?m? going to /i,''), es_pr: 'Fui a ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
 
-  // Estoy → Estaba (I am doing → I was doing)
+  // Estoy → Estaba (I was doing)
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Estoy '),
     generate: s => ({ en: 'I was ' + s.en.replace(/I'?m? /i,''), es_pr: 'Estaba ' + s.es_pr.replace('Estoy ',''), cat: s.cat }) },
 
-  // Tengo → Tenía (I have → I had)
-  { tense: 'past',
-    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
-    generate: s => ({ en: 'I had ' + s.en.replace('I have ',''), es_pr: 'Tenía ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
-
-  // Quiero → Quería (I want → I wanted)
-  { tense: 'past',
-    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
-    generate: s => ({ en: 'I wanted ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Quería ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
-
-  // Necesito → Necesitaba (I need → I needed)
-  { tense: 'past',
-    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
-    generate: s => ({ en: 'I needed ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Necesitaba ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
-
-  // Soy → Era (I am → I was, permanent)
-  { tense: 'past',
-    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
-    generate: s => ({ en: 'I was ' + s.en.replace('I am ',''), es_pr: 'Era ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
-
-  // Me siento → Me sentí (I feel → I felt)
+  // Me siento → Me sentí (I felt)
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
     generate: s => ({ en: 'I felt ' + s.en.replace('I feel ',''), es_pr: 'Me sentí ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
 
-  // Puedo → Podía (I can → I could)
+  // Puedo → Podía (I could) — ability changes over time
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
     generate: s => ({ en: 'I could ' + s.en.replace('I can ',''), es_pr: 'Podía ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
 
-  // Trabajo → Trabajaba (I work → I worked/used to work)
+  // Quiero → Quería (I wanted) — desires change over time
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
+    generate: s => ({ en: 'I wanted ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Quería ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
+
+  // Necesito → Necesitaba (I needed) — needs change over time
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'I needed ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Necesitaba ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
+
+  // Trabajo → Trabajaba (I used to work) — jobs change
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Trabajo '),
     generate: s => ({ en: 'I used to work ' + s.en.replace('I work ',''), es_pr: 'Trabajaba ' + s.es_pr.replace('Trabajo ',''), cat: s.cat }) },
 
-  // Vivo → Vivía (I live → I used to live)
+  // Vivo → Vivía (I used to live) — location changes
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Vivo '),
     generate: s => ({ en: 'I used to live ' + s.en.replace('I live ',''), es_pr: 'Vivía ' + s.es_pr.replace('Vivo ',''), cat: s.cat }) },
 
-  // Me encanta → Me encantaba (I love → I used to love)
+  // Me encanta → Me encantaba (I used to love)
   { tense: 'past',
     match: s => s.es_pr && s.es_pr.startsWith('Me encanta '),
     generate: s => ({ en: 'I used to love ' + s.en.replace('I love ',''), es_pr: 'Me encantaba ' + s.es_pr.replace('Me encanta ',''), cat: s.cat }) },
 
-  // ── FUTURE ──────────────────────────────────────────────────
+  // Después de → Después de (narrate past routine)
+  { tense: 'past',
+    match: s => s.es_pr && s.es_pr.startsWith('Después de ') && s.es_pr.includes(', me') ,
+    generate: s => ({ en: 'Yesterday — ' + s.en, es_pr: 'Ayer, ' + s.es_pr.charAt(0).toLowerCase() + s.es_pr.slice(1), cat: s.cat }) },
 
-  // Soy → Voy a ser (I am → I am going to be)
-  { tense: 'future',
-    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
-    generate: s => ({ en: 'I am going to be ' + s.en.replace('I am ',''), es_pr: 'Voy a ser ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
+  // ── FUTURE ────────────────────────────────────────────────────
+  // Only for actions and plans — NOT identity or permanent facts
 
-  // Tengo → Voy a tener (I have → I am going to have)
-  { tense: 'future',
-    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
-    generate: s => ({ en: 'I am going to have ' + s.en.replace('I have ',''), es_pr: 'Voy a tener ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
-
-  // Trabajo → Voy a trabajar
+  // Trabajo → Voy a trabajar (plans to work)
   { tense: 'future',
     match: s => s.es_pr && s.es_pr.startsWith('Trabajo '),
     generate: s => ({ en: 'I am going to work ' + s.en.replace('I work ',''), es_pr: 'Voy a trabajar ' + s.es_pr.replace('Trabajo ',''), cat: s.cat }) },
 
-  // Puedo → Voy a poder
+  // Puedo → Voy a poder (will be able to)
   { tense: 'future',
     match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
     generate: s => ({ en: 'I am going to be able to ' + s.en.replace('I can ',''), es_pr: 'Voy a poder ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
 
-  // Me siento → Voy a sentirme
+  // Me siento → Voy a sentirme (going to feel)
   { tense: 'future',
     match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
     generate: s => ({ en: 'I am going to feel ' + s.en.replace('I feel ',''), es_pr: 'Voy a sentirme ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
 
-  // Necesito → Voy a necesitar
+  // Necesito → Voy a necesitar (going to need)
   { tense: 'future',
     match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
     generate: s => ({ en: 'I am going to need ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Voy a necesitar ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
 
-  // ── CONDITIONAL ─────────────────────────────────────────────
+  // Estoy → Voy a estar (going to be doing)
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Estoy '),
+    generate: s => ({ en: 'I am going to be ' + s.en.replace(/I'?m? /i,''), es_pr: 'Voy a estar ' + s.es_pr.replace('Estoy ',''), cat: s.cat }) },
 
-  // Voy a → Me gustaría (I am going to → I would like to)
-  { tense: 'conditional',
-    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
-    generate: s => ({ en: 'I would like to ' + s.en.replace(/I'?m? going to /i,''), es_pr: 'Me gustaría ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
+  // Quiero → Voy a querer (going to want) — desires that will continue
+  { tense: 'future',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero ') && s.es_pr.includes('aprender'),
+    generate: s => ({ en: 'I will always want ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Siempre voy a querer ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
 
-  // Quiero → Quisiera (I want → I would like, polite)
+  // ── CONDITIONAL ───────────────────────────────────────────────
+  // Polite desires and hypothetical abilities — NOT facts
+
+  // Quiero → Quisiera (I would like — polite)
   { tense: 'conditional',
     match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
     generate: s => ({ en: 'I would like ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'Quisiera ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
 
-  // Puedo → Podría (I can → I could / I would be able to)
+  // Puedo → Podría (I could / would be able to)
   { tense: 'conditional',
     match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
-    generate: s => ({ en: 'I would be able to ' + s.en.replace('I can ',''), es_pr: 'Podría ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
+    generate: s => ({ en: 'I could ' + s.en.replace('I can ',''), es_pr: 'Podría ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
 
-  // Tengo → Tendría (I have → I would have)
+  // Voy a → Me gustaría (I would like to)
   { tense: 'conditional',
-    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
-    generate: s => ({ en: 'I would have ' + s.en.replace('I have ',''), es_pr: 'Tendría ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a ') && !s.es_pr.includes('ser ') && !s.es_pr.includes('tener '),
+    generate: s => ({ en: 'I would like to ' + s.en.replace(/I'?m? going to /i,''), es_pr: 'Me gustaría ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
 
-  // ── NEGATIVE ────────────────────────────────────────────────
+  // Necesito → Necesitaría (I would need)
+  { tense: 'conditional',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'I would need ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'Necesitaría ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
 
-  // Voy a → No voy a
+  // ── NEGATIVE ──────────────────────────────────────────────────
+  // Only for actions and states — NOT unchangeable facts
+
+  // Voy a → No voy a (not going to)
   { tense: 'negative',
-    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a ') && !s.es_pr.includes('ser ') && !s.es_pr.includes('tener '),
     generate: s => ({ en: "I am not going to " + s.en.replace(/I'?m? going to /i,''), es_pr: 'No voy a ' + s.es_pr.replace('Voy a ',''), cat: s.cat }) },
 
-  // Tengo → No tengo
-  { tense: 'negative',
-    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
-    generate: s => ({ en: 'I do not have ' + s.en.replace('I have ',''), es_pr: 'No tengo ' + s.es_pr.replace('Tengo ',''), cat: s.cat }) },
-
-  // Puedo → No puedo
+  // Puedo → No puedo (I cannot)
   { tense: 'negative',
     match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
     generate: s => ({ en: 'I cannot ' + s.en.replace('I can ',''), es_pr: 'No puedo ' + s.es_pr.replace('Puedo ',''), cat: s.cat }) },
 
-  // Soy → No soy
-  { tense: 'negative',
-    match: s => s.es_pr && s.es_pr.startsWith('Soy '),
-    generate: s => ({ en: 'I am not ' + s.en.replace('I am ',''), es_pr: 'No soy ' + s.es_pr.replace('Soy ',''), cat: s.cat }) },
-
-  // Me siento → No me siento
+  // Me siento → No me siento (I do not feel)
   { tense: 'negative',
     match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
     generate: s => ({ en: 'I do not feel ' + s.en.replace('I feel ',''), es_pr: 'No me siento ' + s.es_pr.replace('Me siento ',''), cat: s.cat }) },
 
-  // ── QUESTION FORM ────────────────────────────────────────────
+  // Quiero → No quiero (I do not want)
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
+    generate: s => ({ en: 'I do not want ' + s.en.replace(/I want(ed)? /i,''), es_pr: 'No quiero ' + s.es_pr.replace('Quiero ',''), cat: s.cat }) },
 
-  // Tengo → ¿Tienes? (I have → Do you have?)
-  { tense: 'question',
-    match: s => s.es_pr && s.es_pr.startsWith('Tengo '),
-    generate: s => ({ en: 'Do you have ' + s.en.replace('I have ','') + '?', es_pr: '¿Tienes ' + s.es_pr.replace('Tengo ','') + '?', cat: s.cat }) },
+  // Estoy → No estoy (I am not)
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Estoy '),
+    generate: s => ({ en: 'I am not ' + s.en.replace(/I'?m? /i,''), es_pr: 'No estoy ' + s.es_pr.replace('Estoy ',''), cat: s.cat }) },
 
-  // Puedo → ¿Puedes? (I can → Can you?)
+  // Necesito → No necesito (I do not need)
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
+    generate: s => ({ en: 'I do not need ' + s.en.replace(/I need(ed)? /i,''), es_pr: 'No necesito ' + s.es_pr.replace('Necesito ',''), cat: s.cat }) },
+
+  // Trato de → No trato de (I do not try to)
+  { tense: 'negative',
+    match: s => s.es_pr && s.es_pr.startsWith('Trato de '),
+    generate: s => ({ en: 'I do not try to ' + s.en.replace(/I try to /i,''), es_pr: 'No trato de ' + s.es_pr.replace('Trato de ',''), cat: s.cat }) },
+
+  // ── QUESTION FORM ─────────────────────────────────────────────
+  // Only where asking someone else the same thing makes sense
+
+  // Puedo → ¿Puedes? (Can you?)
   { tense: 'question',
     match: s => s.es_pr && s.es_pr.startsWith('Puedo '),
     generate: s => ({ en: 'Can you ' + s.en.replace('I can ','') + '?', es_pr: '¿Puedes ' + s.es_pr.replace('Puedo ','') + '?', cat: s.cat }) },
 
-  // Voy a → ¿Vas a? (I am going to → Are you going to?)
+  // Voy a → ¿Vas a? (Are you going to?) — only for plans, not identity
   { tense: 'question',
-    match: s => s.es_pr && s.es_pr.startsWith('Voy a '),
+    match: s => s.es_pr && s.es_pr.startsWith('Voy a ') && !s.es_pr.includes('ser ') && !s.es_pr.includes('tener '),
     generate: s => ({ en: 'Are you going to ' + s.en.replace(/I'?m? going to /i,'') + '?', es_pr: '¿Vas a ' + s.es_pr.replace('Voy a ','') + '?', cat: s.cat }) },
 
-  // Quiero → ¿Quieres? (I want → Do you want?)
+  // Quiero → ¿Quieres? (Do you want?)
   { tense: 'question',
     match: s => s.es_pr && s.es_pr.startsWith('Quiero '),
     generate: s => ({ en: 'Do you want ' + s.en.replace(/I want(ed)? /i,'') + '?', es_pr: '¿Quieres ' + s.es_pr.replace('Quiero ','') + '?', cat: s.cat }) },
 
-  // Necesito → ¿Necesitas? (I need → Do you need?)
+  // Necesito → ¿Necesitas? (Do you need?)
   { tense: 'question',
     match: s => s.es_pr && s.es_pr.startsWith('Necesito '),
     generate: s => ({ en: 'Do you need ' + s.en.replace(/I need(ed)? /i,'') + '?', es_pr: '¿Necesitas ' + s.es_pr.replace('Necesito ','') + '?', cat: s.cat }) },
+
+  // Trato de → ¿Tratas de? (Do you try to?)
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Trato de '),
+    generate: s => ({ en: 'Do you try to ' + s.en.replace(/I try to /i,'') + '?', es_pr: '¿Tratas de ' + s.es_pr.replace('Trato de ','') + '?', cat: s.cat }) },
+
+  // Me siento → ¿Cómo te sientes? (How do you feel?) — only when logical
+  { tense: 'question',
+    match: s => s.es_pr && s.es_pr.startsWith('Me siento '),
+    generate: s => ({ en: 'How do you feel?', es_pr: '¿Cómo te sientes?', cat: s.cat }) },
 
 ];
 
