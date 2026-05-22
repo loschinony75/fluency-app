@@ -596,6 +596,16 @@
       <option value="5000">5 sec</option>
     </select>
   </div>
+  <div class="flex-gap mt16">
+    <div style="font-size:12px;color:var(--muted)">Playback speed:</div>
+    <select id="listen-speed" style="width:auto" onchange="updateListenSpeed()">
+      <option value="0.75">0.75x — slow</option>
+      <option value="1.0" selected>1.0x — normal</option>
+      <option value="1.25">1.25x — faster</option>
+      <option value="1.5">1.5x — fast</option>
+    </select>
+  </div>
+  <div id="listen-speed-hint" style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;display:none;background:var(--surface2);border-radius:6px;padding:8px 12px;"></div>
 </div>
 
 <!-- READING -->
@@ -909,11 +919,12 @@ function sanitize(str) {
 // TTS
 // ================================================================
 let currentAudio = null;
-function ttsSpeak(text, lang, onDone) {
+function ttsSpeak(text, lang, onDone, speed) {
   if (!text) { if (onDone) onDone(); return; }
   ttsStop();
   const audio = new Audio('/tts?text=' + encodeURIComponent(text) + '&lang=' + (lang || 'es-US'));
   currentAudio = audio;
+  if (speed) audio.playbackRate = parseFloat(speed);
   audio.onended = () => { currentAudio = null; if (onDone) onDone(); };
   audio.onerror = () => { currentAudio = null; if (onDone) onDone(); };
   audio.play().catch(() => { currentAudio = null; if (onDone) onDone(); });
@@ -1246,6 +1257,98 @@ const preloadedSentences = [
   { en: "I miss my daughters very much.", es_pr: "Extraño mucho a mis hijas.", cat: "family" },
   { en: "I visit my daughters in Germany.", es_pr: "Visito a mis hijas en Alemania.", cat: "family" },
   { en: "My daughters were born in Germany.", es_pr: "Mis hijas nacieron en Alemania.", cat: "family" },
+  // VERB FORMS — all 20 verbs × 5 forms
+  { en: "I go to the café every morning.", es_pr: "Voy a la cafetería todas las mañanas.", cat: "daily" },
+  { en: "I went to the Army in 1995.", es_pr: "Fui al ejército en 1995.", cat: "family" },
+  { en: "I was going to the VA every month.", es_pr: "Iba al VA todos los meses.", cat: "errands" },
+  { en: "I am not going to live in America anymore.", es_pr: "No voy a vivir en América más.", cat: "daily" },
+  { en: "Are you going to the café?", es_pr: "¿Vas a la cafetería?", cat: "social" },
+  { en: "I had a lot of discipline in the Army.", es_pr: "Tenía mucha disciplina en el ejército.", cat: "family" },
+  { en: "I am going to have my own coaching business.", es_pr: "Voy a tener mi propio negocio de coaching.", cat: "work" },
+  { en: "I do not have any stress about the move.", es_pr: "No tengo ningún estrés por la mudanza.", cat: "daily" },
+  { en: "Do you have an appointment today?", es_pr: "¿Tienes una cita hoy?", cat: "social" },
+  { en: "I was a paratrooper for four years.", es_pr: "Era paracaidista por cuatro años.", cat: "family" },
+  { en: "One day I am going to be fluent in Spanish.", es_pr: "Un día voy a ser fluido en español.", cat: "daily" },
+  { en: "I am not from the Canary Islands but I live here now.", es_pr: "No soy de las Islas Canarias pero ahora vivo aquí.", cat: "social" },
+  { en: "Are you from Puerto Rico?", es_pr: "¿Eres de Puerto Rico?", cat: "social" },
+  { en: "I was in the Army for ten years.", es_pr: "Estaba en el ejército por diez años.", cat: "family" },
+  { en: "I am going to be living in the Canary Islands.", es_pr: "Voy a estar viviendo en las Islas Canarias.", cat: "daily" },
+  { en: "I am not stressed about the move.", es_pr: "No estoy estresado por la mudanza.", cat: "daily" },
+  { en: "How are you feeling today?", es_pr: "¿Cómo estás hoy?", cat: "social" },
+  { en: "I can work from anywhere in the world.", es_pr: "Puedo trabajar desde cualquier lugar del mundo.", cat: "work" },
+  { en: "Before I could not speak Spanish.", es_pr: "Antes no podía hablar español.", cat: "daily" },
+  { en: "One day I will be able to coach in Spanish.", es_pr: "Un día voy a poder dar coaching en español.", cat: "work" },
+  { en: "I cannot give up on learning Spanish.", es_pr: "No puedo rendirme aprendiendo español.", cat: "daily" },
+  { en: "Can you speak more slowly please?", es_pr: "¿Puedes hablar más despacio por favor?", cat: "social" },
+  { en: "I always wanted to move to the Canary Islands.", es_pr: "Siempre quería mudarme a las Islas Canarias.", cat: "daily" },
+  { en: "I would like a coffee please.", es_pr: "Quisiera un café por favor.", cat: "errands" },
+  { en: "I do not want to go back to America.", es_pr: "No quiero volver a América.", cat: "daily" },
+  { en: "Do you want to have a coffee?", es_pr: "¿Quieres tomar un café?", cat: "social" },
+  { en: "I do meditation every morning.", es_pr: "Hago meditación todas las mañanas.", cat: "daily" },
+  { en: "I did everything I could in the Army.", es_pr: "Hice todo lo que pude en el ejército.", cat: "family" },
+  { en: "I am going to make dinner tonight.", es_pr: "Voy a hacer la cena esta noche.", cat: "daily" },
+  { en: "I do not do things without a plan.", es_pr: "No hago cosas sin un plan.", cat: "daily" },
+  { en: "What do you do every morning?", es_pr: "¿Qué haces todas las mañanas?", cat: "social" },
+  { en: "I know what I want in life.", es_pr: "Sé lo que quiero en la vida.", cat: "daily" },
+  { en: "I knew this was the right decision.", es_pr: "Sabía que esta era la decisión correcta.", cat: "daily" },
+  { en: "One day I will know Spanish without thinking.", es_pr: "Un día voy a saber español sin pensar.", cat: "daily" },
+  { en: "I do not know every word yet but I keep going.", es_pr: "No sé cada palabra todavía pero sigo adelante.", cat: "daily" },
+  { en: "I speak a little Spanish.", es_pr: "Hablo un poco de español.", cat: "daily" },
+  { en: "My parents used to speak Spanish to me a little.", es_pr: "Mis padres me hablaban un poco de español.", cat: "family" },
+  { en: "I am going to speak Spanish fluently.", es_pr: "Voy a hablar español con fluidez.", cat: "daily" },
+  { en: "I do not speak Spanish perfectly yet.", es_pr: "Todavía no hablo español perfectamente.", cat: "daily" },
+  { en: "I walk for twenty minutes every morning.", es_pr: "Camino veinte minutos todas las mañanas.", cat: "daily" },
+  { en: "I walked a lot in the Army.", es_pr: "Caminaba mucho en el ejército.", cat: "family" },
+  { en: "I am going to walk along the beach tomorrow.", es_pr: "Voy a caminar por la playa mañana.", cat: "daily" },
+  { en: "I cannot walk well when my knees hurt.", es_pr: "No puedo caminar bien cuando me duelen las rodillas.", cat: "daily" },
+  { en: "Do you want to go for a walk?", es_pr: "¿Quieres salir a caminar?", cat: "social" },
+  { en: "I meditate every morning after my walk.", es_pr: "Medito todas las mañanas después de caminar.", cat: "daily" },
+  { en: "I meditated for thirty minutes this morning.", es_pr: "Medité por treinta minutos esta mañana.", cat: "daily" },
+  { en: "I am going to meditate before my study session.", es_pr: "Voy a meditar antes de mi sesión de estudio.", cat: "daily" },
+  { en: "When I do not meditate I feel more anxious.", es_pr: "Cuando no medito me siento más ansioso.", cat: "daily" },
+  { en: "Do you meditate every day?", es_pr: "¿Meditas todos los días?", cat: "social" },
+  { en: "I worked in the Army for ten years.", es_pr: "Trabajé en el ejército por diez años.", cat: "family" },
+  { en: "I am going to work with Spanish speaking clients.", es_pr: "Voy a trabajar con clientes de habla hispana.", cat: "work" },
+  { en: "I do not work for anyone else anymore.", es_pr: "Ya no trabajo para nadie más.", cat: "work" },
+  { en: "What do you work as?", es_pr: "¿En qué trabajas?", cat: "social" },
+  { en: "I live in the Canary Islands now.", es_pr: "Vivo en las Islas Canarias ahora.", cat: "daily" },
+  { en: "I used to live in Brooklyn New York.", es_pr: "Antes vivía en Brooklyn Nueva York.", cat: "family" },
+  { en: "I am going to live here permanently.", es_pr: "Voy a vivir aquí de forma permanente.", cat: "daily" },
+  { en: "I do not want to live in America anymore.", es_pr: "Ya no quiero vivir en América.", cat: "daily" },
+  { en: "How long have you been living here?", es_pr: "¿Cuánto tiempo llevas viviendo aquí?", cat: "social" },
+  { en: "I felt very proud after finishing my service.", es_pr: "Me sentí muy orgulloso al terminar mi servicio.", cat: "family" },
+  { en: "I am going to feel better once I learn more Spanish.", es_pr: "Me voy a sentir mejor cuando aprenda más español.", cat: "daily" },
+  { en: "I do not feel well today because of my spine.", es_pr: "No me siento bien hoy por la columna.", cat: "daily" },
+  { en: "How do you feel today?", es_pr: "¿Cómo te sientes hoy?", cat: "social" },
+  { en: "I needed a big change in my life.", es_pr: "Necesitaba un gran cambio en mi vida.", cat: "daily" },
+  { en: "I am going to need more sentences about work.", es_pr: "Voy a necesitar más oraciones sobre el trabajo.", cat: "work" },
+  { en: "I do not need anyone to validate my decision.", es_pr: "No necesito que nadie valide mi decisión.", cat: "daily" },
+  { en: "Do you need help with anything?", es_pr: "¿Necesitas ayuda con algo?", cat: "social" },
+  { en: "I call my daughters every week.", es_pr: "Llamo a mis hijas todas las semanas.", cat: "family" },
+  { en: "I called the VA to make an appointment.", es_pr: "Llamé al VA para hacer una cita.", cat: "errands" },
+  { en: "I am going to call my mother on her birthday.", es_pr: "Voy a llamar a mi mamá en su cumpleaños.", cat: "family" },
+  { en: "I did not call anyone back yet.", es_pr: "Todavía no le he llamado a nadie.", cat: "daily" },
+  { en: "Can you call me later?", es_pr: "¿Me puedes llamar más tarde?", cat: "social" },
+  { en: "I ate chicken at the café yesterday.", es_pr: "Ayer comí pollo en la cafetería.", cat: "errands" },
+  { en: "I am going to eat something light tonight.", es_pr: "Voy a comer algo ligero esta noche.", cat: "daily" },
+  { en: "I do not eat processed food.", es_pr: "No como comida procesada.", cat: "daily" },
+  { en: "Do you want to eat something?", es_pr: "¿Quieres comer algo?", cat: "social" },
+  { en: "I sleep about seven hours a night.", es_pr: "Duermo como siete horas por noche.", cat: "daily" },
+  { en: "I slept very well after meditating.", es_pr: "Dormí muy bien después de meditar.", cat: "daily" },
+  { en: "I am going to sleep early tonight.", es_pr: "Me voy a dormir temprano esta noche.", cat: "daily" },
+  { en: "I do not sleep well when I have nerve pain.", es_pr: "No duermo bien cuando tengo dolor de nervios.", cat: "daily" },
+  { en: "Did you sleep well last night?", es_pr: "¿Dormiste bien anoche?", cat: "social" },
+  { en: "The Army taught me how to help others.", es_pr: "El ejército me enseñó cómo ayudar a los demás.", cat: "family" },
+  { en: "I am going to help Spanish speaking business owners.", es_pr: "Voy a ayudar a dueños de negocios de habla hispana.", cat: "work" },
+  { en: "I cannot help someone who does not want to change.", es_pr: "No puedo ayudar a alguien que no quiere cambiar.", cat: "work" },
+  { en: "Can I help you with something?", es_pr: "¿Te puedo ayudar con algo?", cat: "social" },
+
+  // LEVANTARSE — 5 forms of one verb
+  { en: "I get up at six thirty.", es_pr: "Me levanto a las seis y media.", cat: "daily" },
+  { en: "I am getting up right now.", es_pr: "Me estoy levantando ahora mismo.", cat: "daily" },
+  { en: "I am going to get up early tomorrow.", es_pr: "Me voy a levantar temprano mañana.", cat: "daily" },
+  { en: "Get up.", es_pr: "Levántate.", cat: "daily" },
+  { en: "It is hard for me to get up.", es_pr: "Me cuesta levantarme.", cat: "daily" },
   // EMOTIONS and reactions
   { en: "I am very happy today.", es_pr: "Estoy muy contento hoy.", cat: "daily" },
   { en: "I feel frustrated when I can't express myself in Spanish.", es_pr: "Me siento frustrado cuando no puedo expresarme en español.", cat: "daily" },
@@ -1502,7 +1605,7 @@ const preloadedSentences = [
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_v9') || 'null');
+let sentences = JSON.parse(localStorage.getItem('fluency_v10') || 'null');
 if (!sentences) {
   sentences = preloadedSentences.map((s, i) => ({
     id: Date.now() + i,
@@ -1512,7 +1615,7 @@ if (!sentences) {
     nextReview: null,
     reviewCount: 0
   }));
-  localStorage.setItem('fluency_v9', JSON.stringify(sentences));
+  localStorage.setItem('fluency_v10', JSON.stringify(sentences));
 }
 
 let currentCatFilter = 'all';
@@ -1534,7 +1637,7 @@ let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey
 // ================================================================
 // UTILS
 // ================================================================
-function saveSentences() { localStorage.setItem('fluency_v9', JSON.stringify(sentences)); }
+function saveSentences() { localStorage.setItem('fluency_v10', JSON.stringify(sentences)); }
 function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
@@ -2069,6 +2172,7 @@ function playListenNext() {
   document.getElementById('listen-es').textContent = text;
   document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
   document.getElementById('listen-dialect-badge').innerHTML = usePR ? '<span class="dialect-indicator pr">🇵🇷 PR</span>' : '<span class="dialect-indicator ca">🇮🇨 Canarian</span>';
+  const speed = document.getElementById('listen-speed') ? document.getElementById('listen-speed').value : '1.0';
   ttsSpeak(text, lang, () => {
     if (!listenPlaying) return;
     listenIdx++;
@@ -2621,6 +2725,247 @@ function renderWeekChart() {
   </div>`;
 }
 
+
+
+// ================================================================
+// VERB OF THE WEEK
+// ================================================================
+const VERB_SCHEDULE = [
+  { verb: 'Ir', meaning: 'to go', forms: [
+    { label: 'Habit', en: 'I go to the café every morning.', es: 'Voy a la cafetería todas las mañanas.' },
+    { label: 'Past', en: 'I went to the Army in 1995.', es: 'Fui al ejército en 1995.' },
+    { label: 'Past continuous', en: 'I was going to the VA every month.', es: 'Iba al VA todos los meses.' },
+    { label: 'Negative', en: 'I am not going to live in America anymore.', es: 'No voy a vivir en América más.' },
+    { label: 'Question', en: 'Are you going to the café?', es: '¿Vas a la cafetería?' },
+  ]},
+  { verb: 'Tener', meaning: 'to have', forms: [
+    { label: 'Habit', en: 'I have two daughters who live in Germany.', es: 'Tengo dos hijas que viven en Alemania.' },
+    { label: 'Past', en: 'I had a lot of discipline in the Army.', es: 'Tenía mucha disciplina en el ejército.' },
+    { label: 'Future', en: 'I am going to have my own coaching business.', es: 'Voy a tener mi propio negocio de coaching.' },
+    { label: 'Negative', en: 'I do not have any stress about the move.', es: 'No tengo ningún estrés por la mudanza.' },
+    { label: 'Question', en: 'Do you have an appointment today?', es: '¿Tienes una cita hoy?' },
+  ]},
+  { verb: 'Ser', meaning: 'to be (permanent)', forms: [
+    { label: 'Habit', en: 'I am Puerto Rican.', es: 'Soy puertorriqueño.' },
+    { label: 'Past', en: 'I was a paratrooper for four years.', es: 'Era paracaidista por cuatro años.' },
+    { label: 'Future', en: 'One day I am going to be fluent in Spanish.', es: 'Un día voy a ser fluido en español.' },
+    { label: 'Negative', en: 'I am not from the Canary Islands but I live here now.', es: 'No soy de las Islas Canarias pero ahora vivo aquí.' },
+    { label: 'Question', en: 'Are you from Puerto Rico?', es: '¿Eres de Puerto Rico?' },
+  ]},
+  { verb: 'Estar', meaning: 'to be (temporary)', forms: [
+    { label: 'Habit', en: 'I am learning Spanish every day.', es: 'Estoy aprendiendo español todos los días.' },
+    { label: 'Past', en: 'I was in the Army for ten years.', es: 'Estaba en el ejército por diez años.' },
+    { label: 'Future', en: 'I am going to be living in the Canary Islands.', es: 'Voy a estar viviendo en las Islas Canarias.' },
+    { label: 'Negative', en: 'I am not stressed about the move.', es: 'No estoy estresado por la mudanza.' },
+    { label: 'Question', en: 'How are you feeling today?', es: '¿Cómo estás hoy?' },
+  ]},
+  { verb: 'Poder', meaning: 'can / to be able to', forms: [
+    { label: 'Habit', en: 'I can work from anywhere in the world.', es: 'Puedo trabajar desde cualquier lugar del mundo.' },
+    { label: 'Past', en: 'Before I could not speak Spanish.', es: 'Antes no podía hablar español.' },
+    { label: 'Future', en: 'One day I will be able to coach in Spanish.', es: 'Un día voy a poder dar coaching en español.' },
+    { label: 'Negative', en: 'I cannot give up on learning Spanish.', es: 'No puedo rendirme aprendiendo español.' },
+    { label: 'Question', en: 'Can you speak more slowly please?', es: '¿Puedes hablar más despacio por favor?' },
+  ]},
+  { verb: 'Querer', meaning: 'to want / to love', forms: [
+    { label: 'Habit', en: 'I want to connect with my Puerto Rican roots.', es: 'Quiero conectar con mis raíces puertorriqueñas.' },
+    { label: 'Past', en: 'I always wanted to move to the Canary Islands.', es: 'Siempre quería mudarme a las Islas Canarias.' },
+    { label: 'Polite', en: 'I would like a coffee please.', es: 'Quisiera un café por favor.' },
+    { label: 'Negative', en: 'I do not want to go back to America.', es: 'No quiero volver a América.' },
+    { label: 'Question', en: 'Do you want to have a coffee?', es: '¿Quieres tomar un café?' },
+  ]},
+  { verb: 'Hacer', meaning: 'to do / to make', forms: [
+    { label: 'Habit', en: 'I do meditation every morning.', es: 'Hago meditación todas las mañanas.' },
+    { label: 'Past', en: 'I did everything I could in the Army.', es: 'Hice todo lo que pude en el ejército.' },
+    { label: 'Future', en: 'I am going to make dinner tonight.', es: 'Voy a hacer la cena esta noche.' },
+    { label: 'Negative', en: 'I do not do things without a plan.', es: 'No hago cosas sin un plan.' },
+    { label: 'Question', en: 'What do you do every morning?', es: '¿Qué haces todas las mañanas?' },
+  ]},
+  { verb: 'Saber', meaning: 'to know', forms: [
+    { label: 'Habit', en: 'I know what I want in life.', es: 'Sé lo que quiero en la vida.' },
+    { label: 'Past', en: 'I knew this was the right decision.', es: 'Sabía que esta era la decisión correcta.' },
+    { label: 'Future', en: 'One day I will know Spanish without thinking.', es: 'Un día voy a saber español sin pensar.' },
+    { label: 'Negative', en: 'I do not know every word yet but I keep going.', es: 'No sé cada palabra todavía pero sigo adelante.' },
+    { label: 'Question', en: 'Do you know where the pharmacy is?', es: '¿Sabes dónde está la farmacia?' },
+  ]},
+  { verb: 'Hablar', meaning: 'to speak', forms: [
+    { label: 'Habit', en: 'I speak a little Spanish.', es: 'Hablo un poco de español.' },
+    { label: 'Past', en: 'My parents used to speak Spanish to me a little.', es: 'Mis padres me hablaban un poco de español.' },
+    { label: 'Future', en: 'I am going to speak Spanish fluently.', es: 'Voy a hablar español con fluidez.' },
+    { label: 'Negative', en: 'I do not speak Spanish perfectly yet.', es: 'Todavía no hablo español perfectamente.' },
+    { label: 'Question', en: 'Do you speak English?', es: '¿Hablas inglés?' },
+  ]},
+  { verb: 'Caminar', meaning: 'to walk', forms: [
+    { label: 'Habit', en: 'I walk for twenty minutes every morning.', es: 'Camino veinte minutos todas las mañanas.' },
+    { label: 'Past', en: 'I walked a lot in the Army.', es: 'Caminaba mucho en el ejército.' },
+    { label: 'Future', en: 'I am going to walk along the beach tomorrow.', es: 'Voy a caminar por la playa mañana.' },
+    { label: 'Negative', en: 'I cannot walk well when my knees hurt.', es: 'No puedo caminar bien cuando me duelen las rodillas.' },
+    { label: 'Question', en: 'Do you want to go for a walk?', es: '¿Quieres salir a caminar?' },
+  ]},
+  { verb: 'Meditar', meaning: 'to meditate', forms: [
+    { label: 'Habit', en: 'I meditate every morning after my walk.', es: 'Medito todas las mañanas después de caminar.' },
+    { label: 'Past', en: 'I meditated for thirty minutes this morning.', es: 'Medité por treinta minutos esta mañana.' },
+    { label: 'Future', en: 'I am going to meditate before my study session.', es: 'Voy a meditar antes de mi sesión de estudio.' },
+    { label: 'Negative', en: 'When I do not meditate I feel more anxious.', es: 'Cuando no medito me siento más ansioso.' },
+    { label: 'Question', en: 'Do you meditate every day?', es: '¿Meditas todos los días?' },
+  ]},
+  { verb: 'Trabajar', meaning: 'to work', forms: [
+    { label: 'Habit', en: 'I work as a leadership coach.', es: 'Trabajo como coach de liderazgo.' },
+    { label: 'Past', en: 'I worked in the Army for ten years.', es: 'Trabajé en el ejército por diez años.' },
+    { label: 'Future', en: 'I am going to work with Spanish speaking clients.', es: 'Voy a trabajar con clientes de habla hispana.' },
+    { label: 'Negative', en: 'I do not work for anyone else anymore.', es: 'Ya no trabajo para nadie más.' },
+    { label: 'Question', en: 'What do you work as?', es: '¿En qué trabajas?' },
+  ]},
+  { verb: 'Vivir', meaning: 'to live', forms: [
+    { label: 'Habit', en: 'I live in the Canary Islands now.', es: 'Vivo en las Islas Canarias ahora.' },
+    { label: 'Past', en: 'I used to live in Brooklyn New York.', es: 'Antes vivía en Brooklyn Nueva York.' },
+    { label: 'Future', en: 'I am going to live here permanently.', es: 'Voy a vivir aquí de forma permanente.' },
+    { label: 'Negative', en: 'I do not want to live in America anymore.', es: 'Ya no quiero vivir en América.' },
+    { label: 'Question', en: 'How long have you been living here?', es: '¿Cuánto tiempo llevas viviendo aquí?' },
+  ]},
+  { verb: 'Sentirse', meaning: 'to feel', forms: [
+    { label: 'Habit', en: 'I feel more at peace here than in America.', es: 'Me siento más tranquilo aquí que en América.' },
+    { label: 'Past', en: 'I felt very proud after finishing my service.', es: 'Me sentí muy orgulloso al terminar mi servicio.' },
+    { label: 'Future', en: 'I am going to feel better once I learn more Spanish.', es: 'Me voy a sentir mejor cuando aprenda más español.' },
+    { label: 'Negative', en: 'I do not feel well today because of my spine.', es: 'No me siento bien hoy por la columna.' },
+    { label: 'Question', en: 'How do you feel today?', es: '¿Cómo te sientes hoy?' },
+  ]},
+  { verb: 'Necesitar', meaning: 'to need', forms: [
+    { label: 'Habit', en: 'I need to practice Spanish every day.', es: 'Necesito practicar español todos los días.' },
+    { label: 'Past', en: 'I needed a big change in my life.', es: 'Necesitaba un gran cambio en mi vida.' },
+    { label: 'Future', en: 'I am going to need more sentences about work.', es: 'Voy a necesitar más oraciones sobre el trabajo.' },
+    { label: 'Negative', en: 'I do not need anyone to validate my decision.', es: 'No necesito que nadie valide mi decisión.' },
+    { label: 'Question', en: 'Do you need help with anything?', es: '¿Necesitas ayuda con algo?' },
+  ]},
+  { verb: 'Llamar', meaning: 'to call', forms: [
+    { label: 'Habit', en: 'I call my daughters every week.', es: 'Llamo a mis hijas todas las semanas.' },
+    { label: 'Past', en: 'I called the VA to make an appointment.', es: 'Llamé al VA para hacer una cita.' },
+    { label: 'Future', en: 'I am going to call my mother on her birthday.', es: 'Voy a llamar a mi mamá en su cumpleaños.' },
+    { label: 'Negative', en: 'I did not call anyone back yet.', es: 'Todavía no le he llamado a nadie.' },
+    { label: 'Question', en: 'Can you call me later?', es: '¿Me puedes llamar más tarde?' },
+  ]},
+  { verb: 'Comer', meaning: 'to eat', forms: [
+    { label: 'Habit', en: 'I do not eat lunch.', es: 'No almuerzo.' },
+    { label: 'Past', en: 'I ate chicken at the café yesterday.', es: 'Ayer comí pollo en la cafetería.' },
+    { label: 'Future', en: 'I am going to eat something light tonight.', es: 'Voy a comer algo ligero esta noche.' },
+    { label: 'Negative', en: 'I do not eat processed food.', es: 'No como comida procesada.' },
+    { label: 'Question', en: 'Do you want to eat something?', es: '¿Quieres comer algo?' },
+  ]},
+  { verb: 'Dormir', meaning: 'to sleep', forms: [
+    { label: 'Habit', en: 'I sleep about seven hours a night.', es: 'Duermo como siete horas por noche.' },
+    { label: 'Past', en: 'I slept very well after meditating.', es: 'Dormí muy bien después de meditar.' },
+    { label: 'Future', en: 'I am going to sleep early tonight.', es: 'Me voy a dormir temprano esta noche.' },
+    { label: 'Negative', en: 'I do not sleep well when I have nerve pain.', es: 'No duermo bien cuando tengo dolor de nervios.' },
+    { label: 'Question', en: 'Did you sleep well last night?', es: '¿Dormiste bien anoche?' },
+  ]},
+  { verb: 'Ayudar', meaning: 'to help', forms: [
+    { label: 'Habit', en: 'I help people get the best out of themselves.', es: 'Ayudo a las personas a sacar lo mejor de sí mismas.' },
+    { label: 'Past', en: 'The Army taught me how to help others.', es: 'El ejército me enseñó cómo ayudar a los demás.' },
+    { label: 'Future', en: 'I am going to help Spanish speaking business owners.', es: 'Voy a ayudar a dueños de negocios de habla hispana.' },
+    { label: 'Negative', en: 'I cannot help someone who does not want to change.', es: 'No puedo ayudar a alguien que no quiere cambiar.' },
+    { label: 'Question', en: 'Can I help you with something?', es: '¿Te puedo ayudar con algo?' },
+  ]},
+  { verb: 'Levantarse', meaning: 'to get up — review week', forms: [
+    { label: 'Habit', en: 'I get up at six thirty every morning.', es: 'Me levanto a las seis y media todas las mañanas.' },
+    { label: 'Right now', en: 'I am getting up right now.', es: 'Me estoy levantando ahora mismo.' },
+    { label: 'Future', en: 'I am going to get up early tomorrow.', es: 'Me voy a levantar temprano mañana.' },
+    { label: 'Command', en: 'Get up.', es: 'Levántate.' },
+    { label: 'Difficulty', en: 'It is hard for me to get up when I have pain.', es: 'Me cuesta levantarme cuando tengo dolor.' },
+  ]},
+];
+
+function getCurrentVerbWeek() {
+  // Week 0 = first week of using the app
+  const startDate = localStorage.getItem('fluency_start_date');
+  if (!startDate) {
+    localStorage.setItem('fluency_start_date', new Date().toISOString().slice(0,10));
+    return 0;
+  }
+  const start = new Date(startDate);
+  const now = new Date();
+  const diffDays = Math.floor((now - start) / 86400000);
+  return Math.min(Math.floor(diffDays / 7), VERB_SCHEDULE.length - 1);
+}
+
+function renderVerbOfWeek() {
+  const el = document.getElementById('verb-of-week-card');
+  if (!el) return;
+
+  const weekIdx = getCurrentVerbWeek();
+  const verbData = VERB_SCHEDULE[weekIdx];
+
+  // Check which forms already exist in sentence bank
+  const formsStatus = verbData.forms.map(form => {
+    const exists = sentences.some(s =>
+      s.es_pr && s.es_pr.toLowerCase().trim() === form.es.toLowerCase().trim()
+    );
+    return { ...form, exists };
+  });
+
+  const doneCount = formsStatus.filter(f => f.exists).length;
+  const allDone = doneCount === 5;
+  const nextForm = formsStatus.find(f => !f.exists);
+
+  el.innerHTML = `<div style="background:rgba(212,240,60,0.04);border:1px solid rgba(212,240,60,0.2);border-radius:10px;padding:13px 15px;margin-bottom:0;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div>
+        <div style="font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);">This Week: ${verbData.verb} — ${verbData.meaning}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Week ${weekIdx + 1} of 20 · ${doneCount}/5 forms added</div>
+      </div>
+      <div style="display:flex;gap:4px;">
+        ${formsStatus.map(f => `<div style="width:8px;height:8px;border-radius:50%;background:${f.exists ? 'var(--success)' : 'var(--border2)'};"></div>`).join('')}
+      </div>
+    </div>
+    ${allDone
+      ? `<div style="font-size:12px;color:var(--success);padding:8px;background:rgba(79,207,138,0.08);border-radius:6px;text-align:center;">✓ All 5 forms added — keep drilling in Shadow and Recall</div>`
+      : `<div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Next form to add: <span style="color:var(--accent);">${nextForm ? nextForm.label : ''}</span></div>
+         <div style="font-size:12px;color:var(--text);margin-bottom:4px;">${nextForm ? nextForm.en : ''}</div>
+         <div style="font-size:12px;color:var(--accent);font-weight:500;margin-bottom:8px;">${nextForm ? nextForm.es : ''}</div>
+         <button onclick="addVerbForm(${weekIdx}, ${formsStatus.indexOf(nextForm)})" class="btn btn-accent" style="width:100%;justify-content:center;font-size:12px;padding:8px;">+ Add this form to Library</button>`
+    }
+  </div>`;
+}
+
+function addVerbForm(weekIdx, formIdx) {
+  const verbData = VERB_SCHEDULE[weekIdx];
+  const form = verbData.forms[formIdx];
+  if (!form) return;
+
+  const exists = sentences.some(s =>
+    s.es_pr && s.es_pr.toLowerCase().trim() === form.es.toLowerCase().trim()
+  );
+  if (exists) { showToast('Already in your Library', 'var(--muted)'); return; }
+
+  sentences.push({
+    id: Date.now(),
+    en: form.en,
+    es_pr: form.es,
+    cat: 'daily',
+    status: 'new',
+    shadowDone: false,
+    nextReview: null,
+    reviewCount: 0
+  });
+  saveSentences();
+  updateStats();
+  showToast('✓ Added — Shadow it today', 'var(--accent)');
+  renderVerbOfWeek();
+}
+
+
+function updateListenSpeed() {
+  const speed = parseFloat(document.getElementById('listen-speed').value);
+  const hint = document.getElementById('listen-speed-hint');
+  const messages = {
+    0.75: '🐢 Slow mode — good for beginners. Every word is clear.',
+    1.0: '▶ Normal speed — standard practice.',
+    1.25: '⚡ 1.25x — trains your ear for natural conversation speed. Use when sentences feel familiar.',
+    1.5: '🚀 1.5x — advanced ear training. Native speech will feel slower after this.',
+  };
+  if (hint) {
+    hint.textContent = messages[speed] || '';
+    hint.style.display = 'block';
+  }
+}
 
 // ================================================================
 // READING TAB — 3-day article method
