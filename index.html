@@ -313,6 +313,7 @@
     <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
+    <button class="nav-tab" onclick="showScreen('reading')">Reading</button>
     <button class="nav-tab" onclick="showScreen('library')">Library</button>
     <button class="nav-tab" onclick="showScreen('guide')">Guide</button>
     <button class="nav-tab" onclick="showScreen('progress')">Progress</button>
@@ -325,78 +326,88 @@
   <div class="today-subtitle" id="today-subtitle" style="margin-bottom:12px;"></div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 7 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
+
+  <!-- Step 0 — Walk + Listen (purple) AUTOPLAY -->
+  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
+    <div class="ms-check" id="mcheck-0"></div>
+    <div class="ms-body">
+      <div class="ms-title">Walk — Listen starts automatically</div>
+      <div class="ms-desc">Tap → Listen starts playing → put phone in pocket → walk 20 min → narrate what you see in Spanish out loud.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
+  </div>
 
   <!-- Step 1 — Shadow (blue) -->
-  <div class="mission-step shadow-step" id="mstep-0" onclick="goToStep(0,'shadow')">
-    <div class="ms-check" id="mcheck-0"></div>
+  <div class="mission-step shadow-step" id="mstep-1" onclick="goToStep(1,'shadow')">
+    <div class="ms-check" id="mcheck-1"></div>
     <div class="ms-body">
       <div class="ms-title">Shadow — listen and repeat</div>
       <div class="ms-desc">Tap → Play → listen once → repeat out loud → Loop until automatic. Auto-completes after 3 plays.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
+    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
   </div>
 
   <!-- Step 2 — Recall (green) -->
-  <div class="mission-step recall-step" id="mstep-1" onclick="goToStep(1,'recall')">
-    <div class="ms-check" id="mcheck-1"></div>
+  <div class="mission-step recall-step" id="mstep-2" onclick="goToStep(2,'recall')">
+    <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
       <div class="ms-title">Recall — say it from memory</div>
       <div class="ms-desc">Tap → see English → say Spanish out loud → reveal → rate honestly. Auto-completes after 5 answers.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
   <!-- Step 3 — Listen (purple) -->
-  <div class="mission-step listen-step" id="mstep-2" onclick="goToStep(2,'listen')">
-    <div class="ms-check" id="mcheck-2"></div>
+  <div class="mission-step listen-step" id="mstep-3" onclick="goToStep(3,'listen')">
+    <div class="ms-check" id="mcheck-3"></div>
     <div class="ms-body">
       <div class="ms-title">Listen — put phone down</div>
       <div class="ms-desc">Tap → press Start → put phone down → just listen. Auto-completes after 3 minutes.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">8 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
+    <div class="ms-right"><div class="ms-time">8 min</div><div class="ms-arrow" id="mgo-3">→</div></div>
   </div>
 
   <!-- Step 4 — Variations (blue) -->
-  <div class="mission-step shadow-step" id="mstep-3" onclick="document.getElementById('today-variations').scrollIntoView({behavior:'smooth'})">
-    <div class="ms-check" id="mcheck-3"></div>
+  <div class="mission-step shadow-step" id="mstep-4" onclick="document.getElementById('today-variations').scrollIntoView({behavior:'smooth'})">
+    <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
       <div class="ms-title">Variations — add today's to Shadow</div>
       <div class="ms-desc">Scroll down → tap Add all to Shadow queue → done. Auto-completes when added.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">2 min</div><div class="ms-arrow" id="mgo-3">↓</div></div>
+    <div class="ms-right"><div class="ms-time">2 min</div><div class="ms-arrow" id="mgo-4">↓</div></div>
   </div>
 
   <div id="today-variations" style="margin-bottom:8px;"></div>
 
   <!-- Step 5 — Reading (success green) -->
-  <div class="mission-step" id="mstep-4" onclick="completeMissionStep(4)" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
-    <div class="ms-check" id="mcheck-4" style="border-color:var(--success);color:var(--success);"></div>
+  <div class="mission-step" id="mstep-5" onclick="goToStep(5,'reading')" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
+    <div class="ms-check" id="mcheck-5" style="border-color:var(--success);color:var(--success);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--success);">Reading — 3-day article method</div>
       <div class="ms-desc">lingua.com/spanish/reading — Day 1 meaning, Day 2 out loud, Day 3 shadow writing. Tap when done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
   </div>
 
   <!-- Step 6 — Dreaming Spanish (purple) -->
-  <div class="mission-step listen-step" id="mstep-5" onclick="completeMissionStep(5)">
-    <div class="ms-check" id="mcheck-5"></div>
+  <div class="mission-step listen-step" id="mstep-6" onclick="completeMissionStep(6)">
+    <div class="ms-check" id="mcheck-6"></div>
     <div class="ms-body">
       <div class="ms-title">Dreaming Spanish — active watching</div>
       <div class="ms-desc">YouTube → Dreaming Spanish Superbeginner. Pause on phrases that connect to your life. Say your personal version out loud. Tap when done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-6">✓</div></div>
   </div>
 
   <!-- Step 7 — Journal (warm) -->
-  <div class="mission-step journal-step" id="mstep-6" onclick="openJournal()">
-    <div class="ms-check" id="mcheck-6"></div>
+  <div class="mission-step journal-step" id="mstep-7" onclick="openJournal()">
+    <div class="ms-check" id="mcheck-7"></div>
     <div class="ms-body">
       <div class="ms-title">Journal — write your day in Spanish</div>
       <div class="ms-desc">Tap → write what you did today → auto-saves to Library for tomorrow's Shadow. Before bed.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-6">→</div></div>
+    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-7">→</div></div>
   </div>
 
   <div class="stats-row" style="margin-top:16px;">
@@ -407,6 +418,10 @@
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
 
+  <div style="background:rgba(196,160,255,0.05);border:1px solid rgba(196,160,255,0.15);border-radius:10px;padding:12px 15px;margin-bottom:8px;">
+    <div style="font-size:12px;color:var(--purple);font-weight:500;margin-bottom:3px;">🎵 Daily Music — during your break</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6;">Marc Anthony, Daddy Yankee, Alejandro Sanz. Play on Spotify or YouTube while you rest. Sing along when you know the words. This is not studying — it is absorption.</div>
+  </div>
   <div class="low-energy">
     <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
   </div>
@@ -422,7 +437,7 @@
       <span id="routine-arrow" style="color:var(--muted);font-size:11px;">▼ tap to expand</span>
     </button>
     <div id="routine-body" style="display:none;padding:14px 16px;background:var(--surface2);border-top:1px solid var(--border);">
-      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">6:30 AM</span><span class="routine-text">Wake up — say <em>Me despierto a las seis y media.</em></span></div>
+      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">6:30 AM</span><span class="routine-text">Get up — say <em>Me levanto a las seis y media.</em></span></div>
       <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">6:50 AM</span><span class="routine-text">Walk 20 min — Listen on, Spanish commentary on what you see</span></div>
       <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">7:10 AM</span><span class="routine-text">Meditate — after: <em>Acabo de meditar. Me siento tranquilo.</em></span></div>
       <div class="routine-divider">☕ Coffee + Study — 38 minutes</div>
@@ -583,6 +598,76 @@
   </div>
 </div>
 
+<!-- READING -->
+<div class="screen" id="screen-reading">
+  <div style="margin-bottom:14px;border:1px solid rgba(79,207,138,0.2);border-radius:10px;overflow:hidden;">
+    <button onclick="toggleReadingInstructions()" style="width:100%;background:rgba(79,207,138,0.06);border:none;color:var(--success);font-family:var(--font-mono);font-size:12px;padding:11px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;">
+      <span>📖 Reading — The 3-Day Method</span>
+      <span id="reading-instr-arrow" style="font-size:11px;color:var(--muted);">▼ how it works</span>
+    </button>
+    <div id="reading-instructions" style="display:none;padding:14px 16px;background:rgba(79,207,138,0.04);border-top:1px solid rgba(79,207,138,0.15);">
+      <div style="font-size:12px;color:var(--text);line-height:1.8;">
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 1 — Meaning</span><br>Read once for meaning. Do not stop for every word — get the story. Note 3 unknown words. Look them up on WordReference.com. Add 1-2 as sentences to Library.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 2 — Out loud</span><br>Read the same article out loud. Rhythm and natural phrasing. No stopping for unknown words today.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — Shadow writing</span><br>Keep article open. Pick one paragraph. Swap in your own life sentence by sentence. Article stays in front of you — no memory required. Add 2 best sentences to Library.</div>
+        <div><span style="color:var(--success);font-weight:500;">Day 4 — New article</span><br>Tap New Article. Sentences you pulled keep drilling in Shadow and Recall indefinitely.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day tracker -->
+  <div class="card" style="background:var(--surface2);margin-bottom:12px;">
+    <div class="flex-between mb8">
+      <div>
+        <div style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--success)" id="reading-day-label">Day 1</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px" id="reading-day-task">Read for meaning. Get the story. Note 3 unknown words.</div>
+      </div>
+      <button class="btn" id="reading-next-btn" onclick="advanceReadingDay()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);font-size:12px;">Next Day →</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      <div id="reading-pip-0" style="flex:1;height:4px;border-radius:2px;background:var(--success);"></div>
+      <div id="reading-pip-1" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
+      <div id="reading-pip-2" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
+    </div>
+  </div>
+
+  <!-- Article link -->
+  <div class="card" style="background:var(--surface2);margin-bottom:12px;">
+    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Current Article</div>
+    <input type="text" id="reading-article-url" placeholder="Paste article URL or title here..." style="margin-bottom:8px;" />
+    <a id="reading-article-link" href="#" target="_blank" class="btn" style="width:100%;justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);" onclick="openArticle()">
+      📖 Open Article
+    </a>
+  </div>
+
+  <!-- Day 1 & 2 — Vocabulary notes -->
+  <div id="reading-vocab-section" class="card" style="background:var(--surface2);margin-bottom:12px;">
+    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Unknown Words (max 3)</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">Write the word → look it up on <a href="https://www.wordreference.com/es/en/translation.asp" target="_blank" style="color:var(--success);">WordReference.com</a> → add it as a sentence to your Library.</div>
+    <textarea id="reading-vocab" placeholder="1. desayunamos — we eat breakfast (we-form of desayunar)&#10;2. somos — we are (we-form of ser)&#10;3. ..." style="min-height:80px;margin-bottom:8px;"></textarea>
+    <button class="btn" onclick="saveVocabNote()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Save vocab notes</button>
+  </div>
+
+  <!-- Day 3 — Shadow writing -->
+  <div id="reading-shadow-section" class="card" style="background:var(--surface2);margin-bottom:12px;display:none;">
+    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Shadow Writing — Day 3</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.7;">Keep the article open. Pick one paragraph. Swap in your own life sentence by sentence. Article stays open — no memory required.</div>
+    <textarea id="reading-shadow" placeholder="Write your personal version of one paragraph here...&#10;&#10;Example: Somos una familia pequeña → Soy una familia pequeña también. Tengo dos hijas que viven en Alemania..." style="min-height:120px;margin-bottom:8px;"></textarea>
+    <button class="btn btn-accent" onclick="saveShadowWriting()" style="width:100%;justify-content:center;">Save best sentences to Library</button>
+  </div>
+
+  <!-- Saved vocab notes display -->
+  <div id="reading-saved-display" style="display:none;" class="card" style="background:var(--surface2);margin-bottom:12px;">
+    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Saved Notes</div>
+    <div id="reading-saved-text" style="font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;"></div>
+  </div>
+
+  <!-- Complete reading step button -->
+  <button class="btn" onclick="completeReadingStep()" style="width:100%;justify-content:center;margin-top:4px;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">
+    ✓ Mark today's reading complete — Step 5
+  </button>
+</div>
+
 <!-- LIBRARY -->
 <div class="screen" id="screen-library">
 
@@ -663,7 +748,7 @@
 
   <div class="guide-section">
     <div class="guide-section-title">Your Daily Routine</div>
-    <div class="guide-step"><div class="guide-step-num">1</div><div><div class="guide-step-title">6:30 AM — Wake up</div><div class="guide-step-desc">Say out loud: <em>Me despierto a las seis y media.</em></div></div></div>
+    <div class="guide-step"><div class="guide-step-num">1</div><div><div class="guide-step-title">6:30 AM — Wake up</div><div class="guide-step-desc">Say out loud: <em>Me levanto a las seis y media.</em></div></div></div>
     <div class="guide-step"><div class="guide-step-num">2</div><div><div class="guide-step-title">6:50 AM — Walk with Listen on</div><div class="guide-step-desc">Running commentary on what you see. <em>Hace buen tiempo. Voy a caminar.</em></div></div></div>
     <div class="guide-step"><div class="guide-step-num">3</div><div><div class="guide-step-title">7:10 AM — Meditate</div><div class="guide-step-desc">After: <em>Acabo de meditar. Me siento tranquilo.</em></div></div></div>
     <div class="guide-step"><div class="guide-step-num">4</div><div><div class="guide-step-title">7:30 AM — Coffee + Study (38 min)</div><div class="guide-step-desc">Follow the Today tab. Shadow 10 min → Recall 20 min → Listen 8 min. In that order. Always.</div></div></div>
@@ -1053,7 +1138,7 @@ const preloadedSentences = [
   { en: "I am a disabled veteran.", es_pr: "Soy un veterano discapacitado.", cat: "daily" },
   { en: "I am disabled.", es_pr: "Estoy discapacitado.", cat: "daily" },
   { en: "I have two daughters who live in Germany.", es_pr: "Tengo dos hijas que viven en Alemania.", cat: "daily" },
-  { en: "I wake up around six thirty.", es_pr: "Me despierto como a las seis y media.", cat: "daily" },
+  { en: "I get up around six thirty.", es_pr: "Me levanto como a las seis y media.", cat: "daily" },
   { en: "After walking I meditate.", es_pr: "Después de caminar, medito.", cat: "daily" },
   { en: "After meditating I have my coffee.", es_pr: "Después de meditar, me tomo mi café.", cat: "daily" },
   { en: "I try to practice Spanish every day.", es_pr: "Trato de practicar español todos los días.", cat: "daily" },
@@ -1444,7 +1529,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -1512,8 +1597,11 @@ function initToday() {
 
 function goToStep(idx, screen) {
   showScreen(screen);
-  // Shadow step (0) completes via shadowPlayCount in shadowPlay()
-  // No timer needed — completion is activity-based
+  // Step 0 — Walk + Listen: autostart listen mode
+  if (idx === 0 && screen === 'listen' && !listenPlaying) {
+    setTimeout(() => startListen(), 400);
+  }
+  // Reading tab — no auto-complete, user taps complete button inside tab
 }
 
 function completeMissionStep(idx) {
@@ -1537,8 +1625,8 @@ function renderMissionSteps() {
 
 function updateMissionProgress() {
   const done = missionSteps.filter(Boolean).length;
-  document.getElementById('today-progress').style.width = (done / 7 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 7 steps complete' + (done === 7 ? ' — Mission complete! 🎉' : '');
+  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -1570,6 +1658,7 @@ function showScreen(name) {
   if (name === 'library') renderLibrary();
   if (name === 'guide') initGuide();
   if (name === 'progress') initProgress();
+  if (name === 'reading') initReading();
 }
 
 // ================================================================
@@ -1759,7 +1848,7 @@ function shadowPlay() {
   });
   practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
   shadowPlayCount++;
-  if (shadowPlayCount >= 3) completeMissionStep(0);
+  if (shadowPlayCount >= 3) completeMissionStep(1);
   markPracticedToday();
   // Track per-sentence play count
   if (shadowQueue[shadowIdx]) {
@@ -1927,7 +2016,7 @@ function recallRate(rating) {
 
   practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
   recallAnswerCount++;
-  if (recallAnswerCount >= 5) completeMissionStep(1);
+  if (recallAnswerCount >= 5) completeMissionStep(2);
 
   recallIdx++;
   renderRecall();
@@ -1948,7 +2037,12 @@ function startListen() {
   clearInterval(listenMissionTimer);
   listenMissionTimer = setInterval(() => {
     listenMissionSeconds++;
-    if (listenMissionSeconds >= 180) { completeMissionStep(2); clearInterval(listenMissionTimer); }
+    if (listenMissionSeconds >= 180) {
+        // Complete whichever listen step is not yet done
+        if (!missionSteps[0]) completeMissionStep(0);
+        else completeMissionStep(3);
+        clearInterval(listenMissionTimer);
+      }
   }, 1000);
   playListenNext();
 }
@@ -2010,7 +2104,7 @@ function saveJournal() {
     sentences.push({ id: Date.now() + i, en: '📓 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily', status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 });
   });
   saveSentences(); renderLibrary(); updateStats();
-  closeJournal(); completeMissionStep(6);
+  closeJournal(); completeMissionStep(7);
   showToast('✓ ' + lines.length + ' sentence' + (lines.length > 1 ? 's' : '') + ' added — Shadow them next');
 }
 
@@ -2374,7 +2468,7 @@ function addVariationsToShadow() {
   saveSentences();
   updateStats();
   showToast(added + ' variation' + (added > 1 ? 's' : '') + ' added to Shadow queue', 'var(--blue)');
-  completeMissionStep(3);
+  completeMissionStep(4);
   renderTodaysVariations();
   if (currentScreen === 'shadow') initShadow();
 }
@@ -2525,6 +2619,161 @@ function renderWeekChart() {
       </div>
     `).join('')}
   </div>`;
+}
+
+
+// ================================================================
+// READING TAB — 3-day article method
+// ================================================================
+const READING_TASKS = [
+  { label: 'Day 1 — Meaning', task: 'Read for meaning. Get the story. Note 3 unknown words. Look them up on WordReference.com.' },
+  { label: 'Day 2 — Out loud', task: 'Read the same article out loud. Focus on rhythm and flow. No stopping for unknown words.' },
+  { label: 'Day 3 — Shadow writing', task: 'Article open in front of you. Pick one paragraph. Swap in your own life. Write your version.' },
+];
+
+
+function toggleReadingInstructions() {
+  const body = document.getElementById('reading-instructions');
+  const arrow = document.getElementById('reading-instr-arrow');
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.textContent = '▲ hide';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▼ how it works';
+  }
+}
+
+function initReading() {
+  const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
+  const url = localStorage.getItem('fluency_reading_url') || '';
+  const vocab = localStorage.getItem('fluency_reading_vocab') || '';
+
+  // Set article URL
+  const urlEl = document.getElementById('reading-article-url');
+  if (urlEl) urlEl.value = url;
+  urlEl.onchange = () => localStorage.setItem('fluency_reading_url', urlEl.value);
+  urlEl.onkeyup = () => localStorage.setItem('fluency_reading_url', urlEl.value);
+
+  // Set vocab notes
+  const vocabEl = document.getElementById('reading-vocab');
+  if (vocabEl && vocab) vocabEl.value = vocab;
+
+  // Set saved notes display
+  const savedDisplay = document.getElementById('reading-saved-display');
+  const savedText = document.getElementById('reading-saved-text');
+  if (vocab && savedDisplay && savedText) {
+    savedDisplay.style.display = 'block';
+    savedText.textContent = vocab;
+  }
+
+  renderReadingDay(day);
+}
+
+function renderReadingDay(day) {
+  const task = READING_TASKS[Math.min(day, 2)];
+  const labelEl = document.getElementById('reading-day-label');
+  const taskEl = document.getElementById('reading-day-task');
+  const vocabSection = document.getElementById('reading-vocab-section');
+  const shadowSection = document.getElementById('reading-shadow-section');
+
+  if (labelEl) labelEl.textContent = task.label;
+  if (taskEl) taskEl.textContent = task.task;
+
+  // Show/hide sections based on day
+  if (vocabSection) vocabSection.style.display = day <= 1 ? 'block' : 'none';
+  if (shadowSection) shadowSection.style.display = day === 2 ? 'block' : 'none';
+
+  // Update progress pips
+  for (let i = 0; i < 3; i++) {
+    const pip = document.getElementById('reading-pip-' + i);
+    if (pip) pip.style.background = i <= day ? 'var(--success)' : 'var(--border2)';
+  }
+
+  // Update next button
+  const nextBtn = document.getElementById('reading-next-btn');
+  if (nextBtn) {
+    if (day >= 2) {
+      nextBtn.textContent = '✓ New Article →';
+      nextBtn.style.background = 'var(--success)';
+      nextBtn.style.color = 'var(--bg)';
+    } else {
+      nextBtn.textContent = 'Next Day →';
+    }
+  }
+}
+
+function advanceReadingDay() {
+  const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
+  if (day >= 2) {
+    // Reset to day 0 for new article
+    localStorage.setItem('fluency_reading_day', '0');
+    localStorage.setItem('fluency_reading_url', '');
+    localStorage.setItem('fluency_reading_vocab', '');
+    document.getElementById('reading-article-url').value = '';
+    document.getElementById('reading-vocab').value = '';
+    const savedDisplay = document.getElementById('reading-saved-display');
+    if (savedDisplay) savedDisplay.style.display = 'none';
+    showToast('New article — Day 1 starts now', 'var(--success)');
+    renderReadingDay(0);
+  } else {
+    localStorage.setItem('fluency_reading_day', day + 1);
+    renderReadingDay(day + 1);
+    showToast('Day ' + (day + 2) + ' unlocked', 'var(--success)');
+  }
+}
+
+function openArticle() {
+  const url = document.getElementById('reading-article-url').value.trim();
+  if (url && (url.startsWith('http') || url.startsWith('www'))) {
+    window.open(url.startsWith('http') ? url : 'https://' + url, '_blank');
+  } else {
+    window.open('https://lingua.com/spanish/reading/', '_blank');
+  }
+  return false;
+}
+
+function saveVocabNote() {
+  const vocab = document.getElementById('reading-vocab').value.trim();
+  if (!vocab) { showToast('Write at least one word first', 'var(--danger)'); return; }
+  localStorage.setItem('fluency_reading_vocab', vocab);
+  const savedDisplay = document.getElementById('reading-saved-display');
+  const savedText = document.getElementById('reading-saved-text');
+  if (savedDisplay) savedDisplay.style.display = 'block';
+  if (savedText) savedText.textContent = vocab;
+  showToast('Vocab notes saved', 'var(--success)');
+}
+
+function saveShadowWriting() {
+  const text = document.getElementById('reading-shadow').value.trim();
+  if (!text) { showToast('Write your shadow version first', 'var(--danger)'); return; }
+
+  // Split by line breaks and save each non-empty line as a sentence
+  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 5);
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  let added = 0;
+  lines.slice(0, 5).forEach((es, i) => {
+    sentences.push({
+      id: Date.now() + i,
+      en: '📖 ' + today + ' — ' + es,
+      es_pr: es,
+      es_ca: es,
+      cat: 'daily',
+      status: 'new',
+      shadowDone: false,
+      nextReview: null,
+      reviewCount: 0
+    });
+    added++;
+  });
+  saveSentences();
+  updateStats();
+  showToast(added + ' sentence' + (added > 1 ? 's' : '') + ' saved to Library', 'var(--success)');
+}
+
+function completeReadingStep() {
+  completeMissionStep(5);
+  showToast('Reading complete ✓', 'var(--success)');
 }
 
 // ================================================================
