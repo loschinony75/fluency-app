@@ -322,7 +322,7 @@
 <div class="screen active" id="screen-today">
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
 
   <!-- Step 0 — Walk + Listen (purple) AUTOPLAY -->
   <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
@@ -364,56 +364,44 @@
     <div class="ms-right"><div class="ms-time">8 min</div><div class="ms-arrow" id="mgo-3">→</div></div>
   </div>
 
-  <!-- Step 4 — Variations (blue) -->
-  <div class="mission-step shadow-step" id="mstep-4" onclick="document.getElementById('today-variations').scrollIntoView({behavior:'smooth'})">
-    <div class="ms-check" id="mcheck-4"></div>
-    <div class="ms-body">
-      <div class="ms-title">Variations — add today's to Shadow</div>
-      <div class="ms-desc">Scroll down → tap Add all to Shadow queue → done. Auto-completes when added.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">2 min</div><div class="ms-arrow" id="mgo-4">↓</div></div>
-  </div>
-
-  <div id="today-variations" style="margin-bottom:8px;"></div>
-
   <!-- Step 5 — Reading (success green) -->
-  <div class="mission-step" id="mstep-5" onclick="goToStep(5,'reading')" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
-    <div class="ms-check" id="mcheck-5" style="border-color:var(--success);color:var(--success);"></div>
+  <div class="mission-step" id="mstep-4" onclick="goToStep(4,'reading')" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
+    <div class="ms-check" id="mcheck-4" style="border-color:var(--success);color:var(--success);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--success);">Reading — 3-day article method</div>
       <div class="ms-desc">lingua.com/spanish/reading — Day 1 meaning, Day 2 out loud, Day 3 shadow writing. Tap when done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
   </div>
 
   <!-- Step 6 — Dreaming Spanish (purple) -->
-  <div class="mission-step listen-step" id="mstep-6" onclick="completeMissionStep(6)">
-    <div class="ms-check" id="mcheck-6"></div>
+  <div class="mission-step listen-step" id="mstep-5" onclick="completeMissionStep(5)">
+    <div class="ms-check" id="mcheck-5"></div>
     <div class="ms-body">
       <div class="ms-title">Dreaming Spanish — active watching</div>
       <div class="ms-desc">YouTube → Dreaming Spanish Superbeginner. Pause on phrases that connect to your life. Say your personal version out loud. Tap when done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-6">✓</div></div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
   </div>
 
   <!-- Step 7 — Journal (warm) -->
   <!-- Step 7 — Music (purple) -->
-  <div class="mission-step listen-step" id="mstep-7" onclick="completeMissionStep(7)" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
-    <div class="ms-check" id="mcheck-7" style="border-color:var(--purple);color:var(--purple);"></div>
+  <div class="mission-step listen-step" id="mstep-6" onclick="completeMissionStep(6)" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
+    <div class="ms-check" id="mcheck-6" style="border-color:var(--purple);color:var(--purple);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--purple);">Music — Spanish during your break</div>
       <div class="ms-desc">Open Spotify or YouTube → Marc Anthony, Daddy Yankee, Alejandro Sanz → sing along when you know the words. Tap when done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-7">✓</div></div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-6">✓</div></div>
   </div>
 
-    <div class="mission-step journal-step" id="mstep-8" onclick="openJournal()">
-    <div class="ms-check" id="mcheck-8"></div>
+    <div class="mission-step journal-step" id="mstep-7" onclick="openJournal()">
+    <div class="ms-check" id="mcheck-7"></div>
     <div class="ms-body">
       <div class="ms-title">Journal — write your day in Spanish</div>
       <div class="ms-desc">Tap → write what you did today → auto-saves to Library for tomorrow's Shadow. Before bed.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-8">→</div></div>
+    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-7">→</div></div>
   </div>
 
   <div class="stats-row" style="margin-top:16px;">
@@ -1648,7 +1636,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -1701,7 +1689,6 @@ function initToday() {
   renderWeekChart();
 
   // Variations — replace static word family with actionable variation sentences
-  renderTodaysVariations();
 
   renderMissionSteps();
   updateMissionProgress();
@@ -1737,8 +1724,8 @@ function renderMissionSteps() {
 
 function updateMissionProgress() {
   const done = missionSteps.filter(Boolean).length;
-  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
+  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -2221,7 +2208,7 @@ function saveJournal() {
     sentences.push({ id: Date.now() + i, en: '📓 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily', status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 });
   });
   saveSentences(); renderLibrary(); updateStats();
-  closeJournal(); completeMissionStep(8);
+  closeJournal(); completeMissionStep(7);
   showToast('✓ ' + lines.length + ' sentence' + (lines.length > 1 ? 's' : '') + ' added — Shadow them next');
 }
 
@@ -2585,8 +2572,6 @@ function addVariationsToShadow() {
   saveSentences();
   updateStats();
   showToast(added + ' variation' + (added > 1 ? 's' : '') + ' added to Shadow queue', 'var(--blue)');
-  completeMissionStep(4);
-  renderTodaysVariations();
   if (currentScreen === 'shadow') initShadow();
 }
 
@@ -3180,7 +3165,7 @@ function saveShadowWriting() {
 }
 
 function completeReadingStep() {
-  completeMissionStep(5);
+  completeMissionStep(4);
   showToast('Reading complete ✓', 'var(--success)');
 }
 
