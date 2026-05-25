@@ -2162,9 +2162,8 @@ function stopListen() {
 
 function playListenNext() {
   if (!listenPlaying) return;
-  const shadowed = sentences.filter(s => s.shadowDone);
-  if (!shadowed.length) { stopListen(); return; }
-  const s = shadowed[listenIdx % shadowed.length];
+  if (!sentences.length) { stopListen(); return; }
+  const s = sentences[listenIdx % sentences.length];
   const usePR = listenIdx % 2 === 0;
   const lang = usePR ? 'es-US' : 'es';
   const text = usePR ? getPR(s) : getCA(s);
