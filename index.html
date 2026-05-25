@@ -82,8 +82,6 @@
   .mode-header strong { font-family: var(--font-head); display: block; font-size: 14px; margin-bottom: 3px; }
 
   /* TODAY TAB */
-  .today-greeting { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-  .today-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
 
   /* STATS ROW */
   .stats-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -322,11 +320,9 @@
 
 <!-- TODAY -->
 <div class="screen active" id="screen-today">
-  <div class="today-greeting" id="today-greeting">Good morning, Carlos.</div>
-  <div class="today-subtitle" id="today-subtitle" style="margin-bottom:12px;"></div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
 
   <!-- Step 0 — Walk + Listen (purple) AUTOPLAY -->
   <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
@@ -401,13 +397,23 @@
   </div>
 
   <!-- Step 7 — Journal (warm) -->
-  <div class="mission-step journal-step" id="mstep-7" onclick="openJournal()">
-    <div class="ms-check" id="mcheck-7"></div>
+  <!-- Step 7 — Music (purple) -->
+  <div class="mission-step listen-step" id="mstep-7" onclick="completeMissionStep(7)" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
+    <div class="ms-check" id="mcheck-7" style="border-color:var(--purple);color:var(--purple);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--purple);">Music — Spanish during your break</div>
+      <div class="ms-desc">Open Spotify or YouTube → Marc Anthony, Daddy Yankee, Alejandro Sanz → sing along when you know the words. Tap when done.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">30 min</div><div class="ms-arrow" id="mgo-7">✓</div></div>
+  </div>
+
+    <div class="mission-step journal-step" id="mstep-8" onclick="openJournal()">
+    <div class="ms-check" id="mcheck-8"></div>
     <div class="ms-body">
       <div class="ms-title">Journal — write your day in Spanish</div>
       <div class="ms-desc">Tap → write what you did today → auto-saves to Library for tomorrow's Shadow. Before bed.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-7">→</div></div>
+    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-8">→</div></div>
   </div>
 
   <div class="stats-row" style="margin-top:16px;">
@@ -418,11 +424,7 @@
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
 
-  <div style="background:rgba(196,160,255,0.05);border:1px solid rgba(196,160,255,0.15);border-radius:10px;padding:12px 15px;margin-bottom:8px;">
-    <div style="font-size:12px;color:var(--purple);font-weight:500;margin-bottom:3px;">🎵 Daily Music — during your break</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.6;">Marc Anthony, Daddy Yankee, Alejandro Sanz. Play on Spotify or YouTube while you rest. Sing along when you know the words. This is not studying — it is absorption.</div>
-  </div>
-  <div class="low-energy">
+<div class="low-energy">
     <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
   </div>
 
@@ -1646,7 +1648,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -1689,14 +1691,7 @@ function showToast(msg, color) {
 let sentencesTimer = null; // kept for reference, shadow completion is activity-based
 
 function initToday() {
-  const hour = new Date().getHours();
-  document.getElementById('today-greeting').textContent = hour < 12 ? 'Good morning, Carlos.' : hour < 17 ? 'Good afternoon, Carlos.' : 'Good evening, Carlos.';
-  const newCount = getNewCount();
-  const dueCount = getDueCount();
-  const subtitle = newCount > 0
-    ? newCount + ' to shadow · ' + dueCount + ' due for recall · all islands active'
-    : dueCount + ' due for recall today';
-  document.getElementById('today-subtitle').textContent = subtitle;
+
 
   // Stats
   document.getElementById('stat-owned').textContent = getOwnedCount();
@@ -1742,8 +1737,8 @@ function renderMissionSteps() {
 
 function updateMissionProgress() {
   const done = missionSteps.filter(Boolean).length;
-  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
+  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -2226,7 +2221,7 @@ function saveJournal() {
     sentences.push({ id: Date.now() + i, en: '📓 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily', status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 });
   });
   saveSentences(); renderLibrary(); updateStats();
-  closeJournal(); completeMissionStep(7);
+  closeJournal(); completeMissionStep(8);
   showToast('✓ ' + lines.length + ' sentence' + (lines.length > 1 ? 's' : '') + ' added — Shadow them next');
 }
 
