@@ -475,7 +475,21 @@
   <div id="shadow-content" style="display:none;">
     <div class="progress-track mb8"><div class="progress-fill" id="shadow-progress" style="width:0%"></div></div>
     <div class="sentence-count" id="shadow-count">— / —</div>
-    <div style="font-size:11px;margin-bottom:12px;" id="shadow-play-count"><span style="color:var(--muted)">not played yet</span></div>
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;" id="shadow-play-count-wrap">
+      <div style="position:relative;width:44px;height:44px;flex-shrink:0;">
+        <svg width="44" height="44" viewBox="0 0 44 44" style="transform:rotate(-90deg)">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="var(--border2)" stroke-width="4"/>
+          <circle cx="22" cy="22" r="18" fill="none" stroke="var(--blue)" stroke-width="4"
+            stroke-dasharray="113" stroke-dashoffset="113"
+            id="shadow-ring" style="transition:stroke-dashoffset 0.3s ease;"/>
+        </svg>
+        <div id="shadow-play-num" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--blue)">0</div>
+      </div>
+      <div>
+        <div id="shadow-play-label" style="font-size:12px;color:var(--muted)">Press Play and repeat out loud</div>
+        <div id="shadow-play-sub" style="font-size:10px;color:var(--muted);margin-top:2px;">7 plays to unlock Recall</div>
+      </div>
+    </div>
     <div class="sentence-big" id="shadow-en">—</div>
     <div class="sentence-big-es" id="shadow-es" style="color:var(--blue)">—</div>
     <div class="audio-controls mt16">
@@ -490,7 +504,7 @@
     <div class="flex-gap mb16">
       <button class="btn" onclick="shadowPrev()">← Prev</button>
       <button class="btn" onclick="shadowNext()">Next →</button>
-      <button class="btn btn-lg" onclick="markShadowedAndNext()" style="margin-left:auto;background:var(--blue);border-color:var(--blue);color:var(--bg);font-weight:600;">✓ Ready for Recall</button>
+      <button class="btn btn-lg" id="shadow-ready-btn" onclick="markShadowedAndNext()" style="margin-left:auto;font-weight:600;opacity:0.35;cursor:not-allowed;background:rgba(160,196,255,0.05);border-color:rgba(160,196,255,0.2);color:var(--muted);">✓ Ready for Recall</button>
     </div>
     <div style="font-size:11px;color:var(--muted);line-height:1.7;background:var(--surface2);border-radius:8px;padding:10px 13px;">
       Only mark <span style="color:var(--blue)">Ready for Recall</span> when the sentence comes out of your mouth automatically without thinking. If you still need to think — keep looping.
@@ -1923,6 +1937,7 @@ function initShadow() {
   document.getElementById('shadow-empty').style.display = 'none';
   document.getElementById('shadow-content').style.display = 'block';
   renderShadow();
+  updateShadowRing(0, false);
 }
 
 function renderShadow() {
@@ -1957,7 +1972,10 @@ function shadowPlay() {
   if (shadowQueue[shadowIdx]) {
     const sid = shadowQueue[shadowIdx].id;
     shadowPlayCounts[sid] = (shadowPlayCounts[sid] || 0) + 1;
-    renderShadow();
+    const isWarmup = shadowQueue[shadowIdx]._warmup;
+    updateShadowRing(shadowPlayCounts[sid], isWarmup);
+    const num = document.getElementById('shadow-play-num');
+    if (num) num.textContent = shadowPlayCounts[sid] < (isWarmup ? 3 : 7) ? shadowPlayCounts[sid] : '✓';
   }
 }
 
@@ -2964,6 +2982,56 @@ function updateListenSpeed() {
   if (hint) {
     hint.textContent = messages[speed] || '';
     hint.style.display = 'block';
+  }
+}
+
+
+function updateShadowRing(plays, isWarmup) {
+  const ring = document.getElementById('shadow-ring');
+  const num = document.getElementById('shadow-play-num');
+  const label = document.getElementById('shadow-play-label');
+  const sub = document.getElementById('shadow-play-sub');
+  const readyBtn = document.getElementById('shadow-ready-btn');
+  if (!ring) return;
+
+  const target = isWarmup ? 3 : 7;
+  const pct = Math.min(plays / target, 1);
+  const circumference = 113;
+  const offset = circumference - (pct * circumference);
+
+  ring.style.strokeDashoffset = offset;
+
+  if (plays === 0) {
+    ring.style.stroke = 'var(--border2)';
+    if (num) { num.textContent = '0'; num.style.color = 'var(--muted)'; }
+    if (label) label.textContent = 'Press Play and repeat out loud';
+    if (sub) sub.textContent = target + ' plays to unlock Recall';
+  } else if (plays < Math.ceil(target * 0.5)) {
+    ring.style.stroke = 'var(--blue)';
+    if (num) { num.textContent = plays; num.style.color = 'var(--blue)'; }
+    if (label) label.textContent = 'Keep going — repeat out loud each time';
+    if (sub) sub.textContent = (target - plays) + ' more to unlock Recall';
+  } else if (plays < target) {
+    ring.style.stroke = 'var(--accent)';
+    if (num) { num.textContent = plays; num.style.color = 'var(--accent)'; }
+    if (label) label.textContent = 'Almost there — keep looping';
+    if (sub) sub.textContent = (target - plays) + ' more to unlock Recall';
+  } else {
+    ring.style.stroke = 'var(--success)';
+    if (num) { num.textContent = '✓'; num.style.color = 'var(--success)'; }
+    if (label) label.textContent = 'Ready — tap the button below';
+    if (sub) sub.textContent = 'Mouth owns it — move to Recall';
+  }
+
+  // Enable/disable Ready for Recall button
+  if (readyBtn) {
+    const ready = plays >= target;
+    readyBtn.disabled = !ready;
+    readyBtn.style.opacity = ready ? '1' : '0.35';
+    readyBtn.style.cursor = ready ? 'pointer' : 'not-allowed';
+    readyBtn.style.background = ready ? 'var(--blue)' : 'rgba(160,196,255,0.05)';
+    readyBtn.style.color = ready ? 'var(--bg)' : 'var(--muted)';
+    readyBtn.style.borderColor = ready ? 'var(--blue)' : 'rgba(160,196,255,0.2)';
   }
 }
 
