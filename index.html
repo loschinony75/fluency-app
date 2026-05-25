@@ -1933,7 +1933,7 @@ function renderShadow() {
   document.getElementById('shadow-en').textContent = s.en;
   document.getElementById('shadow-es').textContent = getPR(s);
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + '  ·  ' + catLabel;
-  document.getElementById('shadow-play-count').innerHTML = '<span style="color:' + playsColor + '">' + playsLabel + '</span>' + (plays < 7 ? ' <span style="color:var(--muted)">— aim for 7+</span>' : ' <span style="color:var(--success)">— ready to mark</span>');
+  // play count now handled by updateShadowRing
   document.getElementById('shadow-progress').style.width = (shadowQueue.length > 1 ? (shadowIdx / (shadowQueue.length - 1)) * 100 : 100) + '%';
 }
 
@@ -2495,7 +2495,7 @@ function generateVariations() {
 
 function renderTodaysVariations() {
   const el = document.getElementById('today-variations');
-  if (!el) return;
+  if (!el) return; // element removed — variations handled by preloaded sentences
 
   const variations = generateVariations();
 
