@@ -569,6 +569,10 @@
     <strong>🔊 Listen — Passive ear training</strong>
     Press Start. Put the phone down. Just listen. Alternates PR Spanish and Canarian so your ear adapts to both accents without any effort from you.
   </div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;">
+    <button onclick="setListenMode('walk')" id="listen-mode-walk" class="btn" style="flex:1;justify-content:center;font-size:11px;background:var(--purple);border-color:var(--purple);color:var(--bg);">🚶 Walk — today's Shadow sentences</button>
+    <button onclick="setListenMode('general')" id="listen-mode-general" class="btn" style="flex:1;justify-content:center;font-size:11px;">🔄 General — all shadowed</button>
+  </div>
   <div class="card mb16">
     <div class="flex-between mb16">
       <div>
@@ -1627,6 +1631,7 @@ let shadowQueue = [], shadowIdx = 0, shadowLooping = false, shadowLoopTimeout = 
 let shadowPlayCounts = {}; // tracks plays per sentence id this session
 let recallQueue = [], recallIdx = 0, recallCorrect = 0, recallTotal = 0, recallRevealed = false;
 let listenPlaying = false, listenIdx = 0, listenTimer = null, listenMissionTimer = null, listenMissionSeconds = 0;
+let listenMode = 'general'; // 'walk' = shadow queue | 'general' = all shadowed sentences
 let shadowPlayCount = 0, recallAnswerCount = 0;
 
 let practicedToday = parseInt(localStorage.getItem('fluency_today') || '0');
@@ -1696,9 +1701,9 @@ function initToday() {
 
 function goToStep(idx, screen) {
   showScreen(screen);
-  // Step 0 — Walk + Listen: autostart listen mode
+  // Step 0 — Walk + Listen: autostart in walk mode (shadow queue)
   if (idx === 0 && screen === 'listen' && !listenPlaying) {
-    setTimeout(() => startListen(), 400);
+    setTimeout(() => startListen('walk'), 400);
   }
   // Reading tab — no auto-complete, user taps complete button inside tab
 }
@@ -2130,8 +2135,9 @@ function recallRate(rating) {
 // ================================================================
 function toggleListen() { listenPlaying ? stopListen() : startListen(); }
 
-function startListen() {
+function startListen(mode) {
   if (!sentences.length) return;
+  listenMode = mode || 'general';
   listenPlaying = true; listenIdx = 0;
   document.getElementById('listen-toggle').textContent = '⏹ Stop';
   document.getElementById('listen-now').textContent = 'Playing...';
@@ -2162,8 +2168,18 @@ function stopListen() {
 
 function playListenNext() {
   if (!listenPlaying) return;
-  if (!sentences.length) { stopListen(); return; }
-  const s = sentences[listenIdx % sentences.length];
+  // Walk mode — play shadow queue so walk and shadow are in sync
+  // General mode — play all shadowed sentences for reinforcement
+  let pool;
+  if (listenMode === 'walk') {
+    pool = getShadowQueue();
+    if (!pool.length) pool = sentences.slice(0, 10); // fallback if nothing in queue
+  } else {
+    pool = sentences.filter(s => s.shadowDone);
+    if (!pool.length) pool = sentences.slice(0, 10); // fallback on day one
+  }
+  if (!pool.length) { stopListen(); return; }
+  const s = pool[listenIdx % pool.length];
   const usePR = listenIdx % 2 === 0;
   const lang = usePR ? 'es-US' : 'es';
   const text = usePR ? getPR(s) : getCA(s);
@@ -2185,6 +2201,8 @@ function renderListenNow() {
     document.getElementById('listen-es').textContent = '—';
     document.getElementById('listen-dialect-badge').innerHTML = '';
   }
+  // Set default mode to walk
+  setListenMode('walk');
 }
 
 // ================================================================
@@ -3011,6 +3029,35 @@ function updateShadowRing(plays, isWarmup) {
     readyBtn.style.background = ready ? 'var(--blue)' : 'rgba(160,196,255,0.05)';
     readyBtn.style.color = ready ? 'var(--bg)' : 'var(--muted)';
     readyBtn.style.borderColor = ready ? 'var(--blue)' : 'rgba(160,196,255,0.2)';
+  }
+}
+
+
+function setListenMode(mode) {
+  listenMode = mode;
+  const walkBtn = document.getElementById('listen-mode-walk');
+  const generalBtn = document.getElementById('listen-mode-general');
+  if (walkBtn && generalBtn) {
+    if (mode === 'walk') {
+      walkBtn.style.background = 'var(--purple)';
+      walkBtn.style.borderColor = 'var(--purple)';
+      walkBtn.style.color = 'var(--bg)';
+      generalBtn.style.background = '';
+      generalBtn.style.borderColor = '';
+      generalBtn.style.color = '';
+    } else {
+      generalBtn.style.background = 'var(--purple)';
+      generalBtn.style.borderColor = 'var(--purple)';
+      generalBtn.style.color = 'var(--bg)';
+      walkBtn.style.background = '';
+      walkBtn.style.borderColor = '';
+      walkBtn.style.color = '';
+    }
+  }
+  // Restart if already playing
+  if (listenPlaying) {
+    stopListen();
+    setTimeout(() => startListen(mode), 300);
   }
 }
 
