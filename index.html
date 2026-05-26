@@ -310,6 +310,7 @@
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
     <button class="nav-tab" onclick="showScreen('shadow')">Shadow</button>
     <button class="nav-tab" onclick="showScreen('recall')">Recall</button>
+    <button class="nav-tab" onclick="showScreen('write')">Write</button>
     <button class="nav-tab" onclick="showScreen('listen')">Listen</button>
     <button class="nav-tab" onclick="showScreen('reading')">Reading</button>
     <button class="nav-tab" onclick="showScreen('library')">Library</button>
@@ -322,7 +323,7 @@
 <div class="screen active" id="screen-today">
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
 
   <!-- Step 0 — Walk + Listen (purple) AUTOPLAY -->
   <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
@@ -354,7 +355,17 @@
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
-  <!-- Step 3 — Listen (purple) -->
+  <!-- Step 3 — Write (warm orange) -->
+  <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
+    <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--warn);">Write — type it from memory</div>
+      <div class="ms-desc">See English → type Spanish without looking → check. Missed in Recall? They show up here first. Auto-completes after 5.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
+  </div>
+
+  <!-- Step 4 — Listen (purple) -->
   <div class="mission-step listen-step" id="mstep-3" onclick="goToStep(3,'listen')">
     <div class="ms-check" id="mcheck-3"></div>
     <div class="ms-body">
@@ -565,6 +576,78 @@
   </div>
 </div>
 
+<!-- WRITE -->
+<div class="screen" id="screen-write">
+  <div class="mode-header" style="background:rgba(240,164,64,0.07);border:1px solid rgba(240,164,64,0.22);color:var(--warn);">
+    <strong>✍️ Write — type it before you look</strong>
+    See the English. Type the Spanish from memory — don't look. Then reveal and check. Sentences you missed in Recall appear here first. This is the third channel: hear it → say it → write it.
+  </div>
+  <div id="write-empty" class="empty-state" style="display:none;">
+    <div class="empty-state-icon">✍️</div>
+    <div>No sentences ready for Write yet.<br><br>Shadow and Recall some sentences first.</div>
+  </div>
+  <div id="write-session-complete" class="session-complete" style="display:none;">
+    <div class="session-complete-icon">✅</div>
+    <div class="session-complete-title">Write session complete</div>
+    <div class="session-complete-sub" id="write-complete-msg">Good work.</div>
+    <button class="btn btn-accent" onclick="initWrite()">Write more</button>
+  </div>
+  <div id="write-content" style="display:none;">
+    <div class="progress-track mb8"><div class="progress-fill" id="write-progress" style="width:0%;background:var(--warn)"></div></div>
+    <div class="sentence-count" id="write-count">— / —</div>
+
+    <!-- Missed-from-Recall banner -->
+    <div id="write-missed-badge" style="display:none;font-size:11px;padding:5px 11px;border-radius:6px;background:rgba(255,79,79,0.1);border:1px solid rgba(255,79,79,0.25);color:var(--danger);margin-bottom:12px;">
+      ⚠️ Missed in Recall — shadow this one again after writing
+    </div>
+
+    <div class="card mb16" style="min-height:80px;display:flex;align-items:center;">
+      <div style="width:100%">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Write this in <span style="color:var(--warn)">Spanish</span>:</div>
+        <div class="sentence-big" id="write-en" style="font-size:21px">—</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Your Spanish — type without looking</label>
+      <textarea id="write-input" placeholder="Type the Spanish here..." style="min-height:70px;font-size:15px;border-color:rgba(240,164,64,0.3);" oninput="writeCheckLength()"></textarea>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="btn btn-lg" onclick="writeReveal()" id="write-reveal-btn" style="flex:1;justify-content:center;background:rgba(240,164,64,0.1);border-color:rgba(240,164,64,0.3);color:var(--warn);">Reveal Answer</button>
+    </div>
+
+    <!-- Reveal block -->
+    <div id="write-reveal-block" style="display:none;">
+      <div class="card mb8" style="border-color:rgba(240,164,64,0.2);background:rgba(240,164,64,0.04);">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Correct answer:</div>
+        <div class="sentence-big-es" id="write-es" style="font-size:19px;margin-bottom:10px;color:var(--warn)">—</div>
+        <div id="write-your-answer" style="font-size:12px;color:var(--muted);margin-bottom:10px;border-top:1px solid var(--border);padding-top:8px;line-height:1.7;"></div>
+        <button class="btn" onclick="writePlayAudio()">▶ Hear it</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);text-align:center;margin:14px 0 8px;">How close were you?</div>
+      <div class="srs-buttons">
+        <button class="btn btn-danger btn-lg" onclick="writeRate('missed')">
+          ✗ Wrong<span class="srs-sub">Shadow again</span>
+        </button>
+        <button class="btn btn-warn btn-lg" onclick="writeRate('close')">
+          ~ Close<span class="srs-sub">Keep drilling</span>
+        </button>
+        <button class="btn btn-success btn-lg" onclick="writeRate('correct')">
+          ✓ Got it<span class="srs-sub">Nice</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card mt16" style="background:var(--surface2)">
+      <div class="flex-between">
+        <span style="font-size:12px;color:var(--muted)">Session score</span>
+        <span id="write-score" style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--warn)">— / —</span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- LISTEN -->
 <div class="screen" id="screen-listen">
   <div class="mode-header listen-color">
@@ -749,6 +832,7 @@
     <div class="guide-block" style="border-left-color:var(--blue)"><span class="guide-block-label" style="color:var(--blue)">1. Library — your collection</span>Sentences live here. You browse here and add here. You never learn here. Like a bookshelf — you pick up the book and take it somewhere else.</div>
     <div class="guide-block" style="border-left-color:var(--blue)"><span class="guide-block-label" style="color:var(--blue)">2. Shadow — always first</span>Every sentence enters your brain through Shadow. You hear it, you repeat it out loud until your mouth knows the shape of it. A sentence is NOT ready for Recall until you have shadowed it. This rule never breaks.</div>
     <div class="guide-block"><span class="guide-block-label">3. Recall — only after Shadow</span>You see English, you produce Spanish from memory without looking. Rate yourself: Missed, Got it, or Automatic. Only Automatic means you own it.</div>
+    <div class="guide-block" style="border-left-color:var(--warn)"><span class="guide-block-label" style="color:var(--warn)">3.5 Write — third channel</span>See English. Type the Spanish without looking. Sentences you missed in Recall automatically appear here first. Wrong again → sent back to Shadow. This is the reinforcement loop — hear it, say it, write it.</div>
     <div class="guide-block" style="border-left-color:var(--purple)"><span class="guide-block-label" style="color:var(--purple)">4. Listen — always running in background</span>Everything you have shadowed plays here passively. You are not studying — just absorbing rhythm and sound while living your life.</div>
   </div>
 
@@ -1740,12 +1824,22 @@ function renderMissionSteps() {
     if (done) { step.classList.add('done'); check.textContent = '✓'; if (go) go.textContent = '✓'; }
     else { step.classList.remove('done'); check.textContent = ''; if (go && go.textContent === '✓') go.textContent = '→'; }
   });
+  // Write step (3w) — stored separately
+  const writeDone = localStorage.getItem('fluency_write_' + todayKey) === '1';
+  const wStep = document.getElementById('mstep-3w');
+  const wCheck = document.getElementById('mcheck-3w');
+  const wGo = document.getElementById('mgo-3w');
+  if (wStep) {
+    if (writeDone) { wStep.classList.add('done'); if (wCheck) wCheck.textContent = '✓'; if (wGo) wGo.textContent = '✓'; }
+    else { wStep.classList.remove('done'); if (wCheck) wCheck.textContent = ''; if (wGo && wGo.textContent === '✓') wGo.textContent = '→'; }
+  }
 }
 
 function updateMissionProgress() {
-  const done = missionSteps.filter(Boolean).length;
-  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
+  const writeDone = localStorage.getItem('fluency_write_' + todayKey) === '1' ? 1 : 0;
+  const done = missionSteps.filter(Boolean).length + writeDone;
+  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -1773,6 +1867,7 @@ function showScreen(name) {
   if (name === 'today') initToday();
   if (name === 'shadow') initShadow();
   if (name === 'recall') initRecall();
+  if (name === 'write') initWrite();
   if (name === 'listen') renderListenNow();
   if (name === 'library') renderLibrary();
   if (name === 'guide') initGuide();
@@ -2133,6 +2228,11 @@ function recallRate(rating) {
     sentences[idx].status = rating === 'owned' ? 'owned' : 'learning';
     sentences[idx].nextReview = Date.now() + SRS_INTERVALS[rating];
     sentences[idx].reviewCount = (sentences[idx].reviewCount || 0) + 1;
+    // Flag missed sentences for the Write queue — they need more channels
+    if (rating === 'missed') {
+      sentences[idx].missedInRecall = true;
+      sentences[idx].missedAt = Date.now();
+    }
     // Track daily history for streak
     const todayStr = new Date().toISOString().slice(0,10);
     if (!sentences[idx].history) sentences[idx].history = {};
@@ -2146,6 +2246,117 @@ function recallRate(rating) {
 
   recallIdx++;
   renderRecall();
+}
+
+// ================================================================
+// WRITE — type the Spanish from memory (3rd channel: hear → say → write)
+// Priority: sentences missed in Recall appear first
+// ================================================================
+let writeQueue = [], writeIdx = 0, writeTotal = 0, writeCorrect = 0, writeAnswerCount = 0, writeRevealed = false;
+
+function getWriteQueue() {
+  const now = Date.now();
+  // Priority 1: sentences flagged as missed in Recall (today)
+  const missedToday = sentences.filter(s => s.missedInRecall && s.missedAt && (now - s.missedAt < 24 * 60 * 60 * 1000) && s.shadowDone);
+  // Priority 2: learning sentences due for review
+  const learning = sentences.filter(s => s.shadowDone && s.status === 'learning' && s.nextReview && s.nextReview <= now && !missedToday.find(m => m.id === s.id));
+  // Priority 3: new-to-recall (shadowed but never recalled)
+  const newToWrite = sentences.filter(s => s.shadowDone && !s.nextReview && !missedToday.find(m => m.id === s.id));
+  return [...missedToday, ...learning, ...newToWrite].slice(0, 10);
+}
+
+function initWrite() {
+  writeQueue = getWriteQueue();
+  writeIdx = 0; writeTotal = 0; writeCorrect = 0; writeAnswerCount = 0; writeRevealed = false;
+
+  document.getElementById('write-empty').style.display = 'none';
+  document.getElementById('write-session-complete').style.display = 'none';
+  document.getElementById('write-content').style.display = 'none';
+
+  if (!writeQueue.length) {
+    const el = document.getElementById('write-empty');
+    el.innerHTML = '<div class="empty-state-icon">✍️</div><div>No sentences ready for Write yet.<br><br>Shadow and do Recall first. Missed sentences in Recall will automatically appear here.</div>';
+    el.style.display = 'block';
+    return;
+  }
+  document.getElementById('write-content').style.display = 'block';
+  renderWrite();
+}
+
+function renderWrite() {
+  if (writeIdx >= writeQueue.length) {
+    document.getElementById('write-content').style.display = 'none';
+    document.getElementById('write-session-complete').style.display = 'block';
+    const msg = `You wrote ${writeTotal} sentences. ${writeCorrect} correct. ${writeTotal - writeCorrect > 0 ? 'Shadow the ones you missed again.' : 'Clean session — strong work.'}`;
+    document.getElementById('write-complete-msg').textContent = msg;
+    localStorage.setItem('fluency_write_' + todayKey, '1');
+    if (currentScreen === 'today') { renderMissionSteps(); updateMissionProgress(); }
+    return;
+  }
+  const s = writeQueue[writeIdx];
+  const isMissed = !!s.missedInRecall;
+  document.getElementById('write-en').textContent = s.en;
+  document.getElementById('write-count').textContent = (writeIdx + 1) + ' / ' + writeQueue.length;
+  document.getElementById('write-progress').style.width = (writeQueue.length > 1 ? (writeIdx / (writeQueue.length - 1)) * 100 : 0) + '%';
+  document.getElementById('write-missed-badge').style.display = isMissed ? 'block' : 'none';
+  document.getElementById('write-input').value = '';
+  document.getElementById('write-reveal-block').style.display = 'none';
+  document.getElementById('write-reveal-btn').style.display = 'block';
+  document.getElementById('write-score').textContent = writeTotal > 0 ? writeCorrect + ' / ' + writeTotal : '— / —';
+  writeRevealed = false;
+  // Focus the textarea
+  setTimeout(() => { const el = document.getElementById('write-input'); if (el) el.focus(); }, 100);
+}
+
+function writeCheckLength() {
+  // No auto-reveal — user controls when they reveal
+}
+
+function writeReveal() {
+  const s = writeQueue[writeIdx];
+  const typed = document.getElementById('write-input').value.trim();
+  const correct = getPR(s) || '';
+  document.getElementById('write-es').textContent = correct;
+  document.getElementById('write-your-answer').innerHTML = typed
+    ? '<span style="color:var(--muted)">You wrote: </span><span style="color:var(--text)">' + sanitize(typed) + '</span>'
+    : '<span style="color:var(--danger)">Nothing written — you needed to see it.</span>';
+  document.getElementById('write-reveal-block').style.display = 'block';
+  document.getElementById('write-reveal-btn').style.display = 'none';
+  writeRevealed = true;
+}
+
+function writePlayAudio() {
+  if (writeIdx < writeQueue.length) ttsSpeak(getPR(writeQueue[writeIdx]), 'es-US');
+}
+
+function writeRate(rating) {
+  writeTotal++;
+  if (rating === 'correct') writeCorrect++;
+  const s = writeQueue[writeIdx];
+  const idx = sentences.findIndex(x => x.id === s.id);
+  if (idx !== -1) {
+    // If they got it correct, clear the missedInRecall flag — it's been reinforced
+    if (rating === 'correct') {
+      sentences[idx].missedInRecall = false;
+    }
+    // If still wrong — keep it flagged and push back to Shadow
+    if (rating === 'missed') {
+      sentences[idx].missedInRecall = true;
+      sentences[idx].missedAt = Date.now();
+      sentences[idx].shadowDone = false; // back to Shadow queue
+      sentences[idx].status = 'new';
+      showToast('Sent back to Shadow — hear it again', 'var(--blue)');
+    }
+    saveSentences();
+  }
+  writeAnswerCount++;
+  if (writeAnswerCount >= 5) {
+    localStorage.setItem('fluency_write_' + todayKey, '1');
+    if (currentScreen === 'today') { renderMissionSteps(); updateMissionProgress(); }
+    showToast('Write step complete ✓');
+  }
+  writeIdx++;
+  renderWrite();
 }
 
 // ================================================================
