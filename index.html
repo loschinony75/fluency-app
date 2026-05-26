@@ -423,6 +423,15 @@
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
 
+  <!-- Commentary prompt — pulled from owned sentences, time-of-day aware -->
+  <div id="commentary-prompt" style="display:none;background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:10px;padding:13px 15px;margin-bottom:12px;">
+    <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;font-weight:600;" id="commentary-label">🗣 Say this right now</div>
+    <div id="commentary-es" style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:3px;"></div>
+    <div id="commentary-en" style="font-size:11px;color:var(--muted);margin-bottom:8px;"></div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6;">This is a sentence you already own. Say it out loud — then use it the next time the real moment arrives.</div>
+    <div id="commentary-hint" style="font-size:10px;color:var(--muted);margin-top:6px;font-style:italic;"></div>
+  </div>
+
 <div class="low-energy">
     <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
   </div>
@@ -703,72 +712,116 @@
 
 <!-- READING -->
 <div class="screen" id="screen-reading">
+
+  <!-- 3-Day method explainer -->
   <div style="margin-bottom:14px;border:1px solid rgba(79,207,138,0.2);border-radius:10px;overflow:hidden;">
     <button onclick="toggleReadingInstructions()" style="width:100%;background:rgba(79,207,138,0.06);border:none;color:var(--success);font-family:var(--font-mono);font-size:12px;padding:11px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;">
-      <span>📖 Reading — The 3-Day Method</span>
-      <span id="reading-instr-arrow" style="font-size:11px;color:var(--muted);">▼ how it works</span>
+      <span>📖 The 3-Day Method — how it works</span>
+      <span id="reading-instr-arrow" style="font-size:11px;color:var(--muted);">▼ expand</span>
     </button>
     <div id="reading-instructions" style="display:none;padding:14px 16px;background:rgba(79,207,138,0.04);border-top:1px solid rgba(79,207,138,0.15);">
       <div style="font-size:12px;color:var(--text);line-height:1.8;">
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 1 — Meaning</span><br>Read once for meaning. Do not stop for every word — get the story. Note 3 unknown words. Look them up on WordReference.com. Add 1-2 as sentences to Library.</div>
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 2 — Out loud</span><br>Read the same article out loud. Rhythm and natural phrasing. No stopping for unknown words today.</div>
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — Shadow writing</span><br>Keep article open. Pick one paragraph. Swap in your own life sentence by sentence. Article stays in front of you — no memory required. Add 2 best sentences to Library.</div>
-        <div><span style="color:var(--success);font-weight:500;">Day 4 — New article</span><br>Tap New Article. Sentences you pulled keep drilling in Shadow and Recall indefinitely.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 1 — Meaning</span><br>Read once for the story. Don't stop at every word. Answer the comprehension questions. Note 3 unknown words and look them up.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 2 — Out loud</span><br>Read the same text out loud. Focus on rhythm and natural phrasing. Do not stop for unknown words today.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — Shadow writing</span><br>Text stays open. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 best sentences to Library.</div>
+        <div><span style="color:var(--success);font-weight:500;">Day 4</span><br>Generate a new article. Previous sentences keep drilling in Shadow and Recall indefinitely.</div>
       </div>
     </div>
   </div>
 
-  <!-- Day tracker -->
-  <div class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div class="flex-between mb8">
-      <div>
-        <div style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--success)" id="reading-day-label">Day 1</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px" id="reading-day-task">Read for meaning. Get the story. Note 3 unknown words.</div>
+  <!-- Generate / current article controls -->
+  <div id="reading-generate-section">
+    <div class="card" style="background:var(--surface2);margin-bottom:12px;">
+      <div style="font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:8px;color:var(--success);">Generate Your Reading Text</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">AI writes a short text at your level about a topic from your life. Same text for 3 days. Comprehension questions included.</div>
+      <div class="form-row">
+        <label>Topic — your life, interests, or situation</label>
+        <input type="text" id="reading-topic" placeholder="e.g. moving to the Canary Islands, morning routine, coaching clients..." />
       </div>
-      <button class="btn" id="reading-next-btn" onclick="advanceReadingDay()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);font-size:12px;">Next Day →</button>
+      <div class="form-row-2">
+        <div>
+          <label>Level</label>
+          <select id="reading-level">
+            <option value="A1">A1 — absolute beginner</option>
+            <option value="A2" selected>A2 — beginner</option>
+            <option value="B1">B1 — intermediate</option>
+          </select>
+        </div>
+        <div>
+          <label>Length</label>
+          <select id="reading-length">
+            <option value="short">Short (4-5 sentences)</option>
+            <option value="medium" selected>Medium (7-9 sentences)</option>
+            <option value="long">Long (12+ sentences)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-accent btn-full" onclick="generateReadingText()" id="reading-gen-btn">✦ Generate Article</button>
     </div>
-    <div style="display:flex;gap:6px;margin-top:8px;">
-      <div id="reading-pip-0" style="flex:1;height:4px;border-radius:2px;background:var(--success);"></div>
-      <div id="reading-pip-1" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
-      <div id="reading-pip-2" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
+  </div>
+
+  <!-- Article display (shown after generation) -->
+  <div id="reading-article-section" style="display:none;">
+
+    <!-- Day tracker -->
+    <div class="card" style="background:var(--surface2);margin-bottom:12px;">
+      <div class="flex-between mb8">
+        <div>
+          <div style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--success)" id="reading-day-label">Day 1 — Read for meaning</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px" id="reading-day-task">Read once. Get the story. Don't stop at every word.</div>
+        </div>
+        <button class="btn" id="reading-next-btn" onclick="advanceReadingDay()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);font-size:12px;">Next Day →</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <div id="reading-pip-0" style="flex:1;height:4px;border-radius:2px;background:var(--success);"></div>
+        <div id="reading-pip-1" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
+        <div id="reading-pip-2" style="flex:1;height:4px;border-radius:2px;background:var(--border2);"></div>
+      </div>
+    </div>
+
+    <!-- The article text -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;" id="reading-article-meta">—</div>
+      <div id="reading-article-title" style="font-family:var(--font-head);font-size:17px;font-weight:700;margin-bottom:10px;color:var(--text)"></div>
+      <div id="reading-article-body" style="font-size:14px;color:var(--text);line-height:1.9;white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- Comprehension questions (Day 1) -->
+    <div id="reading-questions-section" class="card" style="background:var(--surface2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--success);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">Comprehension Questions</div>
+      <div id="reading-questions-list"></div>
+      <button class="btn" onclick="checkReadingAnswers()" style="margin-top:10px;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Check answers</button>
+      <div id="reading-answers-reveal" style="display:none;margin-top:10px;"></div>
+    </div>
+
+    <!-- Vocab notes (Day 1 & 2) -->
+    <div id="reading-vocab-section" class="card" style="background:var(--surface2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Unknown Words (max 3)</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">Write the word → look it up on <a href="https://www.wordreference.com/es/en/translation.asp" target="_blank" style="color:var(--success);">WordReference.com</a> → add it as a sentence to Library.</div>
+      <textarea id="reading-vocab" placeholder="1. desayunamos — we eat breakfast&#10;2. somos — we are&#10;3. ..." style="min-height:70px;margin-bottom:8px;"></textarea>
+      <button class="btn" onclick="saveVocabNote()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Save vocab notes</button>
+    </div>
+
+    <!-- Shadow writing (Day 3) -->
+    <div id="reading-shadow-section" class="card" style="background:var(--surface2);margin-bottom:12px;display:none;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Shadow Writing — Day 3</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.7;">Article open above. Pick one paragraph. Swap in your own life sentence by sentence. No memory required.</div>
+      <textarea id="reading-shadow" placeholder="Write your personal version here...&#10;&#10;Example: Carlos vive en las Islas Canarias → Yo también vivo en las Islas Canarias. Me mudé hace tres meses..." style="min-height:120px;margin-bottom:8px;"></textarea>
+      <button class="btn btn-accent" onclick="saveShadowWriting()" style="width:100%;justify-content:center;">Save best sentences to Library</button>
+    </div>
+
+    <!-- Saved vocab display -->
+    <div id="reading-saved-display" style="display:none;" class="card" style="background:var(--surface2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Saved Notes</div>
+      <div id="reading-saved-text" style="font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn" onclick="completeReadingStep()" style="flex:1;justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">✓ Mark complete</button>
+      <button class="btn" onclick="newReadingArticle()" style="flex:1;justify-content:center;">↺ New article</button>
     </div>
   </div>
 
-  <!-- Article link -->
-  <div class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Current Article</div>
-    <input type="text" id="reading-article-url" placeholder="Paste article URL or title here..." style="margin-bottom:8px;" />
-    <a id="reading-article-link" href="#" target="_blank" class="btn" style="width:100%;justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);" onclick="openArticle()">
-      📖 Open Article
-    </a>
-  </div>
-
-  <!-- Day 1 & 2 — Vocabulary notes -->
-  <div id="reading-vocab-section" class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Unknown Words (max 3)</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">Write the word → look it up on <a href="https://www.wordreference.com/es/en/translation.asp" target="_blank" style="color:var(--success);">WordReference.com</a> → add it as a sentence to your Library.</div>
-    <textarea id="reading-vocab" placeholder="1. desayunamos — we eat breakfast (we-form of desayunar)&#10;2. somos — we are (we-form of ser)&#10;3. ..." style="min-height:80px;margin-bottom:8px;"></textarea>
-    <button class="btn" onclick="saveVocabNote()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Save vocab notes</button>
-  </div>
-
-  <!-- Day 3 — Shadow writing -->
-  <div id="reading-shadow-section" class="card" style="background:var(--surface2);margin-bottom:12px;display:none;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Shadow Writing — Day 3</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.7;">Keep the article open. Pick one paragraph. Swap in your own life sentence by sentence. Article stays open — no memory required.</div>
-    <textarea id="reading-shadow" placeholder="Write your personal version of one paragraph here...&#10;&#10;Example: Somos una familia pequeña → Soy una familia pequeña también. Tengo dos hijas que viven en Alemania..." style="min-height:120px;margin-bottom:8px;"></textarea>
-    <button class="btn btn-accent" onclick="saveShadowWriting()" style="width:100%;justify-content:center;">Save best sentences to Library</button>
-  </div>
-
-  <!-- Saved vocab notes display -->
-  <div id="reading-saved-display" style="display:none;" class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Saved Notes</div>
-    <div id="reading-saved-text" style="font-size:12px;color:var(--text);line-height:1.7;white-space:pre-wrap;"></div>
-  </div>
-
-  <!-- Complete reading step button -->
-  <button class="btn" onclick="completeReadingStep()" style="width:100%;justify-content:center;margin-top:4px;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">
-    ✓ Mark today's reading complete — Step 5
-  </button>
 </div>
 
 <!-- LIBRARY -->
@@ -1796,6 +1849,7 @@ function initToday() {
 
   renderMissionSteps();
   updateMissionProgress();
+  renderStageAwareSteps();
 }
 
 function goToStep(idx, screen) {
@@ -3309,51 +3363,167 @@ function setListenMode(mode) {
 }
 
 // ================================================================
-// READING TAB — 3-day article method
+// READING TAB — AI-powered 3-day method
 // ================================================================
 const READING_TASKS = [
-  { label: 'Day 1 — Meaning', task: 'Read for meaning. Get the story. Note 3 unknown words. Look them up on WordReference.com.' },
-  { label: 'Day 2 — Out loud', task: 'Read the same article out loud. Focus on rhythm and flow. No stopping for unknown words.' },
-  { label: 'Day 3 — Shadow writing', task: 'Article open in front of you. Pick one paragraph. Swap in your own life. Write your version.' },
+  { label: 'Day 1 — Read for meaning', task: 'Read once. Get the story. Don\'t stop at every word. Answer the comprehension questions. Note 3 unknown words.' },
+  { label: 'Day 2 — Read out loud', task: 'Read the same text out loud. Focus on rhythm and natural phrasing. No stopping for unknown words.' },
+  { label: 'Day 3 — Shadow writing', task: 'Text open above. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 sentences to Library.' },
 ];
-
 
 function toggleReadingInstructions() {
   const body = document.getElementById('reading-instructions');
   const arrow = document.getElementById('reading-instr-arrow');
   if (body.style.display === 'none') {
     body.style.display = 'block';
-    arrow.textContent = '▲ hide';
+    arrow.textContent = '▲ collapse';
   } else {
     body.style.display = 'none';
-    arrow.textContent = '▼ how it works';
+    arrow.textContent = '▼ expand';
   }
 }
 
 function initReading() {
+  const saved = localStorage.getItem('fluency_reading_article');
   const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
-  const url = localStorage.getItem('fluency_reading_url') || '';
   const vocab = localStorage.getItem('fluency_reading_vocab') || '';
 
-  // Set article URL
-  const urlEl = document.getElementById('reading-article-url');
-  if (urlEl) urlEl.value = url;
-  urlEl.onchange = () => localStorage.setItem('fluency_reading_url', urlEl.value);
-  urlEl.onkeyup = () => localStorage.setItem('fluency_reading_url', urlEl.value);
+  if (saved) {
+    // Article exists — show it
+    const article = JSON.parse(saved);
+    showReadingArticle(article, day, vocab);
+  } else {
+    // No article yet — show generator
+    document.getElementById('reading-generate-section').style.display = 'block';
+    document.getElementById('reading-article-section').style.display = 'none';
+  }
+}
 
-  // Set vocab notes
-  const vocabEl = document.getElementById('reading-vocab');
-  if (vocabEl && vocab) vocabEl.value = vocab;
+async function generateReadingText() {
+  const topic = document.getElementById('reading-topic').value.trim() || 'daily life in the Canary Islands';
+  const level = document.getElementById('reading-level').value;
+  const length = document.getElementById('reading-length').value;
+  const btn = document.getElementById('reading-gen-btn');
+  btn.textContent = '⏳ Generating...';
+  btn.disabled = true;
 
-  // Set saved notes display
-  const savedDisplay = document.getElementById('reading-saved-display');
-  const savedText = document.getElementById('reading-saved-text');
-  if (vocab && savedDisplay && savedText) {
-    savedDisplay.style.display = 'block';
-    savedText.textContent = vocab;
+  const lengthGuide = { short: '4-5 sentences', medium: '7-9 sentences', long: '12-14 sentences' }[length];
+  const levelGuide = {
+    A1: 'Use only present tense. Very simple vocabulary. Short sentences. No subordinate clauses.',
+    A2: 'Mostly present tense with some past tense (preterite). Simple vocabulary. Natural sentences.',
+    B1: 'Mix of tenses. Richer vocabulary. Natural conversational style.'
+  }[level];
+
+  const prompt = `You are a Spanish language teacher creating a graded reading text for a student.
+
+Topic: ${topic}
+Level: ${level}
+Length: ${lengthGuide}
+Style rules: ${levelGuide}
+
+Write a short Spanish text about this topic. Use first or third person. Make it natural and relevant to daily life.
+
+Then create exactly 5 comprehension questions in Spanish with 4 multiple-choice options each (a, b, c, d). Mark the correct answer.
+
+Respond ONLY with this JSON (no markdown, no extra text):
+{
+  "title": "short title in Spanish",
+  "level": "${level}",
+  "topic": "${topic}",
+  "body": "the full Spanish text here",
+  "questions": [
+    {
+      "q": "question text in Spanish",
+      "options": ["a) ...", "b) ...", "c) ...", "d) ..."],
+      "answer": "a"
+    }
+  ]
+}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const article = JSON.parse(clean);
+
+    localStorage.setItem('fluency_reading_article', JSON.stringify(article));
+    localStorage.setItem('fluency_reading_day', '0');
+    localStorage.setItem('fluency_reading_vocab', '');
+
+    showReadingArticle(article, 0, '');
+    showToast('Article ready — Day 1', 'var(--success)');
+  } catch(e) {
+    showToast('Generation failed — try again', 'var(--danger)');
+    console.error(e);
+  } finally {
+    btn.textContent = '✦ Generate Article';
+    btn.disabled = false;
+  }
+}
+
+function showReadingArticle(article, day, vocab) {
+  document.getElementById('reading-generate-section').style.display = 'none';
+  document.getElementById('reading-article-section').style.display = 'block';
+
+  document.getElementById('reading-article-meta').textContent = article.level + ' · ' + article.topic;
+  document.getElementById('reading-article-title').textContent = article.title;
+  document.getElementById('reading-article-body').textContent = article.body;
+
+  // Render questions
+  if (article.questions && article.questions.length) {
+    document.getElementById('reading-questions-list').innerHTML = article.questions.map((q, i) => `
+      <div style="margin-bottom:14px;">
+        <div style="font-size:12px;color:var(--text);margin-bottom:6px;font-weight:500;">${i+1}. ${sanitize(q.q)}</div>
+        ${q.options.map(opt => `
+          <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);margin-bottom:4px;cursor:pointer;">
+            <input type="radio" name="rq${i}" value="${opt.charAt(0)}" style="margin-top:2px;flex-shrink:0;accent-color:var(--success);">
+            <span>${sanitize(opt)}</span>
+          </label>`).join('')}
+      </div>`).join('');
+    document.getElementById('reading-questions-section').style.display = 'block';
+    document.getElementById('reading-answers-reveal').style.display = 'none';
+  }
+
+  // Restore vocab if any
+  if (vocab) {
+    const vocabEl = document.getElementById('reading-vocab');
+    if (vocabEl) vocabEl.value = vocab;
+    const savedDisplay = document.getElementById('reading-saved-display');
+    const savedText = document.getElementById('reading-saved-text');
+    if (savedDisplay) savedDisplay.style.display = 'block';
+    if (savedText) savedText.textContent = vocab;
   }
 
   renderReadingDay(day);
+}
+
+function checkReadingAnswers() {
+  const saved = localStorage.getItem('fluency_reading_article');
+  if (!saved) return;
+  const article = JSON.parse(saved);
+  let correct = 0;
+  const results = article.questions.map((q, i) => {
+    const sel = document.querySelector(`input[name="rq${i}"]:checked`);
+    const chosen = sel ? sel.value : null;
+    const isRight = chosen === q.answer;
+    if (isRight) correct++;
+    return `<div style="margin-bottom:6px;font-size:12px;${isRight ? 'color:var(--success)' : 'color:var(--danger)'}">
+      ${i+1}. ${isRight ? '✓' : '✗'} Correct: ${q.options.find(o => o.startsWith(q.answer)) || q.answer}
+    </div>`;
+  });
+  const el = document.getElementById('reading-answers-reveal');
+  el.innerHTML = `<div style="font-weight:500;margin-bottom:8px;font-size:13px;color:${correct===article.questions.length?'var(--success)':'var(--warn)'}">
+    ${correct} / ${article.questions.length} correct</div>` + results.join('');
+  el.style.display = 'block';
 }
 
 function renderReadingDay(day) {
@@ -3362,61 +3532,49 @@ function renderReadingDay(day) {
   const taskEl = document.getElementById('reading-day-task');
   const vocabSection = document.getElementById('reading-vocab-section');
   const shadowSection = document.getElementById('reading-shadow-section');
+  const questionsSection = document.getElementById('reading-questions-section');
 
   if (labelEl) labelEl.textContent = task.label;
   if (taskEl) taskEl.textContent = task.task;
 
-  // Show/hide sections based on day
   if (vocabSection) vocabSection.style.display = day <= 1 ? 'block' : 'none';
   if (shadowSection) shadowSection.style.display = day === 2 ? 'block' : 'none';
+  if (questionsSection) questionsSection.style.display = day === 0 ? 'block' : 'none';
 
-  // Update progress pips
   for (let i = 0; i < 3; i++) {
     const pip = document.getElementById('reading-pip-' + i);
     if (pip) pip.style.background = i <= day ? 'var(--success)' : 'var(--border2)';
   }
 
-  // Update next button
   const nextBtn = document.getElementById('reading-next-btn');
   if (nextBtn) {
-    if (day >= 2) {
-      nextBtn.textContent = '✓ New Article →';
-      nextBtn.style.background = 'var(--success)';
-      nextBtn.style.color = 'var(--bg)';
-    } else {
-      nextBtn.textContent = 'Next Day →';
-    }
+    if (day >= 2) { nextBtn.textContent = '✓ New Article →'; nextBtn.style.background = 'var(--success)'; nextBtn.style.color = 'var(--bg)'; }
+    else { nextBtn.textContent = 'Next Day →'; nextBtn.style.background = ''; nextBtn.style.color = ''; }
   }
 }
 
 function advanceReadingDay() {
   const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
   if (day >= 2) {
-    // Reset to day 0 for new article
-    localStorage.setItem('fluency_reading_day', '0');
-    localStorage.setItem('fluency_reading_url', '');
-    localStorage.setItem('fluency_reading_vocab', '');
-    document.getElementById('reading-article-url').value = '';
-    document.getElementById('reading-vocab').value = '';
-    const savedDisplay = document.getElementById('reading-saved-display');
-    if (savedDisplay) savedDisplay.style.display = 'none';
-    showToast('New article — Day 1 starts now', 'var(--success)');
-    renderReadingDay(0);
+    newReadingArticle();
   } else {
     localStorage.setItem('fluency_reading_day', day + 1);
     renderReadingDay(day + 1);
-    showToast('Day ' + (day + 2) + ' unlocked', 'var(--success)');
+    showToast('Day ' + (day + 2) + ' — ' + READING_TASKS[day + 1].label.split(' — ')[1], 'var(--success)');
   }
 }
 
-function openArticle() {
-  const url = document.getElementById('reading-article-url').value.trim();
-  if (url && (url.startsWith('http') || url.startsWith('www'))) {
-    window.open(url.startsWith('http') ? url : 'https://' + url, '_blank');
-  } else {
-    window.open('https://lingua.com/spanish/reading/', '_blank');
-  }
-  return false;
+function newReadingArticle() {
+  localStorage.removeItem('fluency_reading_article');
+  localStorage.setItem('fluency_reading_day', '0');
+  localStorage.setItem('fluency_reading_vocab', '');
+  document.getElementById('reading-generate-section').style.display = 'block';
+  document.getElementById('reading-article-section').style.display = 'none';
+  document.getElementById('reading-vocab').value = '';
+  document.getElementById('reading-shadow') && (document.getElementById('reading-shadow').value = '');
+  const savedDisplay = document.getElementById('reading-saved-display');
+  if (savedDisplay) savedDisplay.style.display = 'none';
+  showToast('Ready for new article', 'var(--success)');
 }
 
 function saveVocabNote() {
@@ -3433,33 +3591,197 @@ function saveVocabNote() {
 function saveShadowWriting() {
   const text = document.getElementById('reading-shadow').value.trim();
   if (!text) { showToast('Write your shadow version first', 'var(--danger)'); return; }
-
-  // Split by line breaks and save each non-empty line as a sentence
   const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 5);
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   let added = 0;
   lines.slice(0, 5).forEach((es, i) => {
-    sentences.push({
-      id: Date.now() + i,
-      en: '📖 ' + today + ' — ' + es,
-      es_pr: es,
-      es_ca: es,
-      cat: 'daily',
-      status: 'new',
-      shadowDone: false,
-      nextReview: null,
-      reviewCount: 0
-    });
+    sentences.push({ id: Date.now() + i, en: '📖 ' + today + ' — ' + es, es_pr: es, es_ca: es, cat: 'daily', status: 'new', shadowDone: false, nextReview: null, reviewCount: 0 });
     added++;
   });
-  saveSentences();
-  updateStats();
+  saveSentences(); updateStats();
   showToast(added + ' sentence' + (added > 1 ? 's' : '') + ' saved to Library', 'var(--success)');
 }
 
 function completeReadingStep() {
   completeMissionStep(4);
   showToast('Reading complete ✓', 'var(--success)');
+}
+
+// ================================================================
+// STAGE-AWARE TODAY TAB
+// Steps shown by stage:
+//   All stages: Shadow, Recall, Write, Listen, Journal
+//   Stage 2+:   Reading (unlocks at 70 owned)
+//   Stage 3+:   Dreaming Spanish (unlocks at 150 owned)
+//   Stage 4+:   Music (unlocks at 300 owned)
+// ================================================================
+function renderStageAwareSteps() {
+  const owned = getOwnedCount();
+  const stage = owned < 70 ? 1 : owned < 150 ? 2 : owned < 300 ? 3 : owned < 500 ? 4 : 5;
+
+  const readingStep = document.getElementById('mstep-4');
+  const dreamingStep = document.getElementById('mstep-5');
+  const musicStep = document.getElementById('mstep-6');
+
+  // Reading unlocks at Stage 2 (70+ owned)
+  if (readingStep) {
+    if (stage >= 2) {
+      readingStep.style.display = 'flex';
+      readingStep.style.opacity = '1';
+    } else {
+      readingStep.style.display = 'flex';
+      readingStep.style.opacity = '0.35';
+      readingStep.style.pointerEvents = 'none';
+      const desc = readingStep.querySelector('.ms-desc');
+      if (desc) desc.textContent = '🔒 Unlocks at 70 owned sentences — keep shadowing.';
+    }
+  }
+
+  // Dreaming Spanish unlocks at Stage 3 (150+ owned)
+  if (dreamingStep) {
+    if (stage >= 3) {
+      dreamingStep.style.display = 'flex';
+      dreamingStep.style.opacity = '1';
+      dreamingStep.style.pointerEvents = '';
+    } else {
+      dreamingStep.style.display = 'flex';
+      dreamingStep.style.opacity = '0.35';
+      dreamingStep.style.pointerEvents = 'none';
+      const desc = dreamingStep.querySelector('.ms-desc');
+      if (desc) desc.textContent = '🔒 Unlocks at 150 owned — you\'re building toward this.';
+    }
+  }
+
+  // Music unlocks at Stage 3 (150+ owned)
+  if (musicStep) {
+    if (stage >= 3) {
+      musicStep.style.display = 'flex';
+      musicStep.style.opacity = '1';
+      musicStep.style.pointerEvents = '';
+    } else {
+      musicStep.style.display = 'flex';
+      musicStep.style.opacity = '0.35';
+      musicStep.style.pointerEvents = 'none';
+      const desc = musicStep.querySelector('.ms-desc');
+      if (desc) desc.textContent = '🔒 Unlocks at 150 owned — focus on Shadow and Recall first.';
+    }
+  }
+
+  // Commentary prompt — pull from owned sentences
+  renderCommentaryPrompt(stage);
+}
+
+// ================================================================
+// COMMENTARY PROMPT — time-of-day + moment-type aware
+// ================================================================
+
+// Classify a sentence's moment type by scanning the Spanish for trigger patterns
+function getMomentType(es) {
+  if (!es) return 'anytime';
+  const s = es.toLowerCase();
+
+  // Morning triggers
+  if (/despert|mañana|levant|café|desayun|medit|amanecer|ejercicio/.test(s)) return 'morning';
+  // Pre-action (about to do something)
+  if (/^voy a|^vamos a|antes de|tengo que|necesito|voy a hacer|planeo|pienso/.test(s)) return 'pre';
+  // Mid-action (doing right now)
+  if (/^estoy|^está|haciendo|trabajando|caminando|comiendo|bebiendo|hablando|aprendiendo/.test(s)) return 'present';
+  // Post-action (just finished)
+  if (/^acabo de|^terminé|^ya hice|^ya fui|^llegué|después de/.test(s)) return 'post';
+  // Evening / reflection
+  if (/noche|cena|cenar|dormir|descansar|reflexion|hoy fue|hoy estuvo|esta noche/.test(s)) return 'evening';
+  // Feeling / state
+  if (/me siento|me encanta|me gusta|no me gusta|me parece|me alegra|estoy bien|estoy cansado/.test(s)) return 'feeling';
+
+  return 'anytime';
+}
+
+// Map hour of day to preferred moment types
+function getMomentTypesForHour(hour) {
+  if (hour >= 5 && hour < 9)   return ['morning', 'pre', 'anytime'];
+  if (hour >= 9 && hour < 12)  return ['present', 'pre', 'anytime'];
+  if (hour >= 12 && hour < 14) return ['present', 'post', 'feeling', 'anytime'];
+  if (hour >= 14 && hour < 17) return ['pre', 'present', 'anytime'];
+  if (hour >= 17 && hour < 20) return ['post', 'feeling', 'anytime'];
+  if (hour >= 20 || hour < 5)  return ['evening', 'feeling', 'post', 'anytime'];
+  return ['anytime'];
+}
+
+// Label shown on the card to give context
+function getMomentLabel(type, hour) {
+  const labels = {
+    morning:  '🌅 Morning — say this now',
+    pre:      '→ About to do something — say this before you start',
+    present:  '⚡ Mid-action — say this while you\'re doing it',
+    post:     '✓ Just finished — say this after',
+    feeling:  '💬 How you feel right now',
+    evening:  '🌙 Evening — say this tonight',
+    anytime:  '🗣 Say this right now',
+  };
+  return labels[type] || labels.anytime;
+}
+
+function renderCommentaryPrompt(stage) {
+  const container = document.getElementById('commentary-prompt');
+  if (!container) return;
+
+  const hour = new Date().getHours();
+  const preferredTypes = getMomentTypesForHour(hour);
+
+  // Starter sentences — always available from day one
+  const starterPool = [
+    { es: 'Buenos días.', en: 'Good morning.', type: 'morning' },
+    { es: 'Acabo de despertarme.', en: 'I just woke up.', type: 'morning' },
+    { es: 'Voy a hacer café.', en: 'I\'m going to make coffee.', type: 'morning' },
+    { es: 'Voy a caminar esta mañana.', en: 'I\'m going to walk this morning.', type: 'morning' },
+    { es: 'Estoy haciendo café.', en: 'I\'m making coffee.', type: 'present' },
+    { es: 'Estoy caminando.', en: 'I\'m walking.', type: 'present' },
+    { es: 'Estoy trabajando.', en: 'I\'m working.', type: 'present' },
+    { es: 'Estoy aprendiendo español.', en: 'I\'m learning Spanish.', type: 'present' },
+    { es: 'Tengo que trabajar ahora.', en: 'I have to work now.', type: 'pre' },
+    { es: 'Voy a practicar español.', en: 'I\'m going to practice Spanish.', type: 'pre' },
+    { es: 'Voy a comer algo.', en: 'I\'m going to eat something.', type: 'pre' },
+    { es: 'Acabo de terminar.', en: 'I just finished.', type: 'post' },
+    { es: 'Acabo de comer.', en: 'I just ate.', type: 'post' },
+    { es: 'Acabo de caminar.', en: 'I just walked.', type: 'post' },
+    { es: 'Me siento bien hoy.', en: 'I feel good today.', type: 'feeling' },
+    { es: 'Estoy cansado pero bien.', en: 'I\'m tired but good.', type: 'feeling' },
+    { es: 'Me encanta vivir aquí.', en: 'I love living here.', type: 'feeling' },
+    { es: 'Buenas noches.', en: 'Good evening.', type: 'evening' },
+    { es: 'Voy a descansar.', en: 'I\'m going to rest.', type: 'evening' },
+    { es: 'Hoy fue un buen día.', en: 'Today was a good day.', type: 'evening' },
+  ];
+
+  const owned = sentences.filter(s => s.status === 'owned');
+  let pool, isStarter = false;
+
+  if (owned.length) {
+    const scored = owned.map(s => {
+      const es = getPR(s) || '';
+      const type = getMomentType(es);
+      const score = preferredTypes.indexOf(type);
+      return { es, en: s.en, type, score: score === -1 ? -1 : preferredTypes.length - score };
+    }).filter(x => x.score >= 0);
+    pool = scored.length ? scored : owned.map(s => ({ es: getPR(s)||'', en: s.en, type: 'anytime', score: 0 }));
+  } else {
+    isStarter = true;
+    const scored = starterPool.map(s => {
+      const score = preferredTypes.indexOf(s.type);
+      return { ...s, score: score === -1 ? -1 : preferredTypes.length - score };
+    }).filter(x => x.score >= 0);
+    pool = scored.length ? scored : starterPool.map(s => ({ ...s, score: 0 }));
+  }
+
+  const best = pool.filter(x => x.score === Math.max(...pool.map(p => p.score)));
+  const pick = best[hour % best.length];
+  if (!pick || !pick.es) { container.style.display = 'none'; return; }
+
+  container.style.display = 'block';
+  document.getElementById('commentary-label').textContent = getMomentLabel(pick.type, hour);
+  document.getElementById('commentary-es').textContent = pick.es;
+  document.getElementById('commentary-en').textContent = pick.en;
+  const hint = document.getElementById('commentary-hint');
+  if (hint) hint.textContent = isStarter ? 'Starter sentence — say it out loud. Your owned sentences appear here once you complete Shadow + Recall.' : '';
 }
 
 // ================================================================
