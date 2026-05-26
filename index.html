@@ -423,13 +423,42 @@
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
 
-  <!-- Commentary prompt — pulled from owned sentences, time-of-day aware -->
-  <div id="commentary-prompt" style="display:none;background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:10px;padding:13px 15px;margin-bottom:12px;">
-    <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;font-weight:600;" id="commentary-label">🗣 Say this right now</div>
-    <div id="commentary-es" style="font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--accent);margin-bottom:3px;"></div>
-    <div id="commentary-en" style="font-size:11px;color:var(--muted);margin-bottom:8px;"></div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.6;">This is a sentence you already own. Say it out loud — then use it the next time the real moment arrives.</div>
-    <div id="commentary-hint" style="font-size:10px;color:var(--muted);margin-top:6px;font-style:italic;"></div>
+  <!-- Think in Spanish — 3 time-block prompts -->
+  <div style="margin-bottom:14px;">
+    <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;font-weight:600;margin-bottom:10px;">🧠 Think in Spanish — say it as you do it</div>
+
+    <!-- Morning block -->
+    <div class="tis-block" id="tis-morning" style="margin-bottom:8px;border:1px solid rgba(212,240,60,0.18);border-radius:10px;padding:12px 14px;background:rgba(212,240,60,0.04);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:10px;color:var(--accent);font-weight:600;letter-spacing:0.06em;">🌅 MORNING</div>
+        <button onclick="tisSay('morning')" style="font-size:10px;background:rgba(212,240,60,0.12);border:1px solid rgba(212,240,60,0.25);color:var(--accent);border-radius:6px;padding:3px 9px;cursor:pointer;">▶ Hear it</button>
+      </div>
+      <div id="tis-morning-es" style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--accent);margin-bottom:2px;"></div>
+      <div id="tis-morning-en" style="font-size:11px;color:var(--muted);margin-bottom:6px;"></div>
+      <div id="tis-morning-cue" style="font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;"></div>
+    </div>
+
+    <!-- Midday block -->
+    <div class="tis-block" id="tis-midday" style="margin-bottom:8px;border:1px solid rgba(79,180,255,0.18);border-radius:10px;padding:12px 14px;background:rgba(79,180,255,0.04);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:10px;color:var(--blue);font-weight:600;letter-spacing:0.06em;">☀️ MIDDAY</div>
+        <button onclick="tisSay('midday')" style="font-size:10px;background:rgba(79,180,255,0.12);border:1px solid rgba(79,180,255,0.25);color:var(--blue);border-radius:6px;padding:3px 9px;cursor:pointer;">▶ Hear it</button>
+      </div>
+      <div id="tis-midday-es" style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--blue);margin-bottom:2px;"></div>
+      <div id="tis-midday-en" style="font-size:11px;color:var(--muted);margin-bottom:6px;"></div>
+      <div id="tis-midday-cue" style="font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;"></div>
+    </div>
+
+    <!-- Evening block -->
+    <div class="tis-block" id="tis-evening" style="border:1px solid rgba(196,160,255,0.18);border-radius:10px;padding:12px 14px;background:rgba(196,160,255,0.04);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-size:10px;color:var(--purple);font-weight:600;letter-spacing:0.06em;">🌙 EVENING</div>
+        <button onclick="tisSay('evening')" style="font-size:10px;background:rgba(196,160,255,0.12);border:1px solid rgba(196,160,255,0.25);color:var(--purple);border-radius:6px;padding:3px 9px;cursor:pointer;">▶ Hear it</button>
+      </div>
+      <div id="tis-evening-es" style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--purple);margin-bottom:2px;"></div>
+      <div id="tis-evening-en" style="font-size:11px;color:var(--muted);margin-bottom:6px;"></div>
+      <div id="tis-evening-cue" style="font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;"></div>
+    </div>
   </div>
 
 <div class="low-energy">
@@ -1850,6 +1879,7 @@ function initToday() {
   renderMissionSteps();
   updateMissionProgress();
   renderStageAwareSteps();
+  renderThinkInSpanish();
 }
 
 function goToStep(idx, screen) {
@@ -3667,15 +3697,92 @@ function renderStageAwareSteps() {
     }
   }
 
-  // Commentary prompt — pull from owned sentences
-  renderCommentaryPrompt(stage);
+  // Think in Spanish prompts
+  renderThinkInSpanish();
 }
 
 // ================================================================
-// COMMENTARY PROMPT — time-of-day + moment-type aware
+// THINK IN SPANISH — 3 time-block prompts
+// Morning: what you're about to do / doing
+// Midday:  what you're doing / just did (review of morning)
+// Evening: reflect on the day / what you plan tomorrow
 // ================================================================
 
-// Classify a sentence's moment type by scanning the Spanish for trigger patterns
+const TIS_STARTERS = {
+  morning: [
+    { es: 'Me acabo de despertar.', en: 'I just woke up.', cue: 'Say this the moment you open your eyes.' },
+    { es: 'Voy a hacer café.', en: 'I\'m going to make coffee.', cue: 'Say this before you touch the coffee machine.' },
+    { es: 'Estoy haciendo café.', en: 'I\'m making coffee.', cue: 'Say this while the coffee is brewing.' },
+    { es: 'Voy a caminar esta mañana.', en: 'I\'m going to walk this morning.', cue: 'Say this before you leave the house.' },
+    { es: 'Estoy listo para empezar el día.', en: 'I\'m ready to start the day.', cue: 'Say this after getting dressed.' },
+    { es: 'Hoy voy a practicar español.', en: 'Today I\'m going to practice Spanish.', cue: 'Say this every morning as an intention.' },
+    { es: 'Voy a meditar unos minutos.', en: 'I\'m going to meditate for a few minutes.', cue: 'Say this before sitting down to meditate.' },
+    { es: 'Acabo de ducharme.', en: 'I just showered.', cue: 'Say this right after getting out of the shower.' },
+  ],
+  midday: [
+    { es: 'Estoy trabajando en mi negocio.', en: 'I\'m working on my business.', cue: 'Say this when you sit down at your desk.' },
+    { es: 'Voy a comer algo ahora.', en: 'I\'m going to eat something now.', cue: 'Say this before lunch.' },
+    { es: 'Acabo de terminar una sesión.', en: 'I just finished a session.', cue: 'Say this after any work call or meeting.' },
+    { es: 'Necesito un descanso.', en: 'I need a break.', cue: 'Say this when you feel yourself losing focus.' },
+    { es: 'Estoy comiendo.', en: 'I\'m eating.', cue: 'Say this at the start of any meal.' },
+    { es: 'Acabo de caminar.', en: 'I just walked.', cue: 'Say this immediately after finishing your walk.' },
+    { es: 'Me siento bien hoy.', en: 'I feel good today.', cue: 'Check in with yourself midday and say how you actually feel.' },
+    { es: 'Estoy escuchando español.', en: 'I\'m listening to Spanish.', cue: 'Say this every time you put on the Listen tab.' },
+  ],
+  evening: [
+    { es: 'Hoy fue un buen día.', en: 'Today was a good day.', cue: 'Say this while winding down — even if it wasn\'t perfect.' },
+    { es: 'Acabo de cenar.', en: 'I just had dinner.', cue: 'Say this right after eating in the evening.' },
+    { es: 'Estoy cansado pero contento.', en: 'I\'m tired but happy.', cue: 'Say how you honestly feel at the end of the day.' },
+    { es: 'Mañana voy a practicar más.', en: 'Tomorrow I\'m going to practice more.', cue: 'Say this before sleeping — set tomorrow\'s intention.' },
+    { es: 'Practiqué español hoy.', en: 'I practiced Spanish today.', cue: 'Say this as a reflection — it reinforces the habit.' },
+    { es: 'Voy a descansar ahora.', en: 'I\'m going to rest now.', cue: 'Say this before you sleep.' },
+    { es: 'Aprendí algo nuevo hoy.', en: 'I learned something new today.', cue: 'Say this as you review your day.' },
+    { es: 'Mañana voy a caminar por la mañana.', en: 'Tomorrow I\'m going to walk in the morning.', cue: 'Plan tomorrow out loud in Spanish.' },
+  ]
+};
+
+// Pick sentence for a block — owned sentences first, starters as fallback
+// Rotates daily so you get a new one each day
+function getTISPick(block) {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+
+  // Try to find owned sentences that match this block's moment types
+  const blockTypes = { morning: ['morning', 'pre'], midday: ['present', 'post', 'feeling'], evening: ['evening', 'post', 'feeling'] };
+  const types = blockTypes[block] || [];
+  const owned = sentences.filter(s => s.status === 'owned');
+  const matched = owned.filter(s => types.includes(getMomentType(getPR(s) || '')));
+
+  if (matched.length) {
+    const s = matched[dayOfYear % matched.length];
+    return { es: getPR(s) || '', en: s.en, cue: 'From your owned sentences — say it in the real moment today.' };
+  }
+
+  // Fall back to starters
+  const pool = TIS_STARTERS[block] || TIS_STARTERS.morning;
+  return pool[dayOfYear % pool.length];
+}
+
+function renderThinkInSpanish() {
+  ['morning', 'midday', 'evening'].forEach(block => {
+    const pick = getTISPick(block);
+    const esEl = document.getElementById('tis-' + block + '-es');
+    const enEl = document.getElementById('tis-' + block + '-en');
+    const cueEl = document.getElementById('tis-' + block + '-cue');
+    if (esEl) esEl.textContent = pick.es;
+    if (enEl) enEl.textContent = pick.en;
+    if (cueEl) cueEl.textContent = pick.cue;
+  });
+}
+
+// Store current TIS picks so the audio button can access them
+function tisSay(block) {
+  const pick = getTISPick(block);
+  if (pick && pick.es) ttsSpeak(pick.es, 'es-US');
+}
+
+// Keep old function name as alias so nothing breaks
+function renderCommentaryPrompt() { renderThinkInSpanish(); }
+
 function getMomentType(es) {
   if (!es) return 'anytime';
   const s = es.toLowerCase();
