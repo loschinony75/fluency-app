@@ -1267,6 +1267,19 @@ const preloadedSentences = [
   { en: "I miss my daughters very much.", es_pr: "Extraño mucho a mis hijas.", cat: "family" },
   { en: "I visit my daughters in Germany.", es_pr: "Visito a mis hijas en Alemania.", cat: "family" },
   { en: "My daughters were born in Germany.", es_pr: "Mis hijas nacieron en Alemania.", cat: "family" },
+  // FAMILY ORIGINS — PR and Canarian
+  { en: "Where are your parents from?", es_pr: "¿De dónde son tus padres?", cat: "social" },
+  { en: "Where is your family from?", es_pr: "¿De dónde es tu familia?", cat: "social" },
+  { en: "My parents are from Puerto Rico but I was born in Brooklyn.", es_pr: "Mis padres son de Puerto Rico pero yo nací en Brooklyn.", cat: "family" },
+  { en: "Are your parents from Puerto Rico?", es_pr: "¿Tus viejos son de Puerto Rico?", cat: "social" },
+  // CANARIAN COFFEE AND ORDERING
+  { en: "Can you get me a black coffee please?", es_pr: "¿Me das un café negro por favor?", es_ca: "¿Me pones un café solo por favor?", cat: "errands" },
+  { en: "Can you get me a coffee with milk please?", es_pr: "¿Me das un café con leche por favor?", es_ca: "¿Me pones un café con leche por favor?", cat: "errands" },
+  { en: "Can you get me a cortado please?", es_pr: "¿Me das un cortado por favor?", es_ca: "¿Me pones un cortado por favor?", cat: "errands" },
+  { en: "I would like to try a barraquito.", es_pr: "Quisiera probar un café negro con leche.", es_ca: "Quisiera probar un barraquito.", cat: "errands" },
+  { en: "What is a barraquito?", es_pr: "¿Qué es eso del barraquito?", es_ca: "¿Qué es un barraquito?", cat: "social" },
+  { en: "Can you get me an americano please?", es_pr: "¿Me das un café americano por favor?", es_ca: "¿Me pones un americano por favor?", cat: "errands" },
+  { en: "Can I have the bill please?", es_pr: "¿Me das la cuenta por favor?", es_ca: "¿Me pones la cuenta por favor?", cat: "errands" },
   // VERB FORMS — all 20 verbs × 5 forms
   { en: "I go to the café every morning.", es_pr: "Voy a la cafetería todas las mañanas.", cat: "daily" },
   { en: "I went to the Army in 1995.", es_pr: "Fui al ejército en 1995.", cat: "family" },
@@ -2178,10 +2191,28 @@ function playListenNext() {
   let pool;
   if (listenMode === 'walk') {
     pool = getShadowQueue();
-    if (!pool.length) pool = sentences.slice(0, 10); // fallback if nothing in queue
+    // If shadow queue empty (fresh install) build a proper interleaved preview pool
+    if (!pool.length) {
+      const cats = { daily: 3, social: 2, errands: 2, work: 2, family: 1 };
+      const preview = [];
+      for (const [cat, count] of Object.entries(cats)) {
+        const catSentences = sentences.filter(s => s.cat === cat);
+        preview.push(...catSentences.slice(0, count));
+      }
+      pool = preview.slice(0, 10);
+    }
   } else {
     pool = sentences.filter(s => s.shadowDone);
-    if (!pool.length) pool = sentences.slice(0, 10); // fallback on day one
+    // General mode fallback — use same interleaved preview
+    if (!pool.length) {
+      const cats = { daily: 3, social: 2, errands: 2, work: 2, family: 1 };
+      const preview = [];
+      for (const [cat, count] of Object.entries(cats)) {
+        const catSentences = sentences.filter(s => s.cat === cat);
+        preview.push(...catSentences.slice(0, count));
+      }
+      pool = preview.slice(0, 10);
+    }
   }
   if (!pool.length) { stopListen(); return; }
   const s = pool[listenIdx % pool.length];
