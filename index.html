@@ -486,6 +486,12 @@
   <div id="shadow-content" style="display:none;">
     <div class="progress-track mb8"><div class="progress-fill" id="shadow-progress" style="width:0%"></div></div>
     <div class="sentence-count" id="shadow-count">— / —</div>
+
+    <!-- Mode selector -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;">
+      <button id="shadow-mode-drill" onclick="setShadowMode('drill')" style="flex:1;font-size:11px;padding:6px;border-radius:7px;border:1px solid var(--blue);background:rgba(160,196,255,0.15);color:var(--blue);cursor:pointer;font-weight:600;">🔀 Drill</button>
+      <button id="shadow-mode-script" onclick="setShadowMode('script')" style="flex:1;font-size:11px;padding:6px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;">📜 Script</button>
+    </div>
     <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;" id="shadow-play-count-wrap">
       <div style="position:relative;width:44px;height:44px;flex-shrink:0;">
         <svg width="44" height="44" viewBox="0 0 44 44" style="transform:rotate(-90deg)">
@@ -820,6 +826,19 @@
         <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — Shadow writing</span><br>Text open. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 best sentences to Library.</div>
         <div><span style="color:var(--success);font-weight:500;">Day 4</span><br>Open a new article. Sentences from the old one keep drilling in Shadow and Recall indefinitely.</div>
       </div>
+    </div>
+  </div>
+
+  <!-- Personal Reading Passage — generated from conversation script -->
+  <div class="card" style="background:rgba(212,240,60,0.04);border-color:rgba(212,240,60,0.2);margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);">📄 Your Personal Passage</div>
+      <button onclick="togglePersonalPassage()" id="passage-toggle-btn" style="font-size:10px;background:rgba(212,240,60,0.1);border:1px solid rgba(212,240,60,0.25);color:var(--accent);border-radius:6px;padding:3px 8px;cursor:pointer;">Show</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">A short passage about your life — built from your conversation script. Use this as your 3-day reading text before Lingua.</div>
+    <div id="personal-passage" style="display:none;">
+      <div style="font-size:14px;color:var(--text);line-height:1.9;margin-bottom:12px;" id="personal-passage-text"></div>
+      <div style="font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;line-height:1.7;" id="personal-passage-en"></div>
     </div>
   </div>
 
@@ -2628,7 +2647,105 @@ function saveSentence() {
 // ================================================================
 // SHADOW — shows next 10 unshadowed sentences
 // ================================================================
+// ================================================================
+// CONVERSATION SCRIPTS
+// Ordered Q&A pairs that play as a flowing dialogue.
+// Each script is a real conversation you'll have in Gran Canaria.
+// Questions are stored as es_pr starting with ¿
+// Answers are the next sentence in the array.
+// ================================================================
+
+const CONVERSATION_SCRIPTS = [
+  {
+    id: 'intro',
+    title: 'Introducing Yourself',
+    description: 'A conversation about who you are — where you\'re from, your background, your work, why you\'re here.',
+    pairs: [
+      { q_en: 'What is your name?',                    q_es: '¿Cómo te llamas?',                              a_en: 'My name is Carlos.',                           a_es: 'Me llamo Carlos.' },
+      { q_en: 'Where are you from?',                   q_es: '¿De dónde eres?',                               a_en: 'I\'m from Brooklyn, New York.',                  a_es: 'Soy de Brooklyn, Nueva York.' },
+      { q_en: 'Are you Puerto Rican?',                 q_es: '¿Eres puertorriqueño?',                         a_en: 'Yes, my family is Puerto Rican.',               a_es: 'Sí, mi familia es puertorriqueña.' },
+      { q_en: 'What do you do for work?',              q_es: '¿A qué te dedicas?',                            a_en: 'I\'m a business coach.',                        a_es: 'Soy coach de negocios.' },
+      { q_en: 'What kind of coaching do you do?',      q_es: '¿Qué tipo de coaching haces?',                  a_en: 'I help business owners with leadership and growth.', a_es: 'Ayudo a dueños de negocios con liderazgo y crecimiento.' },
+      { q_en: 'Did you serve in the military?',        q_es: '¿Serviste en el ejército?',                     a_en: 'Yes, I was in the Army for ten years.',         a_es: 'Sí, estuve en el ejército por diez años.' },
+      { q_en: 'What did you do in the Army?',          q_es: '¿Qué hacías en el ejército?',                   a_en: 'I was a paratrooper and military police.',      a_es: 'Era paracaidista y policía militar.' },
+      { q_en: 'Why did you move to Gran Canaria?',     q_es: '¿Por qué te mudaste a Gran Canaria?',           a_en: 'I wanted a new life. I love the climate here.', a_es: 'Quería una vida nueva. Me encanta el clima aquí.' },
+      { q_en: 'How long have you been here?',          q_es: '¿Cuánto tiempo llevas aquí?',                   a_en: 'I just arrived recently.',                      a_es: 'Acabo de llegar hace poco.' },
+      { q_en: 'Do you have family?',                   q_es: '¿Tienes familia?',                              a_en: 'Yes, I have two daughters. They live in Germany.', a_es: 'Sí, tengo dos hijas. Viven en Alemania.' },
+      { q_en: 'Do you speak Spanish?',                 q_es: '¿Hablas español?',                              a_en: 'I\'m learning. I practice every day.',           a_es: 'Estoy aprendiendo. Practico todos los días.' },
+      { q_en: 'How is your Spanish coming along?',     q_es: '¿Cómo va tu español?',                          a_en: 'Little by little. I understand more every week.', a_es: 'Poco a poco. Entiendo más cada semana.' },
+      { q_en: 'Where do you live in Gran Canaria?',    q_es: '¿Dónde vives en Gran Canaria?',                 a_en: 'I\'m still looking for the right neighborhood.', a_es: 'Todavía estoy buscando el barrio ideal.' },
+      { q_en: 'Do you like it here?',                  q_es: '¿Te gusta aquí?',                               a_en: 'Yes, very much. The people are very warm.',     a_es: 'Sí, mucho. La gente es muy amable.' },
+      { q_en: 'What do you do in your free time?',     q_es: '¿Qué haces en tu tiempo libre?',                a_en: 'I walk every morning and I meditate.',           a_es: 'Camino todas las mañanas y medito.' },
+    ]
+  }
+];
+
+let shadowMode = 'drill'; // 'drill' or 'script'
+let scriptQueue = [];
+let currentScriptIdx = 0;
+
+function setShadowMode(mode) {
+  shadowMode = mode;
+  const drillBtn = document.getElementById('shadow-mode-drill');
+  const scriptBtn = document.getElementById('shadow-mode-script');
+  if (mode === 'drill') {
+    drillBtn.style.background = 'rgba(160,196,255,0.15)';
+    drillBtn.style.borderColor = 'var(--blue)';
+    drillBtn.style.color = 'var(--blue)';
+    drillBtn.style.fontWeight = '600';
+    scriptBtn.style.background = 'none';
+    scriptBtn.style.borderColor = 'var(--border)';
+    scriptBtn.style.color = 'var(--muted)';
+    scriptBtn.style.fontWeight = 'normal';
+    initShadow();
+  } else {
+    scriptBtn.style.background = 'rgba(212,240,60,0.12)';
+    scriptBtn.style.borderColor = 'var(--accent)';
+    scriptBtn.style.color = 'var(--accent)';
+    scriptBtn.style.fontWeight = '600';
+    drillBtn.style.background = 'none';
+    drillBtn.style.borderColor = 'var(--border)';
+    drillBtn.style.color = 'var(--muted)';
+    drillBtn.style.fontWeight = 'normal';
+    loadConversationScript('intro');
+  }
+}
+
+function loadConversationScript(id) {
+  const script = CONVERSATION_SCRIPTS.find(s => s.id === id);
+  if (!script) return;
+
+  // Build a flat queue: question sentence → answer sentence, interleaved
+  scriptQueue = [];
+  script.pairs.forEach((pair, i) => {
+    scriptQueue.push({
+      id: 90000 + i * 2,
+      en: pair.q_en,
+      es_pr: pair.q_es,
+      es_ca: pair.q_es,
+      cat: 'social',
+      status: 'new',
+      shadowDone: false,
+      _scriptQuestion: true,
+      _scriptAnswerEs: pair.a_es,
+      _scriptAnswerEn: pair.a_en,
+      _scriptTitle: script.title
+    });
+  });
+
+  ttsStop(); shadowLooping = false;
+  shadowQueue = scriptQueue;
+  shadowIdx = 0;
+  shadowPlayCounts = {};
+  document.getElementById('shadow-empty').style.display = 'none';
+  document.getElementById('shadow-content').style.display = 'block';
+  renderShadow();
+  updateShadowRing(0, false);
+  showToast('Script: ' + script.title, 'var(--accent)');
+}
+
 function initShadow() {
+  shadowMode = shadowMode || 'drill';
   shadowQueue = getShadowQueue();
   // Prepend one warm-up sentence (an owned sentence) at the start
   const warmUp = sentences.filter(s => s.status === 'owned' && s.shadowDone);
@@ -2656,17 +2773,31 @@ function renderShadow() {
   const s = shadowQueue[shadowIdx];
   const catLabels = { daily: '🗓 Daily Life', social: '💬 Social', errands: '🛒 Errands', work: '💼 Work', family: '👨‍👧 Family' };
   let catLabel;
-  if (s.verbForm && s.verbLabel) {
+  if (s._scriptQuestion) {
+    catLabel = '📜 Script — ' + (s._scriptTitle || 'Conversation') + ' · say your answer after the question';
+  } else if (s.verbForm && s.verbLabel) {
     catLabel = '📚 Verb Drill — ' + s.verbLabel;
   } else if (s._warmup) {
     catLabel = '🔥 Warm-up — you own this';
   } else {
     catLabel = catLabels[s.cat] || s.cat;
   }
-  const enText = s.en && s.en.trim() ? s.en : '(no English translation — edit in Library)';
+  const enText = s.en && s.en.trim() ? s.en : '(no English translation)';
   const esText = getPR(s) || '(no Spanish translation)';
   document.getElementById('shadow-en').textContent = enText;
   document.getElementById('shadow-es').textContent = esText;
+
+  // Show answer hint for script questions
+  const answerHint = document.getElementById('qa-pair-answer');
+  if (s._scriptQuestion && answerHint) {
+    answerHint.style.display = 'block';
+    answerHint.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px;">Your answer:</span>
+      <span style="color:var(--accent);font-size:13px;font-weight:600;">${sanitize(s._scriptAnswerEs)}</span>
+      <span style="color:var(--muted);font-size:11px;display:block;margin-top:2px;">${sanitize(s._scriptAnswerEn)}</span>`;
+  } else if (answerHint && !s.pairAnswerId) {
+    answerHint.style.display = 'none';
+  }
+
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + '  ·  ' + catLabel;
   document.getElementById('shadow-progress').style.width = (shadowQueue.length > 1 ? (shadowIdx / (shadowQueue.length - 1)) * 100 : 100) + '%';
 }
@@ -2679,6 +2810,23 @@ function shadowPlay() {
 
   const s = shadowQueue[shadowIdx];
   const speed = getCurrentListenSpeed();
+
+  // SCRIPT MODE: question plays → pause (your turn) → answer plays
+  if (s._scriptQuestion) {
+    showQAPairBadge(true);
+    showQAPairPrompt(s, { en: s._scriptAnswerEn, es_pr: s._scriptAnswerEs });
+    ttsSpeak(s.es_pr, 'es-US', () => {
+      setTimeout(() => {
+        showQAPairAnswer({ en: s._scriptAnswerEn, es_pr: s._scriptAnswerEs });
+        ttsSpeak(s._scriptAnswerEs, 'es-US', () => {
+          if (shadowLooping) { shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 800); }
+          else { setWave('shadow-wave', false); btn.innerHTML = '▶ Play'; }
+        }, speed);
+      }, 1800);
+    }, speed);
+    practicedToday++; localStorage.setItem('fluency_today', practicedToday); updateStats();
+    return;
+  }
 
   // Check if this sentence has a paired answer (Q&A unit)
   const pairId = s.pairAnswerId;
@@ -4178,6 +4326,37 @@ function initReading() {
   if (vocab && savedDisplay && savedText) { savedDisplay.style.display = 'block'; savedText.textContent = vocab; }
 
   renderReadingDay(day);
+  renderPersonalPassage();
+}
+
+function renderPersonalPassage() {
+  const script = CONVERSATION_SCRIPTS[0]; // intro script
+  if (!script) return;
+
+  // Build a natural paragraph from the answers
+  const answers = script.pairs.map(p => p.a_es);
+  const answersEn = script.pairs.map(p => p.a_en);
+
+  const passage = answers.join(' ');
+  const passageEn = answersEn.join(' ');
+
+  const textEl = document.getElementById('personal-passage-text');
+  const enEl = document.getElementById('personal-passage-en');
+  if (textEl) textEl.textContent = passage;
+  if (enEl) enEl.textContent = passageEn;
+}
+
+function togglePersonalPassage() {
+  const el = document.getElementById('personal-passage');
+  const btn = document.getElementById('passage-toggle-btn');
+  if (!el || !btn) return;
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    btn.textContent = 'Hide';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = 'Show';
+  }
 }
 
 function renderReadingDay(day) {
