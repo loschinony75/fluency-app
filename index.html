@@ -372,17 +372,7 @@
     <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-3r">→</div></div>
   </div>
 
-  <!-- Step 5 — Verb Drill -->
-  <div class="mission-step" id="mstep-verb" onclick="launchVerbDrill()" style="background:rgba(240,164,64,0.05);border-color:rgba(240,164,64,0.2);">
-    <div class="ms-check" id="mcheck-verb" style="border-color:var(--warn);color:var(--warn);"></div>
-    <div class="ms-body">
-      <div class="ms-title" style="color:var(--warn);" id="verb-step-title">Verb of the Week — Shadow all 5 forms</div>
-      <div class="ms-desc" id="verb-step-desc">Loading this week's verb...</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-verb">→</div></div>
-  </div>
-
-  <!-- Step 6 — Dreaming Spanish -->
+  <!-- Step 5 — Reading -->
   <div class="mission-step listen-step" id="mstep-4" onclick="completeMissionStep(4)">
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
@@ -2073,7 +2063,134 @@ const preloadedSentences = [
   { en: "Do you still think language learning is difficult?", es_pr: "¿Sigues pensando que aprender idiomas es difícil?", es_ca: "¿Sigues pensando que aprender idiomas es difícil?", cat: "social" },
   { en: "If you learn one thousand good sentences, you can speak the language well.", es_pr: "Si aprendes mil frases buenas, podrás hablar bien el idioma.", es_ca: "Si aprendes mil frases buenas, podrás hablar bien el idioma.", cat: "social" },
   { en: "You can do that in three months or less.", es_pr: "Puedes hacerlo en tres meses o menos.", es_ca: "Puedes hacerlo en tres meses o menos.", cat: "social" },
-  { en: "With an effective system and some discipline, you can learn any language fast.", es_pr: "Con un sistema eficaz y algo de disciplina, puedes aprender cualquier idioma rápidamente.", es_ca: "Con un sistema eficaz y algo de disciplina, puedes aprender cualquier idioma rápidamente.", cat: "social" }
+  { en: "With an effective system and some discipline, you can learn any language fast.", es_pr: "Con un sistema eficaz y algo de disciplina, puedes aprender cualquier idioma rápidamente.", es_ca: "Con un sistema eficaz y algo de disciplina, puedes aprender cualquier idioma rápidamente.", cat: "social" },
+
+  // ================================================================
+  // GRAMMAR PATTERN SETS — same situation, all subjects and tenses
+  // Each group teaches one grammatical pattern through real sentences
+  // ================================================================
+
+  // IR — going somewhere (most common verb pattern)
+  { en: "I'm going to the bathroom.", es_pr: "Voy al baño.", cat: "daily" },
+  { en: "He is going to the bathroom.", es_pr: "Él va al baño.", cat: "daily" },
+  { en: "She is going to the bathroom.", es_pr: "Ella va al baño.", cat: "daily" },
+  { en: "We are going to the bathroom.", es_pr: "Vamos al baño.", cat: "daily" },
+  { en: "They are going to the bathroom.", es_pr: "Ellos van al baño.", cat: "daily" },
+  { en: "I have to go to the bathroom.", es_pr: "Tengo que ir al baño.", cat: "daily" },
+  { en: "I'm going to the store.", es_pr: "Voy a la tienda.", cat: "errands" },
+  { en: "I'm going to the café.", es_pr: "Voy a la cafetería.", cat: "errands" },
+  { en: "I'm going home.", es_pr: "Voy a casa.", cat: "daily" },
+  { en: "I went to the beach yesterday.", es_pr: "Fui a la playa ayer.", cat: "daily" },
+  { en: "Where are you going?", es_pr: "¿A dónde vas?", cat: "social" },
+
+  // ESTAR — being somewhere / temporary states
+  { en: "I'm in the bathroom.", es_pr: "Estoy en el baño.", cat: "daily" },
+  { en: "He is in the bathroom.", es_pr: "Él está en el baño.", cat: "daily" },
+  { en: "She is in the kitchen.", es_pr: "Ella está en la cocina.", cat: "daily" },
+  { en: "We are in the living room.", es_pr: "Estamos en la sala.", cat: "daily" },
+  { en: "They are in the car.", es_pr: "Ellos están en el carro.", cat: "daily" },
+  { en: "I'm at home.", es_pr: "Estoy en casa.", cat: "daily" },
+  { en: "I'm at work.", es_pr: "Estoy en el trabajo.", cat: "work" },
+  { en: "I'm at the gym.", es_pr: "Estoy en el gimnasio.", cat: "daily" },
+  { en: "Where are you?", es_pr: "¿Dónde estás?", cat: "social" },
+  { en: "Where is he?", es_pr: "¿Dónde está él?", cat: "social" },
+
+  // TENER QUE — obligation (I have to...)
+  { en: "I have to work today.", es_pr: "Tengo que trabajar hoy.", cat: "work" },
+  { en: "I have to eat something.", es_pr: "Tengo que comer algo.", cat: "daily" },
+  { en: "I have to call my daughter.", es_pr: "Tengo que llamar a mi hija.", cat: "family" },
+  { en: "I have to go now.", es_pr: "Tengo que irme ahora.", cat: "daily" },
+  { en: "He has to work.", es_pr: "Él tiene que trabajar.", cat: "work" },
+  { en: "She has to go.", es_pr: "Ella tiene que irse.", cat: "daily" },
+  { en: "We have to leave.", es_pr: "Tenemos que irnos.", cat: "daily" },
+  { en: "Do you have to work today?", es_pr: "¿Tienes que trabajar hoy?", cat: "social" },
+
+  // QUERER — wanting
+  { en: "I want coffee.", es_pr: "Quiero café.", cat: "errands" },
+  { en: "I want to eat.", es_pr: "Quiero comer.", cat: "daily" },
+  { en: "I want to go home.", es_pr: "Quiero ir a casa.", cat: "daily" },
+  { en: "He wants water.", es_pr: "Él quiere agua.", cat: "errands" },
+  { en: "She wants to rest.", es_pr: "Ella quiere descansar.", cat: "daily" },
+  { en: "We want to walk.", es_pr: "Queremos caminar.", cat: "daily" },
+  { en: "They want to eat.", es_pr: "Ellos quieren comer.", cat: "daily" },
+  { en: "Do you want coffee?", es_pr: "¿Quieres café?", cat: "errands" },
+  { en: "I don't want anything.", es_pr: "No quiero nada.", cat: "daily" },
+
+  // PODER — can / able to
+  { en: "I can help you.", es_pr: "Puedo ayudarte.", cat: "social" },
+  { en: "I can't speak Spanish yet.", es_pr: "Todavía no puedo hablar español.", cat: "daily" },
+  { en: "Can you repeat that?", es_pr: "¿Puedes repetir eso?", cat: "social" },
+  { en: "He can drive.", es_pr: "Él puede manejar.", cat: "daily" },
+  { en: "She can cook well.", es_pr: "Ella puede cocinar bien.", cat: "daily" },
+  { en: "We can walk there.", es_pr: "Podemos caminar hasta allá.", cat: "errands" },
+  { en: "Can I have the check?", es_pr: "¿Me puede traer la cuenta?", cat: "errands" },
+
+  // ESTAR + ANDO — present progressive (doing right now)
+  { en: "I'm eating.", es_pr: "Estoy comiendo.", cat: "daily" },
+  { en: "I'm drinking coffee.", es_pr: "Estoy bebiendo café.", cat: "daily" },
+  { en: "I'm walking.", es_pr: "Estoy caminando.", cat: "daily" },
+  { en: "I'm working.", es_pr: "Estoy trabajando.", cat: "work" },
+  { en: "I'm sleeping.", es_pr: "Estoy durmiendo.", cat: "daily" },
+  { en: "I'm resting.", es_pr: "Estoy descansando.", cat: "daily" },
+  { en: "I'm learning Spanish.", es_pr: "Estoy aprendiendo español.", cat: "daily" },
+  { en: "He is sleeping.", es_pr: "Él está durmiendo.", cat: "daily" },
+  { en: "She is eating.", es_pr: "Ella está comiendo.", cat: "daily" },
+  { en: "We are working.", es_pr: "Estamos trabajando.", cat: "work" },
+  { en: "What are you doing?", es_pr: "¿Qué estás haciendo?", cat: "social" },
+
+  // ACABO DE — just finished
+  { en: "I just ate.", es_pr: "Acabo de comer.", cat: "daily" },
+  { en: "I just woke up.", es_pr: "Acabo de despertarme.", cat: "daily" },
+  { en: "I just finished working.", es_pr: "Acabo de terminar de trabajar.", cat: "work" },
+  { en: "I just arrived.", es_pr: "Acabo de llegar.", cat: "daily" },
+  { en: "I just called her.", es_pr: "Acabo de llamarla.", cat: "family" },
+  { en: "He just left.", es_pr: "Él acaba de irse.", cat: "daily" },
+
+  // GUSTAR pattern — likes and dislikes
+  { en: "I like coffee.", es_pr: "Me gusta el café.", cat: "daily" },
+  { en: "I like walking.", es_pr: "Me gusta caminar.", cat: "daily" },
+  { en: "I don't like noise.", es_pr: "No me gusta el ruido.", cat: "daily" },
+  { en: "I love the Canary Islands.", es_pr: "Me encantan las Islas Canarias.", cat: "daily" },
+  { en: "He likes the beach.", es_pr: "Le gusta la playa.", cat: "daily" },
+  { en: "She doesn't like cold weather.", es_pr: "No le gusta el frío.", cat: "daily" },
+  { en: "Do you like it here?", es_pr: "¿Te gusta aquí?", cat: "social" },
+  { en: "What do you like to do?", es_pr: "¿Qué te gusta hacer?", cat: "social" },
+
+  // FEELINGS — me siento / estoy
+  { en: "I feel good.", es_pr: "Me siento bien.", cat: "daily" },
+  { en: "I feel tired.", es_pr: "Me siento cansao.", es_ca: "Me siento cansado.", cat: "daily" },
+  { en: "I feel calm.", es_pr: "Me siento tranquilo.", cat: "daily" },
+  { en: "I feel happy today.", es_pr: "Me siento feliz hoy.", cat: "daily" },
+  { en: "I feel nervous.", es_pr: "Me siento nervioso.", cat: "daily" },
+  { en: "I'm hungry.", es_pr: "Tengo hambre.", cat: "daily" },
+  { en: "I'm thirsty.", es_pr: "Tengo sed.", cat: "daily" },
+  { en: "I'm hot.", es_pr: "Tengo calor.", cat: "daily" },
+  { en: "I'm cold.", es_pr: "Tengo frío.", cat: "daily" },
+  { en: "I'm tired.", es_pr: "Estoy cansao.", es_ca: "Estoy cansado.", cat: "daily" },
+  { en: "How do you feel?", es_pr: "¿Cómo te sientes?", cat: "social" },
+
+  // TIME expressions
+  { en: "Now.", es_pr: "Ahora.", cat: "daily" },
+  { en: "Later.", es_pr: "Más tarde.", cat: "daily" },
+  { en: "Yesterday.", es_pr: "Ayer.", cat: "daily" },
+  { en: "Tomorrow.", es_pr: "Mañana.", cat: "daily" },
+  { en: "Every day.", es_pr: "Todos los días.", cat: "daily" },
+  { en: "In the morning.", es_pr: "Por la mañana.", cat: "daily" },
+  { en: "At night.", es_pr: "Por la noche.", cat: "daily" },
+  { en: "A moment ago.", es_pr: "Hace un momento.", cat: "daily" },
+  { en: "In a little while.", es_pr: "En un rato.", cat: "daily" },
+
+  // KEY QUESTIONS — things you need to ask every day
+  { en: "How much does it cost?", es_pr: "¿Cuánto cuesta?", cat: "errands" },
+  { en: "Where is the bathroom?", es_pr: "¿Dónde está el baño?", cat: "errands" },
+  { en: "Can you help me?", es_pr: "¿Me puedes ayudar?", cat: "social" },
+  { en: "I don't understand.", es_pr: "No entiendo.", cat: "social" },
+  { en: "Can you say that again?", es_pr: "¿Lo puedes repetir?", cat: "social" },
+  { en: "What does that mean?", es_pr: "¿Qué significa eso?", cat: "social" },
+  { en: "How do you say that in Spanish?", es_pr: "¿Cómo se dice eso en español?", cat: "social" },
+  { en: "I'm still learning.", es_pr: "Todavía estoy aprendiendo.", cat: "social" },
+  { en: "My Spanish is not perfect yet.", es_pr: "Mi español todavía no es perfecto.", cat: "social" },
+  { en: "Please speak more slowly.", es_pr: "Por favor habla más despacio.", cat: "social" }
 ];
 
 // ================================================================
@@ -2101,6 +2218,35 @@ if (!sentences) {
   localStorage.setItem('fluency_v12', JSON.stringify(sentences));
 }
 
+// Auto-link Q&A pairs in the loaded sentence bank
+// Runs once on load — pairs question sentences with the next answer sentence
+function autoLinkQAPairs() {
+  let changed = false;
+  // First clear any orphan isAnswer flags (answers with no question pointing to them)
+  const allPairIds = new Set(sentences.filter(s => s.pairAnswerId).map(s => s.pairAnswerId));
+  sentences.forEach(s => {
+    if (s.isAnswer && !allPairIds.has(s.id)) {
+      delete s.isAnswer;
+      changed = true;
+    }
+  });
+  // Now scan for adjacent question/answer pairs that aren't yet linked
+  for (let i = 0; i < sentences.length - 1; i++) {
+    const s = sentences[i];
+    const next = sentences[i + 1];
+    if (s.pairAnswerId) continue; // already linked
+    const isQ = s.es_pr && (s.es_pr.trim().startsWith('¿') || s.en.trim().endsWith('?'));
+    const nextIsA = next && !next.es_pr.trim().startsWith('¿') && !next.en.trim().endsWith('?') && !next.isAnswer;
+    if (isQ && nextIsA) {
+      s.pairAnswerId = next.id;
+      next.isAnswer = true;
+      changed = true;
+    }
+  }
+  if (changed) saveSentences();
+}
+autoLinkQAPairs();
+
 let currentCatFilter = 'all';
 let shadowQueue = [], shadowIdx = 0, shadowLooping = false, shadowLoopTimeout = null;
 let shadowPlayCounts = {}; // tracks plays per sentence id this session
@@ -2118,7 +2264,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -2172,7 +2318,6 @@ function initToday() {
   updateMissionProgress();
   renderStageAwareSteps();
   renderThinkInSpanish();
-  renderVerbStepTitle();
 }
 
 function renderVerbStepTitle() {
@@ -2291,23 +2436,14 @@ function renderMissionSteps() {
     else { wStep.classList.remove('done'); if (wCheck) wCheck.textContent = ''; if (wGo && wGo.textContent === '✓') wGo.textContent = '→'; }
   }
 
-  // Verb step — stored separately
-  const verbDone = localStorage.getItem('fluency_verb_' + todayKey) === '1';
-  const vStep = document.getElementById('mstep-verb');
-  const vCheck = document.getElementById('mcheck-verb');
-  const vGo = document.getElementById('mgo-verb');
-  if (vStep) {
-    if (verbDone) { vStep.classList.add('done'); if (vCheck) vCheck.textContent = '✓'; if (vGo) vGo.textContent = '✓'; }
-    else { vStep.classList.remove('done'); if (vCheck) vCheck.textContent = ''; if (vGo && vGo.textContent === '✓') vGo.textContent = '→'; }
-  }
+
 }
 
 function updateMissionProgress() {
   const writeDone = localStorage.getItem('fluency_write_' + todayKey) === '1' ? 1 : 0;
-  const verbDone = localStorage.getItem('fluency_verb_' + todayKey) === '1' ? 1 : 0;
-  const done = missionSteps.filter(Boolean).length + writeDone + verbDone;
-  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
+  const done = missionSteps.filter(Boolean).length + writeDone;
+  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
