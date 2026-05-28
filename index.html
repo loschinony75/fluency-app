@@ -1225,12 +1225,11 @@ const SRS_INTERVALS = {
 
 function getShadowQueue() {
   // Interleaved queue — mixes categories every session
-  // Each batch of 10: 3 Daily Life, 2 Social, 2 Errands, 2 Work, 1 Family
-  // Within each category, oldest unshadowed first (by id)
+  // Answer sentences (isAnswer:true) are hidden — they play automatically after their question
   const cats = ['daily', 'daily', 'daily', 'social', 'social', 'errands', 'errands', 'work', 'work', 'family'];
   const pools = {};
   ['daily','social','errands','work','family'].forEach(cat => {
-    pools[cat] = sentences.filter(s => !s.shadowDone && s.cat === cat).sort((a,b) => a.id - b.id);
+    pools[cat] = sentences.filter(s => !s.shadowDone && s.cat === cat && !s.isAnswer && !s.verbForm).sort((a,b) => a.id - b.id);
   });
   const queue = [];
   const used = { daily:0, social:0, errands:0, work:0, family:0 };
@@ -1241,10 +1240,10 @@ function getShadowQueue() {
       used[cat]++;
     }
   }
-  // If any slots empty (category exhausted) fill from remaining unshadowed
+  // If any slots empty fill from remaining unshadowed (excluding answers and verb forms)
   if (queue.length < 10) {
     const inQueue = new Set(queue.map(s => s.id));
-    const remaining = sentences.filter(s => !s.shadowDone && !inQueue.has(s.id));
+    const remaining = sentences.filter(s => !s.shadowDone && !inQueue.has(s.id) && !s.isAnswer && !s.verbForm);
     for (const s of remaining) {
       if (queue.length >= 10) break;
       queue.push(s);
@@ -2550,17 +2549,20 @@ function shadowPlay() {
   const pairSentence = pairId ? sentences.find(x => x.id === pairId) : null;
 
   if (pairSentence) {
-    // Play question first, then answer after a short pause
+    // Q&A flow: question plays → pause so you say the answer → answer plays to confirm
     showQAPairBadge(true);
+    // Show question + prompt to speak
+    showQAPairPrompt(s, pairSentence);
     ttsSpeak(getPR(s), 'es-US', () => {
+      // Pause — your turn to say the answer out loud
       setTimeout(() => {
-        // Show answer text during the pause
+        // Now play the answer so you can confirm and repeat
         showQAPairAnswer(pairSentence);
         ttsSpeak(getPR(pairSentence), 'es-US', () => {
-          if (shadowLooping) { shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 600); }
+          if (shadowLooping) { shadowLoopTimeout = setTimeout(() => { if (shadowLooping) shadowPlay(); }, 800); }
           else { setWave('shadow-wave', false); btn.innerHTML = '▶ Play'; }
         }, speed);
-      }, 500);
+      }, 1800); // 1.8 second pause — enough time to say a short answer
     }, speed);
   } else {
     showQAPairBadge(false);
@@ -2585,18 +2587,25 @@ function shadowPlay() {
 }
 
 function showQAPairBadge(show) {
-  let badge = document.getElementById('qa-pair-badge');
-  if (!badge) return;
-  badge.style.display = show ? 'block' : 'none';
+  const badge = document.getElementById('qa-pair-badge');
+  if (badge) badge.style.display = show ? 'block' : 'none';
+}
+
+function showQAPairPrompt(question, answer) {
+  const el = document.getElementById('qa-pair-answer');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;">👂 Question heard — say your answer now:</span>
+    <span style="color:var(--muted);font-size:12px;font-style:italic;">${sanitize(answer.en)}</span>`;
 }
 
 function showQAPairAnswer(answerSentence) {
   const el = document.getElementById('qa-pair-answer');
   if (!el || !answerSentence) return;
-  el.style.display = 'block';
-  el.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px;">Your answer:</span>
-    <span style="color:var(--blue);font-weight:600;">${sanitize(getPR(answerSentence))}</span>`;
-  setTimeout(() => { if (el) el.style.display = 'none'; }, 4000);
+  el.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;">✓ Correct answer — repeat it:</span>
+    <span style="color:var(--blue);font-weight:600;font-size:14px;">${sanitize(getPR(answerSentence))}</span>
+    <span style="color:var(--muted);font-size:11px;display:block;margin-top:2px;">${sanitize(answerSentence.en)}</span>`;
+  setTimeout(() => { if (el) el.style.display = 'none'; }, 5000);
 }
 
 function shadowLoop() {
@@ -3083,7 +3092,16 @@ function playListenNext() {
     }
   }
   if (!pool.length) { stopListen(); return; }
-  const s = pool[listenIdx % pool.length];
+
+  // Skip answer sentences — they play automatically after their question
+  let s = pool[listenIdx % pool.length];
+  let safetyCount = 0;
+  while (s && s.isAnswer && safetyCount < pool.length) {
+    listenIdx++;
+    s = pool[listenIdx % pool.length];
+    safetyCount++;
+  }
+
   const usePR = listenIdx % 2 === 0;
   const lang = usePR ? 'es-US' : 'es';
   const text = usePR ? getPR(s) : getCA(s);
@@ -3092,11 +3110,33 @@ function playListenNext() {
   document.getElementById('listen-now').textContent = 'Playing: ' + s.en;
   document.getElementById('listen-dialect-badge').innerHTML = usePR ? '<span class="dialect-indicator pr">🇵🇷 PR</span>' : '<span class="dialect-indicator ca">🇮🇨 Canarian</span>';
   const speed = document.getElementById('listen-speed') ? document.getElementById('listen-speed').value : '1.0';
-  ttsSpeak(text, lang, () => {
-    if (!listenPlaying) return;
-    listenIdx++;
-    listenTimer = setTimeout(playListenNext, parseInt(document.getElementById('listen-delay').value));
-  });
+
+  // Check for Q&A pair — play question then answer as one conversational unit
+  const pairId = s.pairAnswerId;
+  const pairSentence = pairId ? sentences.find(x => x.id === pairId) : null;
+
+  if (pairSentence) {
+    ttsSpeak(text, lang, () => {
+      if (!listenPlaying) return;
+      // Short pause between question and answer — like a real exchange
+      setTimeout(() => {
+        const answerText = usePR ? getPR(pairSentence) : getCA(pairSentence);
+        document.getElementById('listen-es').textContent = answerText;
+        document.getElementById('listen-en').textContent = pairSentence.en;
+        ttsSpeak(answerText, lang, () => {
+          if (!listenPlaying) return;
+          listenIdx++;
+          listenTimer = setTimeout(playListenNext, parseInt(document.getElementById('listen-delay').value));
+        }, speed);
+      }, 900);
+    }, speed);
+  } else {
+    ttsSpeak(text, lang, () => {
+      if (!listenPlaying) return;
+      listenIdx++;
+      listenTimer = setTimeout(playListenNext, parseInt(document.getElementById('listen-delay').value));
+    }, speed);
+  }
 }
 
 function renderListenNow() {
