@@ -320,26 +320,17 @@
 <div class="screen active" id="screen-today">
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
 
   <!-- Step 0 — Walk + Listen -->
-  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
-    <div class="ms-check" id="mcheck-0"></div>
-    <div class="ms-body">
-      <div class="ms-title">Walk — listen while you move</div>
-      <div class="ms-desc">Tap → listen starts → put phone in pocket → walk.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
-  </div>
-
   <!-- Step 1 — Shadow -->
   <div class="mission-step shadow-step" id="mstep-1" onclick="goToStep(1,'shadow')">
     <div class="ms-check" id="mcheck-1"></div>
     <div class="ms-body">
       <div class="ms-title">Shadow — listen and repeat out loud</div>
-      <div class="ms-desc">Play → repeat → loop until automatic.</div>
+      <div class="ms-desc">Play → repeat → loop until it comes out automatically.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
+    <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
   </div>
 
   <!-- Step 2 — Recall -->
@@ -347,7 +338,7 @@
     <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
       <div class="ms-title">Recall — say it from memory</div>
-      <div class="ms-desc">See English → say Spanish → reveal → rate yourself.</div>
+      <div class="ms-desc">See English → say Spanish out loud → reveal → rate honestly.</div>
     </div>
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
@@ -357,22 +348,42 @@
     <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--warn);">Write — type it from memory</div>
-      <div class="ms-desc">See English → type Spanish → reveal → check.</div>
+      <div class="ms-desc">See English → type Spanish → reveal → diff shows exactly what you missed.</div>
     </div>
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
   </div>
 
-  <!-- Step 4 — Reading -->
+  <!-- Step 4 — Script (island practice) -->
+  <div class="mission-step" id="mstep-script" onclick="launchScriptMode()" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);">
+    <div class="ms-check" id="mcheck-script" style="border-color:var(--accent);color:var(--accent);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--accent);">Script — your conversation island</div>
+      <div class="ms-desc" id="script-step-desc">Evening practice — drill your current island until the whole conversation is automatic.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-script">→</div></div>
+  </div>
+
+  <!-- Step 5 — Walk -->
+  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
+    <div class="ms-check" id="mcheck-0"></div>
+    <div class="ms-body">
+      <div class="ms-title">Walk — passive listening</div>
+      <div class="ms-desc">Tap → phone in pocket → walk → your sentences play in your ears.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
+  </div>
+
+  <!-- Step 6 — Reading -->
   <div class="mission-step" id="mstep-3r" onclick="goToStep(3,'reading')" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
     <div class="ms-check" id="mcheck-3r" style="border-color:var(--success);color:var(--success);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--success);">Reading — 3-day method</div>
-      <div class="ms-desc">Open Lingua → same article 3 days → tap done when finished.</div>
+      <div class="ms-desc">Open Lingua → same article 3 days → tap done.</div>
     </div>
     <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-3r">→</div></div>
   </div>
 
-  <!-- Step 5 — Reading -->
+  <!-- Step 7 — Dreaming Spanish -->
   <div class="mission-step listen-step" id="mstep-4" onclick="completeMissionStep(4)">
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
@@ -382,7 +393,7 @@
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
   </div>
 
-  <!-- Step 7 — Music -->
+  <!-- Step 8 — Music -->
   <div class="mission-step listen-step" id="mstep-5" onclick="completeMissionStep(5)" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
     <div class="ms-check" id="mcheck-5" style="border-color:var(--purple);color:var(--purple);"></div>
     <div class="ms-body">
@@ -392,12 +403,12 @@
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
   </div>
 
-  <!-- Step 8 — Journal -->
+  <!-- Step 9 — Journal -->
   <div class="mission-step journal-step" id="mstep-6" onclick="openJournal()">
     <div class="ms-check" id="mcheck-6"></div>
     <div class="ms-body">
       <div class="ms-title">Journal — write your day in Spanish</div>
-      <div class="ms-desc">Tap → write 3 sentences → saves to Library automatically.</div>
+      <div class="ms-desc">3 sentences about today → saves to Library → tomorrow's Shadow.</div>
     </div>
     <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-6">→</div></div>
   </div>
@@ -410,27 +421,12 @@
   </div>
   <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
 
-  <!-- Think in Spanish — single time-aware block -->
+  <!-- Think in Spanish — 3 routine sentences for right now -->
   <div id="tis-single" style="margin-bottom:14px;border-radius:10px;padding:12px 14px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;" id="tis-single-label">🗣 SAY THIS NOW</div>
-      <div style="display:flex;gap:5px;">
-        <button onclick="tisSay('active','pr')" id="tis-single-pr-btn" style="font-size:10px;border-radius:6px;padding:3px 8px;cursor:pointer;border:1px solid;">▶ PR</button>
-        <button onclick="tisSay('active','ca')" id="tis-single-ca-btn" style="font-size:10px;border-radius:6px;padding:3px 8px;cursor:pointer;border:1px solid;opacity:0.6;">▶ GC</button>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;" id="tis-single-label">🗣 SAY THESE NOW</div>
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:6px;">
-      <div style="flex:1;border-radius:7px;padding:7px 10px;" id="tis-single-pr-box">
-        <div style="font-size:9px;opacity:0.7;margin-bottom:3px;letter-spacing:0.05em;">🇵🇷 PR</div>
-        <div id="tis-active-pr" style="font-family:var(--font-head);font-size:15px;font-weight:700;"></div>
-      </div>
-      <div style="flex:1;border-radius:7px;padding:7px 10px;" id="tis-single-ca-box">
-        <div style="font-size:9px;opacity:0.7;margin-bottom:3px;letter-spacing:0.05em;">🇮🇨 GC</div>
-        <div id="tis-active-ca" style="font-family:var(--font-head);font-size:15px;font-weight:700;opacity:0.8;"></div>
-      </div>
-    </div>
-    <div id="tis-active-en" style="font-size:11px;color:var(--muted);margin-bottom:4px;"></div>
-    <div id="tis-active-cue" style="font-size:11px;color:var(--muted);font-style:italic;line-height:1.5;"></div>
+    <div id="tis-sentences-list"></div>
   </div>
 
 <div class="low-energy">
@@ -974,6 +970,13 @@
 <div class="screen" id="screen-guide">
   <div style="font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:3px">Guide</div>
   <div style="font-size:12px;color:var(--muted);margin-bottom:20px">Your reference. Come here when you need direction.</div>
+
+  <!-- Islands selector -->
+  <div class="guide-section">
+    <div class="guide-section-title">Your Language Islands</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7;">Each island is a complete conversation you drill until automatic. Finish one before starting the next. Tap an island to make it your active Script practice.</div>
+    <div id="islands-list"></div>
+  </div>
 
   <div class="guide-section">
     <div class="guide-section-title">Where You Are Now</div>
@@ -2283,7 +2286,7 @@ if (localStorage.getItem('fluency_todayKey') !== todayKey) {
   localStorage.setItem('fluency_todayKey', todayKey);
   localStorage.setItem('fluency_today', '0');
 }
-let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false]');
+let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey) || '[false,false,false,false,false,false,false,false,false]');
 
 // ================================================================
 // UTILS
@@ -2337,6 +2340,7 @@ function initToday() {
   updateMissionProgress();
   renderStageAwareSteps();
   renderThinkInSpanish();
+  renderScriptStepTitle();
 }
 
 function renderVerbStepTitle() {
@@ -2455,14 +2459,25 @@ function renderMissionSteps() {
     else { wStep.classList.remove('done'); if (wCheck) wCheck.textContent = ''; if (wGo && wGo.textContent === '✓') wGo.textContent = '→'; }
   }
 
+  // Script step — stored separately
+  const scriptDone = localStorage.getItem('fluency_script_' + todayKey) === '1';
+  const scStep = document.getElementById('mstep-script');
+  const scCheck = document.getElementById('mcheck-script');
+  const scGo = document.getElementById('mgo-script');
+  if (scStep) {
+    if (scriptDone) { scStep.classList.add('done'); if (scCheck) scCheck.textContent = '✓'; if (scGo) scGo.textContent = '✓'; }
+    else { scStep.classList.remove('done'); if (scCheck) scCheck.textContent = ''; if (scGo && scGo.textContent === '✓') scGo.textContent = '→'; }
+  }
+
 
 }
 
 function updateMissionProgress() {
   const writeDone = localStorage.getItem('fluency_write_' + todayKey) === '1' ? 1 : 0;
-  const done = missionSteps.filter(Boolean).length + writeDone;
-  document.getElementById('today-progress').style.width = (done / 8 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 8 steps complete' + (done === 8 ? ' — Mission complete! 🎉' : '');
+  const scriptDone = localStorage.getItem('fluency_script_' + todayKey) === '1' ? 1 : 0;
+  const done = missionSteps.filter(Boolean).length + writeDone + scriptDone;
+  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
 }
 
 // ================================================================
@@ -2536,6 +2551,30 @@ function initGuide() {
   }).join('');
   document.getElementById('free-words-container').innerHTML = freeWords.map(g => `<div class="free-words-group"><div class="free-words-group-title">${g.group}</div><div class="free-words-grid">${g.words.map(w => `<span class="free-word">${w}</span>`).join('')}</div></div>`).join('');
   document.getElementById('pattern-reference-list').innerHTML = allPatterns.map(p => `<div class="pattern-ref"><div class="pattern-ref-formula">${p.formula}</div><div class="pattern-ref-meaning">${p.meaning}</div><div class="pattern-ref-example">${p.ex_en}<br><span class="pattern-ref-example-es">${p.ex_es}</span></div></div>`).join('');
+
+  // Render islands list
+  const currentId = localStorage.getItem('fluency_current_island') || 'intro';
+  const islandsEl = document.getElementById('islands-list');
+  if (islandsEl) {
+    islandsEl.innerHTML = CONVERSATION_SCRIPTS.map(s => {
+      const isActive = s.id === currentId;
+      return `<div onclick="setActiveIsland('${s.id}')" style="padding:12px 14px;border-radius:10px;border:1px solid ${isActive ? 'rgba(212,240,60,0.4)' : 'var(--border)'};background:${isActive ? 'rgba(212,240,60,0.06)' : 'var(--surface2)'};margin-bottom:8px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:13px;font-weight:600;color:${isActive ? 'var(--accent)' : 'var(--text)'};">${isActive ? '▶ ' : ''}${s.title}</div>
+          ${isActive ? '<span style="font-size:10px;background:rgba(212,240,60,0.15);color:var(--accent);border-radius:4px;padding:2px 7px;">Active</span>' : '<span style="font-size:10px;color:var(--muted);">Tap to activate</span>'}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px;">${s.pairs.length} exchanges · ${s.description.split(' — ')[0]}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function setActiveIsland(id) {
+  localStorage.setItem('fluency_current_island', id);
+  const script = CONVERSATION_SCRIPTS.find(s => s.id === id);
+  if (script) showToast('"' + script.title + '" is now your active island', 'var(--accent)');
+  initGuide(); // re-render to show active state
+  renderScriptStepTitle(); // update Today step description
 }
 
 // ================================================================
@@ -2680,6 +2719,66 @@ const CONVERSATION_SCRIPTS = [
       { q_en: 'Do you like it here?',                        q_es: '¿Te gusta aquí?',                                          a_en: 'Yes, very much. The people are very warm.',                            a_es: 'Sí, mucho. La gente es muy amable.' },
       { q_en: 'What do you do in your free time?',           q_es: '¿Qué haces en tu tiempo libre?',                           a_en: 'I walk every morning and I meditate. It helps with my injuries.',      a_es: 'Camino todas las mañanas y medito. Me ayuda con mis lesiones.' },
     ]
+  },
+  {
+    id: 'my_world',
+    title: 'My World — Objects Around You',
+    description: 'The objects in your daily environment with el/la built into every sentence. Gender learned through context, never memorized.',
+    pairs: [
+      { q_en: 'What is that?',                    q_es: '¿Qué es eso?',                          a_en: 'It\'s a chair.',                          a_es: 'Es una silla.' },
+      { q_en: 'Where is the bathroom?',           q_es: '¿Dónde está el baño?',                  a_en: 'The bathroom is at the end of the hall.', a_es: 'El baño está al final del pasillo.' },
+      { q_en: 'Is the coffee ready?',             q_es: '¿Está listo el café?',                  a_en: 'Yes, the coffee is ready.',               a_es: 'Sí, el café está listo.' },
+      { q_en: 'Where is the kitchen?',            q_es: '¿Dónde está la cocina?',                a_en: 'The kitchen is next to the living room.',  a_es: 'La cocina está al lado de la sala.' },
+      { q_en: 'Is the door open?',                q_es: '¿Está abierta la puerta?',              a_en: 'No, the door is closed.',                 a_es: 'No, la puerta está cerrada.' },
+      { q_en: 'Where is the window?',             q_es: '¿Dónde está la ventana?',               a_en: 'The window is next to the bed.',           a_es: 'La ventana está al lado de la cama.' },
+      { q_en: 'Is the table clean?',              q_es: '¿Está limpia la mesa?',                 a_en: 'Yes, the table is clean.',                a_es: 'Sí, la mesa está limpia.' },
+      { q_en: 'Where is the phone?',              q_es: '¿Dónde está el teléfono?',              a_en: 'The phone is on the table.',              a_es: 'El teléfono está en la mesa.' },
+      { q_en: 'Is the water cold?',               q_es: '¿Está fría el agua?',                   a_en: 'Yes, the water is cold.',                 a_es: 'Sí, el agua está fría.' },
+      { q_en: 'Where is the key?',                q_es: '¿Dónde está la llave?',                 a_en: 'The key is in my pocket.',                a_es: 'La llave está en mi bolsillo.' },
+      { q_en: 'Is the light on?',                 q_es: '¿Está encendida la luz?',               a_en: 'No, the light is off.',                   a_es: 'No, la luz está apagada.' },
+      { q_en: 'Where is the medicine?',           q_es: '¿Dónde está la medicina?',              a_en: 'The medicine is in the bathroom.',         a_es: 'La medicina está en el baño.' },
+      { q_en: 'Is the bag heavy?',                q_es: '¿Está pesada la bolsa?',                a_en: 'Yes, the bag is heavy.',                  a_es: 'Sí, la bolsa está pesada.' },
+      { q_en: 'Where is the street?',             q_es: '¿Dónde está la calle?',                 a_en: 'The street is two blocks from here.',     a_es: 'La calle está a dos cuadras de aquí.' },
+      { q_en: 'Is the car parked?',               q_es: '¿Está estacionado el carro?',           a_en: 'Yes, the car is parked outside.',         a_es: 'Sí, el carro está estacionado afuera.' },
+    ]
+  },
+  {
+    id: 'daily_routine',
+    title: 'Daily Routine',
+    description: 'Your morning to night routine in Gran Canaria. The sentences you\'ll say to yourself every single day.',
+    pairs: [
+      { q_en: 'What time do you wake up?',              q_es: '¿A qué hora te despiertas?',                   a_en: 'I wake up at six thirty.',                         a_es: 'Me despierto a las seis y media.' },
+      { q_en: 'What do you do first?',                  q_es: '¿Qué haces primero?',                          a_en: 'First I make coffee.',                              a_es: 'Primero hago café.' },
+      { q_en: 'Do you exercise?',                       q_es: '¿Haces ejercicio?',                            a_en: 'Yes, I walk every morning.',                        a_es: 'Sí, camino todas las mañanas.' },
+      { q_en: 'How long do you walk?',                  q_es: '¿Cuánto tiempo caminas?',                      a_en: 'About thirty minutes.',                             a_es: 'Unos treinta minutos.' },
+      { q_en: 'Do you meditate?',                       q_es: '¿Meditas?',                                    a_en: 'Yes, I meditate every morning.',                    a_es: 'Sí, medito todas las mañanas.' },
+      { q_en: 'What do you eat for breakfast?',         q_es: '¿Qué desayunas?',                              a_en: 'I usually eat fruit and drink coffee.',             a_es: 'Normalmente como fruta y tomo café.' },
+      { q_en: 'What do you do in the morning?',         q_es: '¿Qué haces por la mañana?',                    a_en: 'I study Spanish and work on my computer.',         a_es: 'Estudio español y trabajo en mi computadora.' },
+      { q_en: 'Do you rest in the afternoon?',          q_es: '¿Descansas por la tarde?',                     a_en: 'Yes, my back hurts if I sit too long.',            a_es: 'Sí, me duele la espalda si me siento mucho tiempo.' },
+      { q_en: 'What do you eat for lunch?',             q_es: '¿Qué almuerzas?',                              a_en: 'I usually eat something light.',                    a_es: 'Normalmente como algo ligero.' },
+      { q_en: 'Do you go out in the evening?',          q_es: '¿Sales por la tarde?',                         a_en: 'Sometimes I walk to the market.',                  a_es: 'A veces camino al mercado.' },
+      { q_en: 'What do you do at night?',               q_es: '¿Qué haces por la noche?',                     a_en: 'I read and practice Spanish before bed.',          a_es: 'Leo y practico español antes de dormir.' },
+      { q_en: 'What time do you sleep?',                q_es: '¿A qué hora te duermes?',                      a_en: 'I sleep around ten at night.',                     a_es: 'Me duermo alrededor de las diez de la noche.' },
+    ]
+  },
+  {
+    id: 'cafe',
+    title: 'At the Café',
+    description: 'Everything you need to order, ask, and interact at a café in Gran Canaria.',
+    pairs: [
+      { q_en: 'Good morning, what would you like?',     q_es: 'Buenos días, ¿qué le pongo?',                  a_en: 'A coffee please.',                                 a_es: 'Un café por favor.' },
+      { q_en: 'Hot or cold?',                           q_es: '¿Caliente o frío?',                            a_en: 'Hot please.',                                       a_es: 'Caliente por favor.' },
+      { q_en: 'Anything else?',                         q_es: '¿Algo más?',                                   a_en: 'Do you have croissants?',                          a_es: '¿Tiene croissants?' },
+      { q_en: 'Yes, fresh from this morning.',          q_es: 'Sí, recién hechos esta mañana.',               a_en: 'One croissant please.',                            a_es: 'Un croissant por favor.' },
+      { q_en: 'Will you eat here or take away?',        q_es: '¿Se lo pone aquí o para llevar?',              a_en: 'I\'ll eat here.',                                  a_es: 'Me lo pongo aquí.' },
+      { q_en: 'Of course, have a seat.',                q_es: 'Por supuesto, siéntese.',                      a_en: 'Thank you.',                                        a_es: 'Gracias.' },
+      { q_en: 'Here you go.',                           q_es: 'Aquí tiene.',                                  a_en: 'Thank you, it looks good.',                        a_es: 'Gracias, tiene buena pinta.' },
+      { q_en: 'Are you from here?',                     q_es: '¿Es usted de aquí?',                           a_en: 'No, I\'m American. I just moved here.',            a_es: 'No, soy americano. Acabo de mudarme aquí.' },
+      { q_en: 'Welcome to the island.',                 q_es: 'Bienvenido a la isla.',                        a_en: 'Thank you. I love it here.',                       a_es: 'Gracias. Me encanta aquí.' },
+      { q_en: 'Can I have the check please?',           q_es: '¿Me puede traer la cuenta por favor?',         a_en: 'How much is it?',                                  a_es: '¿Cuánto es?' },
+      { q_en: 'Two euros fifty.',                       q_es: 'Dos euros cincuenta.',                         a_en: 'Here you go. Keep the change.',                    a_es: 'Aquí tiene. Quédese con el cambio.' },
+      { q_en: 'Thank you, have a good day.',            q_es: 'Gracias, que tenga un buen día.',              a_en: 'You too. See you tomorrow.',                       a_es: 'Igualmente. Hasta mañana.' },
+    ]
   }
 ];
 
@@ -2712,6 +2811,33 @@ function setShadowMode(mode) {
     drillBtn.style.fontWeight = 'normal';
     loadConversationScript('intro');
   }
+}
+
+function launchScriptMode() {
+  // Find current active island — the one with fewest owned pairs
+  const currentIslandId = localStorage.getItem('fluency_current_island') || 'intro';
+  showScreen('shadow');
+  setTimeout(() => {
+    setShadowMode('script');
+    loadConversationScript(currentIslandId);
+    // Mark script step done
+    localStorage.setItem('fluency_script_' + todayKey, '1');
+    const sCheck = document.getElementById('mcheck-script');
+    const sGo = document.getElementById('mgo-script');
+    const sStep = document.getElementById('mstep-script');
+    if (sStep) sStep.classList.add('done');
+    if (sCheck) sCheck.textContent = '✓';
+    if (sGo) sGo.textContent = '✓';
+    updateMissionProgress();
+  }, 150);
+}
+
+function renderScriptStepTitle() {
+  const descEl = document.getElementById('script-step-desc');
+  if (!descEl) return;
+  const id = localStorage.getItem('fluency_current_island') || 'intro';
+  const script = CONVERSATION_SCRIPTS.find(s => s.id === id);
+  if (script) descEl.textContent = `Current island: "${script.title}" — drill until the whole conversation is automatic.`;
 }
 
 function loadConversationScript(id) {
@@ -4522,37 +4648,80 @@ function renderStageAwareSteps() {
 // Evening: reflect on the day / what you plan tomorrow
 // ================================================================
 
+// Carlos's exact daily routine — sequenced by time
+// Each entry has a time window (hour range) so the right sentence shows at the right moment
+const ROUTINE_SENTENCES = [
+  // 6:30–7:00 — waking up
+  { hour: [6,7],  pr: 'Me desperté.',                           ca: 'Me he despertado.',                      en: 'I woke up.',                               cue: 'Say this the moment you open your eyes.' },
+  { hour: [6,7],  pr: 'Son las seis y media.',                  ca: 'Son las seis y media.',                  en: 'It\'s six thirty.',                         cue: 'Tell yourself the time as you wake up.' },
+  { hour: [6,7],  pr: 'Voy al baño.',                           ca: 'Voy al baño.',                           en: 'I\'m going to the bathroom.',               cue: 'Say this as you get up.' },
+
+  // 6:30–7:15 — bathroom routine
+  { hour: [6,7],  pr: 'Estoy en el baño.',                      ca: 'Estoy en el baño.',                      en: 'I\'m in the bathroom.',                     cue: 'Say this as you stand at the sink.' },
+  { hour: [6,7],  pr: 'Me estoy lavando los dientes.',          ca: 'Me estoy lavando los dientes.',          en: 'I\'m brushing my teeth.',                   cue: 'Say this while you brush.' },
+  { hour: [6,7],  pr: 'Me estoy lavando la cara.',              ca: 'Me estoy lavando la cara.',              en: 'I\'m washing my face.',                     cue: 'Say this while you wash your face.' },
+
+  // 7:00–7:30 — water with salt
+  { hour: [7,7],  pr: 'Voy a tomar mi vaso de agua con sal.',   ca: 'Voy a tomar mi vaso de agua con sal.',   en: 'I\'m going to drink my glass of water with salt.', cue: 'Say this before you drink it.' },
+  { hour: [7,7],  pr: 'Estoy tomando mi agua con sal.',         ca: 'Estoy tomando mi agua con sal.',         en: 'I\'m drinking my water with salt.',         cue: 'Say this as you drink it.' },
+  { hour: [7,7],  pr: 'El agua con sal es buena pa\' la salud.', ca: 'El agua con sal es buena para la salud.', en: 'The water with salt is good for your health.', cue: 'Say this after you finish it.' },
+
+  // 7:15–7:45 — walk
+  { hour: [7,8],  pr: 'Voy a caminar ahora.',                   ca: 'Voy a caminar ahora.',                   en: 'I\'m going to walk now.',                   cue: 'Say this before you leave the house.' },
+  { hour: [7,8],  pr: 'Estoy caminando.',                       ca: 'Estoy caminando.',                       en: 'I\'m walking.',                             cue: 'Say this as you step outside.' },
+  { hour: [7,8],  pr: 'El aire está fresco esta mañana.',       ca: 'El aire está fresco esta mañana.',       en: 'The air is fresh this morning.',            cue: 'Notice your environment and say it.' },
+  { hour: [7,8],  pr: 'Me siento bien.',                        ca: 'Me siento bien.',                        en: 'I feel good.',                              cue: 'Check in with your body as you walk.' },
+  { hour: [8,8],  pr: 'Acabo de caminar.',                      ca: 'Acabo de caminar.',                      en: 'I just finished my walk.',                  cue: 'Say this the moment you get back.' },
+
+  // 8:00–8:30 — coffee
+  { hour: [8,9],  pr: 'Voy a hacer café.',                      ca: 'Voy a hacer café.',                      en: 'I\'m going to make coffee.',                cue: 'Say this before you touch the machine.' },
+  { hour: [8,9],  pr: 'Estoy haciendo café.',                   ca: 'Estoy haciendo café.',                   en: 'I\'m making coffee.',                       cue: 'Say this while it brews.' },
+  { hour: [8,9],  pr: 'El café está listo.',                    ca: 'El café está listo.',                    en: 'The coffee is ready.',                      cue: 'Say this when it\'s done.' },
+  { hour: [8,9],  pr: 'Estoy tomando mi café.',                 ca: 'Estoy tomando mi café.',                 en: 'I\'m drinking my coffee.',                  cue: 'Say this as you take the first sip.' },
+
+  // 8:30–9:00 — meditation
+  { hour: [8,9],  pr: 'Voy a meditar.',                         ca: 'Voy a meditar.',                         en: 'I\'m going to meditate.',                   cue: 'Say this before you sit down.' },
+  { hour: [8,9],  pr: 'Estoy meditando.',                       ca: 'Estoy meditando.',                       en: 'I\'m meditating.',                          cue: 'Say this as you settle in.' },
+  { hour: [9,9],  pr: 'Acabo de meditar.',                      ca: 'Acabo de meditar.',                      en: 'I just finished meditating.',               cue: 'Say this when you open your eyes.' },
+
+  // 9:00–10:00 — Spanish learning
+  { hour: [9,10], pr: 'Voy a practicar español ahora.',         ca: 'Voy a practicar español ahora.',         en: 'I\'m going to practice Spanish now.',       cue: 'Say this before you open the app.' },
+  { hour: [9,10], pr: 'Estoy aprendiendo español.',             ca: 'Estoy aprendiendo español.',             en: 'I\'m learning Spanish.',                    cue: 'Say this as you study.' },
+  { hour: [9,10], pr: 'Cada día mejoro un poco más.',           ca: 'Cada día mejoro un poco más.',           en: 'Every day I improve a little more.',        cue: 'Say this as a reminder of progress.' },
+
+  // 10:00 — smoothie
+  { hour: [10,10], pr: 'Voy a hacer mi batido de arándanos.',   ca: 'Voy a hacer mi batido de arándanos.',    en: 'I\'m going to make my blueberry smoothie.', cue: 'Say this before you get the blender.' },
+  { hour: [10,10], pr: 'Estoy haciendo mi batido.',             ca: 'Estoy haciendo mi batido.',              en: 'I\'m making my smoothie.',                  cue: 'Say this while you blend.' },
+  { hour: [10,11], pr: 'Estoy tomando mi batido.',              ca: 'Estoy tomando mi batido.',               en: 'I\'m drinking my smoothie.',                cue: 'Say this as you drink it.' },
+
+  // 11:00–12:00 — gym
+  { hour: [10,11], pr: 'Voy al gimnasio ahora.',                ca: 'Voy al gimnasio ahora.',                 en: 'I\'m going to the gym now.',                cue: 'Say this before you leave.' },
+  { hour: [11,12], pr: 'Estoy en el gimnasio.',                 ca: 'Estoy en el gimnasio.',                  en: 'I\'m at the gym.',                          cue: 'Say this when you arrive.' },
+  { hour: [11,12], pr: 'Estoy entrenando.',                     ca: 'Estoy entrenando.',                      en: 'I\'m working out.',                         cue: 'Say this between sets.' },
+  { hour: [12,13], pr: 'Acabo de terminar el gimnasio.',        ca: 'Acabo de terminar el gimnasio.',         en: 'I just finished the gym.',                  cue: 'Say this as you leave.' },
+
+  // After gym — salt therapy
+  { hour: [12,13], pr: 'Voy a la terapia de sal.',              ca: 'Voy a la terapia de sal.',               en: 'I\'m going to salt therapy.',               cue: 'Say this on the way.' },
+  { hour: [12,13], pr: 'Estoy en la terapia de sal.',           ca: 'Estoy en la terapia de sal.',            en: 'I\'m at salt therapy.',                     cue: 'Say this when you arrive.' },
+  { hour: [12,13], pr: 'La terapia de sal me ayuda con mis lesiones.', ca: 'La terapia de sal me ayuda con mis lesiones.', en: 'Salt therapy helps with my injuries.', cue: 'Say this as you settle in.' },
+
+  // Afternoon — general
+  { hour: [13,17], pr: 'Acabo de almorzar.',                    ca: 'Acabo de almorzar.',                     en: 'I just had lunch.',                         cue: 'Say this after eating.' },
+  { hour: [13,17], pr: 'Necesito descansar un rato.',           ca: 'Necesito descansar un rato.',            en: 'I need to rest for a bit.',                 cue: 'Say this when your body needs a break.' },
+  { hour: [13,17], pr: 'Me duele la espalda un poco.',          ca: 'Me duele la espalda un poco.',           en: 'My back hurts a little.',                   cue: 'Say this when you feel it — honest check-in.' },
+
+  // Evening
+  { hour: [18,22], pr: 'Hoy fue un buen día.',                  ca: 'Hoy ha sido un buen día.',               en: 'Today was a good day.',                     cue: 'PR: fue. GC: ha sido. Say it either way.' },
+  { hour: [18,22], pr: 'Practiqué español hoy.',                ca: 'He practicado español hoy.',             en: 'I practiced Spanish today.',                cue: 'Say this as a daily win.' },
+  { hour: [18,22], pr: 'Mañana voy a caminar de nuevo.',        ca: 'Mañana voy a caminar de nuevo.',         en: 'Tomorrow I\'m going to walk again.',        cue: 'Confirm tomorrow\'s intention out loud.' },
+  { hour: [20,23], pr: 'Voy a descansar ahora.',                ca: 'Voy a descansar ahora.',                 en: 'I\'m going to rest now.',                   cue: 'Say this before you sleep.' },
+];
+
+// Build TIS_STARTERS from the routine for fallback compatibility
 const TIS_STARTERS = {
-  morning: [
-    { pr: 'Me acabo de despertar.', ca: 'Me acabo de despertar.', en: 'I just woke up.', cue: 'Say this the moment you open your eyes.' },
-    { pr: 'Voy a hacer café.', ca: 'Voy a hacer café.', en: 'I\'m going to make coffee.', cue: 'Say this before you touch the coffee machine.' },
-    { pr: 'Estoy haciendo café.', ca: 'Estoy haciendo café.', en: 'I\'m making coffee.', cue: 'Say this while the coffee is brewing.' },
-    { pr: 'Voy a caminar esta mañana.', ca: 'Voy a caminar esta mañana.', en: 'I\'m going to walk this morning.', cue: 'Say this before you leave the house.' },
-    { pr: 'Estoy listo pa\' empezar el día.', ca: 'Estoy listo para empezar el día.', en: 'I\'m ready to start the day.', cue: 'Say this after getting dressed.' },
-    { pr: 'Hoy voy a practicar español.', ca: 'Hoy voy a practicar español.', en: 'Today I\'m going to practice Spanish.', cue: 'Say this every morning as an intention.' },
-    { pr: 'Voy a meditar un rato.', ca: 'Voy a meditar un momento.', en: 'I\'m going to meditate for a bit.', cue: 'Say this before sitting down to meditate.' },
-    { pr: 'Acabo de ducharme.', ca: 'Acabo de ducharme.', en: 'I just showered.', cue: 'Say this right after getting out of the shower.' },
-  ],
-  midday: [
-    { pr: 'Estoy trabajando en mi negocio.', ca: 'Estoy trabajando en mi negocio.', en: 'I\'m working on my business.', cue: 'Say this when you sit down at your desk.' },
-    { pr: 'Voy a comer algo ahora.', ca: 'Voy a comer algo ahora.', en: 'I\'m going to eat something now.', cue: 'Say this before lunch.' },
-    { pr: 'Acabo de terminar una sesión.', ca: 'Acabo de terminar una sesión.', en: 'I just finished a session.', cue: 'Say this after any work call or meeting.' },
-    { pr: 'Necesito un descanso.', ca: 'Necesito un descanso.', en: 'I need a break.', cue: 'Say this when you feel yourself losing focus.' },
-    { pr: 'Estoy comiendo.', ca: 'Estoy comiendo.', en: 'I\'m eating.', cue: 'Say this at the start of any meal.' },
-    { pr: 'Acabo de caminar.', ca: 'Acabo de caminar.', en: 'I just walked.', cue: 'Say this immediately after finishing your walk.' },
-    { pr: 'Me siento bien hoy.', ca: 'Me siento bien hoy.', en: 'I feel good today.', cue: 'Check in with yourself midday and say how you actually feel.' },
-    { pr: 'Estoy escuchando español.', ca: 'Estoy escuchando español.', en: 'I\'m listening to Spanish.', cue: 'Say this every time you put on the Listen tab.' },
-  ],
-  evening: [
-    { pr: 'Hoy fue un buen día.', ca: 'Hoy ha sido un buen día.', en: 'Today was a good day.', cue: 'PR uses simple past; GC often uses present perfect. Both are correct.' },
-    { pr: 'Acabo de cenar.', ca: 'Acabo de cenar.', en: 'I just had dinner.', cue: 'Say this right after eating in the evening.' },
-    { pr: 'Estoy cansao pero contento.', ca: 'Estoy cansado pero contento.', en: 'I\'m tired but happy.', cue: 'PR drops the -d- in cansado → cansao. Classic difference.' },
-    { pr: 'Mañana voy a practicar más.', ca: 'Mañana voy a practicar más.', en: 'Tomorrow I\'m going to practice more.', cue: 'Say this before sleeping — set tomorrow\'s intention.' },
-    { pr: 'Practiqué español hoy.', ca: 'He practicado español hoy.', en: 'I practiced Spanish today.', cue: 'PR = simple past (practiqué). GC = present perfect (he practicado).' },
-    { pr: 'Voy a descansar ahora.', ca: 'Voy a descansar ahora.', en: 'I\'m going to rest now.', cue: 'Say this before you sleep.' },
-    { pr: 'Aprendí algo nuevo hoy.', ca: 'He aprendido algo nuevo hoy.', en: 'I learned something new today.', cue: 'Another PR (simple past) vs GC (present perfect) example.' },
-    { pr: 'Mañana voy a caminar por la mañana.', ca: 'Mañana voy a caminar por la mañana.', en: 'Tomorrow I\'m going to walk in the morning.', cue: 'Plan tomorrow out loud in Spanish.' },
-  ]
+  morning: ROUTINE_SENTENCES.filter(s => s.hour[0] < 10).map(s => ({ ...s })),
+  midday:  ROUTINE_SENTENCES.filter(s => s.hour[0] >= 10 && s.hour[0] < 15).map(s => ({ ...s })),
+  evening: ROUTINE_SENTENCES.filter(s => s.hour[0] >= 15).map(s => ({ ...s })),
 };
 
 function getTISPick(block) {
@@ -4577,51 +4746,75 @@ function getTISPick(block) {
 }
 
 function renderThinkInSpanish() {
-  const hour = new Date().getHours();
-  const block = hour >= 5 && hour < 12 ? 'morning' : hour >= 12 && hour < 18 ? 'midday' : 'evening';
-  const colors = { morning: { c: 'var(--accent)', bg: 'rgba(212,240,60,0.07)', border: 'rgba(212,240,60,0.2)', boxBg: 'rgba(212,240,60,0.1)', label: '🌅 SAY THIS NOW' },
-    midday:  { c: 'var(--blue)',   bg: 'rgba(79,180,255,0.07)', border: 'rgba(79,180,255,0.2)', boxBg: 'rgba(79,180,255,0.1)', label: '☀️ SAY THIS NOW' },
-    evening: { c: 'var(--purple)', bg: 'rgba(196,160,255,0.07)', border: 'rgba(196,160,255,0.2)', boxBg: 'rgba(196,160,255,0.1)', label: '🌙 SAY THIS NOW' }
-  }[block];
-
-  const pick = getTISPick(block);
   const container = document.getElementById('tis-single');
-  if (!container || !pick) return;
+  const listEl = document.getElementById('tis-sentences-list');
+  const labelEl = document.getElementById('tis-single-label');
+  if (!container || !listEl) return;
 
-  // Apply colors
-  container.style.background = colors.bg;
-  container.style.border = '1px solid ' + colors.border;
-  document.getElementById('tis-single-label').style.color = colors.c;
-  document.getElementById('tis-single-label').textContent = colors.label;
-  document.getElementById('tis-single-pr-btn').style.background = colors.boxBg;
-  document.getElementById('tis-single-pr-btn').style.borderColor = colors.border;
-  document.getElementById('tis-single-pr-btn').style.color = colors.c;
-  document.getElementById('tis-single-ca-btn').style.borderColor = colors.border;
-  document.getElementById('tis-single-ca-btn').style.color = colors.c;
-  document.getElementById('tis-single-pr-box').style.background = colors.boxBg;
-  document.getElementById('tis-single-ca-box').style.background = colors.bg;
+  const hour = new Date().getHours();
 
-  document.getElementById('tis-active-pr').style.color = colors.c;
-  document.getElementById('tis-active-ca').style.color = colors.c;
+  // Score each routine sentence by how close it is to the current hour
+  // Exact match = score 10, within 1hr = 5, within 2hr = 2, else = 1
+  const scored = ROUTINE_SENTENCES.map(s => {
+    const diff = Math.min(Math.abs(hour - s.hour[0]), Math.abs(hour - s.hour[1]));
+    const inRange = hour >= s.hour[0] && hour <= s.hour[1];
+    const score = inRange ? 10 : diff <= 1 ? 5 : diff <= 2 ? 2 : 1;
+    return { ...s, score };
+  }).sort((a, b) => b.score - a.score);
 
-  // Set content
-  document.getElementById('tis-active-pr').textContent = pick.pr;
-  document.getElementById('tis-active-ca').textContent = pick.ca;
-  document.getElementById('tis-active-en').textContent = pick.en;
-  document.getElementById('tis-active-cue').textContent = pick.cue;
+  // Take top 3, no duplicates
+  const picks = [];
+  const seen = new Set();
+  for (const s of scored) {
+    if (picks.length >= 3) break;
+    const key = s.pr;
+    if (!seen.has(key)) { picks.push(s); seen.add(key); }
+  }
 
-  // Store active block for audio buttons
-  container.dataset.block = block;
+  const isEvening = hour >= 18;
+  const isMidday = hour >= 10 && hour < 18;
+  const color = isEvening ? 'var(--purple)' : isMidday ? 'var(--blue)' : 'var(--accent)';
+  const bg = isEvening ? 'rgba(196,160,255,0.06)' : isMidday ? 'rgba(79,180,255,0.06)' : 'rgba(212,240,60,0.05)';
+  const border = isEvening ? 'rgba(196,160,255,0.2)' : isMidday ? 'rgba(79,180,255,0.2)' : 'rgba(212,240,60,0.2)';
+  const timeLabel = isEvening ? '🌙 SAY THESE NOW' : isMidday ? '☀️ SAY THESE NOW' : '🌅 SAY THESE NOW';
+
+  container.style.background = bg;
+  container.style.border = '1px solid ' + border;
+  if (labelEl) { labelEl.textContent = timeLabel; labelEl.style.color = color; }
+
+  listEl.innerHTML = picks.map((s, i) => `
+    <div style="margin-bottom:${i < picks.length - 1 ? '10px' : '0'};padding-bottom:${i < picks.length - 1 ? '10px' : '0'};border-bottom:${i < picks.length - 1 ? '1px solid ' + border : 'none'};">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+        <div style="flex:1;">
+          <div style="font-family:var(--font-head);font-size:14px;font-weight:700;color:${color};margin-bottom:1px;">${sanitize(s.pr)}</div>
+          ${s.ca !== s.pr ? `<div style="font-size:11px;color:${color};opacity:0.7;margin-bottom:2px;">GC: ${sanitize(s.ca)}</div>` : ''}
+          <div style="font-size:11px;color:var(--muted);">${sanitize(s.en)}</div>
+        </div>
+        <button onclick="tisSayOne(${i})" style="flex-shrink:0;font-size:10px;background:none;border:1px solid ${border};color:${color};border-radius:5px;padding:3px 7px;cursor:pointer;">▶</button>
+      </div>
+      <div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:3px;">${sanitize(s.cue)}</div>
+    </div>
+  `).join('');
+
+  container.dataset.picks = JSON.stringify(picks.map(p => ({ pr: p.pr, ca: p.ca })));
 }
 
-// tisSay now reads from active block
+function tisSayOne(idx) {
+  const container = document.getElementById('tis-single');
+  if (!container) return;
+  try {
+    const picks = JSON.parse(container.dataset.picks || '[]');
+    if (picks[idx]) ttsSpeak(picks[idx].pr, 'es-US');
+  } catch(e) {}
+}
+
 function tisSay(_, variant) {
   const container = document.getElementById('tis-single');
-  const block = container ? container.dataset.block || 'morning' : 'morning';
-  const pick = getTISPick(block);
-  const text = variant === 'ca' ? pick.ca : pick.pr;
-  const lang = variant === 'ca' ? 'es-ES' : 'es-US';
-  if (text) ttsSpeak(text, lang);
+  if (!container) return;
+  try {
+    const picks = JSON.parse(container.dataset.picks || '[]');
+    if (picks[0]) ttsSpeak(variant === 'ca' ? picks[0].ca : picks[0].pr, variant === 'ca' ? 'es-ES' : 'es-US');
+  } catch(e) {}
 }
 
 function getMomentType(es) {
@@ -4669,68 +4862,7 @@ function getMomentLabel(type, hour) {
   return labels[type] || labels.anytime;
 }
 
-function renderCommentaryPrompt(stage) {
-  const container = document.getElementById('commentary-prompt');
-  if (!container) return;
-
-  const hour = new Date().getHours();
-  const preferredTypes = getMomentTypesForHour(hour);
-
-  // Starter sentences — always available from day one
-  const starterPool = [
-    { es: 'Buenos días.', en: 'Good morning.', type: 'morning' },
-    { es: 'Acabo de despertarme.', en: 'I just woke up.', type: 'morning' },
-    { es: 'Voy a hacer café.', en: 'I\'m going to make coffee.', type: 'morning' },
-    { es: 'Voy a caminar esta mañana.', en: 'I\'m going to walk this morning.', type: 'morning' },
-    { es: 'Estoy haciendo café.', en: 'I\'m making coffee.', type: 'present' },
-    { es: 'Estoy caminando.', en: 'I\'m walking.', type: 'present' },
-    { es: 'Estoy trabajando.', en: 'I\'m working.', type: 'present' },
-    { es: 'Estoy aprendiendo español.', en: 'I\'m learning Spanish.', type: 'present' },
-    { es: 'Tengo que trabajar ahora.', en: 'I have to work now.', type: 'pre' },
-    { es: 'Voy a practicar español.', en: 'I\'m going to practice Spanish.', type: 'pre' },
-    { es: 'Voy a comer algo.', en: 'I\'m going to eat something.', type: 'pre' },
-    { es: 'Acabo de terminar.', en: 'I just finished.', type: 'post' },
-    { es: 'Acabo de comer.', en: 'I just ate.', type: 'post' },
-    { es: 'Acabo de caminar.', en: 'I just walked.', type: 'post' },
-    { es: 'Me siento bien hoy.', en: 'I feel good today.', type: 'feeling' },
-    { es: 'Estoy cansado pero bien.', en: 'I\'m tired but good.', type: 'feeling' },
-    { es: 'Me encanta vivir aquí.', en: 'I love living here.', type: 'feeling' },
-    { es: 'Buenas noches.', en: 'Good evening.', type: 'evening' },
-    { es: 'Voy a descansar.', en: 'I\'m going to rest.', type: 'evening' },
-    { es: 'Hoy fue un buen día.', en: 'Today was a good day.', type: 'evening' },
-  ];
-
-  const owned = sentences.filter(s => s.status === 'owned');
-  let pool, isStarter = false;
-
-  if (owned.length) {
-    const scored = owned.map(s => {
-      const es = getPR(s) || '';
-      const type = getMomentType(es);
-      const score = preferredTypes.indexOf(type);
-      return { es, en: s.en, type, score: score === -1 ? -1 : preferredTypes.length - score };
-    }).filter(x => x.score >= 0);
-    pool = scored.length ? scored : owned.map(s => ({ es: getPR(s)||'', en: s.en, type: 'anytime', score: 0 }));
-  } else {
-    isStarter = true;
-    const scored = starterPool.map(s => {
-      const score = preferredTypes.indexOf(s.type);
-      return { ...s, score: score === -1 ? -1 : preferredTypes.length - score };
-    }).filter(x => x.score >= 0);
-    pool = scored.length ? scored : starterPool.map(s => ({ ...s, score: 0 }));
-  }
-
-  const best = pool.filter(x => x.score === Math.max(...pool.map(p => p.score)));
-  const pick = best[hour % best.length];
-  if (!pick || !pick.es) { container.style.display = 'none'; return; }
-
-  container.style.display = 'block';
-  document.getElementById('commentary-label').textContent = getMomentLabel(pick.type, hour);
-  document.getElementById('commentary-es').textContent = pick.es;
-  document.getElementById('commentary-en').textContent = pick.en;
-  const hint = document.getElementById('commentary-hint');
-  if (hint) hint.textContent = isStarter ? 'Starter sentence — say it out loud. Your owned sentences appear here once you complete Shadow + Recall.' : '';
-}
+function renderCommentaryPrompt() { renderThinkInSpanish(); }
 
 // ================================================================
 // SPEAK — self-talk practice with language islands
