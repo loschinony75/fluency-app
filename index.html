@@ -817,10 +817,10 @@
     </button>
     <div id="reading-instructions" style="display:none;padding:14px 16px;background:rgba(79,207,138,0.04);border-top:1px solid rgba(79,207,138,0.15);">
       <div style="font-size:12px;color:var(--text);line-height:1.8;">
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 1 — Meaning</span><br>Read once for the story. Don't stop at every word. Note 3 unknown words and look them up on WordReference.</div>
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 2 — Out loud</span><br>Read the same text out loud. Focus on rhythm and natural phrasing. No stopping for unknown words.</div>
-        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — Shadow writing</span><br>Text open. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 best sentences to Library.</div>
-        <div><span style="color:var(--success);font-weight:500;">Day 4</span><br>Open a new article. Sentences from the old one keep drilling in Shadow and Recall indefinitely.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 1 — Meaning</span><br>Tap ▶ to hear it first. Then read in Spanish. Answer the 3 comprehension questions. Note 3 unknown words.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 2 — Out loud</span><br>Tap ▶ to hear a sentence, then repeat it out loud. Work through the whole article. Focus on rhythm.</div>
+        <div style="margin-bottom:8px;"><span style="color:var(--success);font-weight:500;">Day 3 — From memory</span><br>Article hidden. Write what you remember in Spanish. Tap Check to see the original. Save best sentences to Library.</div>
+        <div><span style="color:var(--success);font-weight:500;">Day 4</span><br>Next article loads automatically.</div>
       </div>
     </div>
   </div>
@@ -838,18 +838,19 @@
     </div>
   </div>
 
-  <!-- Lingua link -->
+  <!-- Built-in article library -->
   <div class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div style="font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:6px;color:var(--success);">Open Your Reading Text</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.7;">27 free texts at A1–A2 level. Start at A1. Same article for 3 days before moving on. Tap to open Lingua in a new tab.</div>
-    <a href="https://lingua.com/spanish/reading/" target="_blank" class="btn btn-full" style="justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);margin-bottom:8px;">📖 Open Lingua — Spanish Reading</a>
-    <a href="https://www.wordreference.com/es/en/translation.asp" target="_blank" class="btn btn-full" style="justify-content:center;font-size:11px;">🔍 WordReference — look up words</a>
+    <div style="font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:6px;color:var(--success);">Choose Your Article</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">20 A1-A2 articles written for your life. Same article for 3 days before moving on.</div>
+    <div id="article-browser" style="max-height:200px;overflow-y:auto;"></div>
+    <button onclick="toggleArticleBrowser()" id="article-browser-btn" style="width:100%;margin-top:8px;font-size:11px;background:rgba(79,207,138,0.1);border:1px solid rgba(79,207,138,0.3);color:var(--success);border-radius:7px;padding:7px;cursor:pointer;">📚 Browse All Articles</button>
   </div>
 
   <!-- Day tracker -->
   <div class="card" style="background:var(--surface2);margin-bottom:12px;">
     <div class="flex-between mb8">
       <div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:2px;" id="reading-article-title-display"></div>
         <div style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--success)" id="reading-day-label">Day 1 — Read for meaning</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px" id="reading-day-task">Read once. Get the story. Don't stop at every word.</div>
       </div>
@@ -862,10 +863,30 @@
     </div>
   </div>
 
-  <!-- Current article note -->
-  <div class="card" style="background:var(--surface2);margin-bottom:12px;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Current Article</div>
-    <input type="text" id="reading-article-url" placeholder="Paste article title here to remember it..." style="margin-bottom:0;" />
+  <!-- Article text display -->
+  <div id="reading-article-display" class="card" style="margin-bottom:12px;display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;">Article</div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="readArticleAloud()" id="read-aloud-btn" style="font-size:11px;background:rgba(79,207,138,0.1);border:1px solid rgba(79,207,138,0.3);color:var(--success);border-radius:6px;padding:4px 10px;cursor:pointer;">▶ Hear it</button>
+        <button onclick="stopReadingAudio()" style="font-size:11px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 8px;cursor:pointer;">⏹</button>
+      </div>
+    </div>
+    <div style="font-size:14px;color:var(--text);line-height:1.9;white-space:pre-wrap;" id="reading-article-body-display"></div>
+    <!-- English translation hidden by default -->
+    <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:8px;">
+      <button onclick="toggleReadingTranslation()" id="reading-translation-btn" style="font-size:11px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer;">Show translation</button>
+      <div id="reading-article-en-display" style="display:none;font-size:11px;color:var(--muted);margin-top:8px;line-height:1.7;white-space:pre-wrap;"></div>
+    </div>
+  </div>
+
+  <!-- Comprehension questions — shown on Day 1 only -->
+  <div id="reading-questions-section" class="card" style="background:var(--surface2);margin-bottom:12px;display:none;">
+    <div style="font-size:11px;color:var(--success);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;font-weight:700;">Comprehension Questions</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Answer these from memory after reading. Don't look back at the text first.</div>
+    <div id="reading-questions-list"></div>
+    <button onclick="revealReadingAnswers()" class="btn" style="margin-top:10px;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Reveal Answers</button>
+    <div id="reading-answers-reveal" style="display:none;margin-top:10px;"></div>
   </div>
 
   <!-- Vocab notes -->
@@ -876,12 +897,19 @@
     <button class="btn" onclick="saveVocabNote()" style="background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Save vocab notes</button>
   </div>
 
-  <!-- Shadow writing (Day 3) -->
+  <!-- Recall writing — Day 3 -->
   <div id="reading-shadow-section" class="card" style="background:var(--surface2);margin-bottom:12px;display:none;">
-    <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Shadow Writing — Day 3</div>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.7;">Article open in Lingua. Pick one paragraph. Swap in your own life. No memory required.</div>
-    <textarea id="reading-shadow" placeholder="Write your personal version here...&#10;&#10;Example: Carlos vive en las Islas Canarias → Yo también vivo en las Islas Canarias. Me mudé hace tres meses..." style="min-height:120px;margin-bottom:8px;"></textarea>
-    <button class="btn btn-accent" onclick="saveShadowWriting()" style="width:100%;justify-content:center;">Save best sentences to Library</button>
+    <div style="font-size:11px;color:var(--success);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;font-weight:700;">Day 3 — Write from Memory</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7;">Article is hidden. Write what you remember in Spanish without looking. Don't worry about being perfect — write what comes out. Then tap "Check" to see the original and find your gaps.</div>
+    <textarea id="reading-shadow" placeholder="Escribe lo que recuerdas del artículo..." style="min-height:120px;margin-bottom:8px;"></textarea>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" onclick="checkRecallWriting()" style="flex:1;justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">Check — show original</button>
+      <button class="btn btn-accent" onclick="saveShadowWriting()" style="flex:1;justify-content:center;">Save best sentences</button>
+    </div>
+    <div id="recall-check-display" style="display:none;margin-top:12px;background:var(--surface);border-radius:8px;padding:12px;border:1px solid var(--border);">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Original article:</div>
+      <div id="recall-check-text" style="font-size:13px;color:var(--text);line-height:1.8;white-space:pre-wrap;"></div>
+    </div>
   </div>
 
   <!-- Saved vocab display -->
@@ -1006,17 +1034,113 @@
     <div id="milestone-tracker"></div>
   </div>
 
+
   <div class="guide-section">
-    <div class="guide-section-title">Your Daily Routine</div>
-    <div class="guide-step"><div class="guide-step-num">1</div><div><div class="guide-step-title">6:30 AM — Wake up</div><div class="guide-step-desc">Say out loud: <em>Me levanto a las seis y media.</em></div></div></div>
-    <div class="guide-step"><div class="guide-step-num">2</div><div><div class="guide-step-title">6:50 AM — Walk with Listen on</div><div class="guide-step-desc">Running commentary on what you see. <em>Hace buen tiempo. Voy a caminar.</em></div></div></div>
-    <div class="guide-step"><div class="guide-step-num">3</div><div><div class="guide-step-title">7:10 AM — Meditate</div><div class="guide-step-desc">After: <em>Acabo de meditar. Me siento tranquilo.</em></div></div></div>
-    <div class="guide-step"><div class="guide-step-num">4</div><div><div class="guide-step-title">7:30 AM — Coffee + Study (38 min)</div><div class="guide-step-desc">Follow the Today tab. Shadow 10 min → Recall 20 min → Listen 8 min. In that order. Always.</div></div></div>
-    <div class="guide-step"><div class="guide-step-num">5</div><div><div class="guide-step-title">During the day — Spanish commentary</div><div class="guide-step-desc"><em>Voy a comer. Acabo de terminar. Hace calor hoy.</em> Say what you are doing as you do it.</div></div></div>
-    <div class="guide-step"><div class="guide-step-num">6</div><div><div class="guide-step-title">Before bed — Listen passively (5 min)</div><div class="guide-step-desc">While winding down. Passive only. Brain consolidates overnight.</div></div></div>
-    <div class="guide-step"><div class="guide-step-num">7</div><div><div class="guide-step-title">Before bed — Spanish journal (5 min)</div><div class="guide-step-desc">Tap step 4 on Today tab. Write your day in Spanish. Saves to Library automatically.</div></div></div>
-    <div class="guide-step"><div class="guide-step-num">8</div><div><div class="guide-step-title">Every Sunday — Record yourself (2 min)</div><div class="guide-step-desc">App reminds you. Speak Spanish for 2 minutes. No script. Save every recording.</div></div></div>
+    <div class="guide-section-title">Your Full Day — Structure & Resources</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.7;">The number one problem language learners have is not knowing how to structure their time. This is your complete daily plan — input and output alternating all day. Follow this and you are doing more than 99% of learners.</div>
+
+    <!-- Morning Triggers -->
+    <div style="font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;">🌅 6:30 AM — Wake Up Triggers</div>
+    <div class="guide-block" style="margin-bottom:6px;">
+      <span class="guide-block-label">OUTPUT — Say it as you do it</span>
+      Glance at the Today tab trigger sentences. Say each one out loud as you move through your routine. Bathroom → coffee → walk. No studying — just speaking your routine in Spanish. 3 minutes total.
+    </div>
+
+    <!-- Walk — comprehensible input -->
+    <div style="font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">🎧 7:00 AM — Walk (20-30 min) — COMPREHENSIBLE INPUT</div>
+    <div class="guide-block" style="border-left-color:var(--blue);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--blue);">INPUT — Podcast in your ears</span>
+      Phone in pocket. One of these playing the whole walk. This is your comprehensible audio input — William's most important habit.<br><br>
+      <strong style="color:var(--text);">Stage 1 resources (use now):</strong><br>
+      • <strong>Español con Juan</strong> — YouTube, slow clear neutral Spanish, practical phrases<br>
+      • <strong>Dreaming Spanish Superbeginner</strong> — YouTube, comprehensible stories, no English<br>
+      • <strong>SpanishPod101 Absolute Beginner</strong> — podcast, free on Spotify<br>
+      • <strong>Mikel's audio files</strong> from the NLL course — your own sentences played back<br><br>
+      <strong style="color:var(--text);">Rule:</strong> Pick ONE and stick to it for 2 weeks. Your brain needs repetition with the same voices and vocabulary, not variety.
+    </div>
+
+    <!-- Core drilling -->
+    <div style="font-size:10px;color:var(--success);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📱 8:00 AM — Core Drilling (35-40 min) — DEEP WORK</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">No phone notifications. No TV. Sit down and focus. This is the most important block of your day. It compounds every single session.</div>
+    <div class="guide-block" style="border-left-color:var(--blue);margin-bottom:4px;">
+      <span class="guide-block-label" style="color:var(--blue);">INPUT — Shadow (15 min)</span>
+      Tap Shadow on Today. 15-20 sentences. Play each one → repeat out loud → loop until automatic. Do not move to Recall until your mouth produces the sentence without thinking.
+    </div>
+    <div class="guide-block" style="border-left-color:var(--success);margin-bottom:4px;">
+      <span class="guide-block-label" style="color:var(--success);">OUTPUT — Recall (10 min)</span>
+      Same sentences. See English → say Spanish out loud before revealing. Rate honestly. Missed = back to Shadow.
+    </div>
+    <div class="guide-block" style="border-left-color:var(--warn);margin-bottom:4px;">
+      <span class="guide-block-label" style="color:var(--warn);">OUTPUT — Write (10 min)</span>
+      Same sentences. Type Spanish from memory. The diff shows exactly where you slipped. This channel catches errors speaking hides.
+    </div>
+
+    <!-- Smoothie / gym time -->
+    <div style="font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">🎧 10:00 AM — Smoothie + Gym Transit — COMPREHENSIBLE INPUT</div>
+    <div class="guide-block" style="border-left-color:var(--blue);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--blue);">INPUT — Short clips while moving</span>
+      While making the smoothie, getting to the gym, waiting between sets. 10-15 minutes of Spanish in your ears.<br><br>
+      <strong style="color:var(--text);">Resources:</strong><br>
+      • <strong>Dreaming Spanish</strong> — YouTube Superbeginner playlist, 5-10 min videos<br>
+      • <strong>Español con Juan</strong> — short episodes 8-12 min<br>
+      • <strong>Pimsleur Spanish</strong> — audio only, perfect for transit, free first 7 lessons<br><br>
+      Say out loud before leaving: <em>Voy al gimnasio ahora. Estoy listo.</em>
+    </div>
+
+    <!-- Salt therapy -->
+    <div style="font-size:10px;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">🧘 Salt Therapy — PASSIVE INPUT</div>
+    <div class="guide-block" style="border-left-color:var(--purple);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--purple);">INPUT — Passive listening</span>
+      Headphones in during salt therapy. Same podcast or audio from your morning walk — repetition with the same content deepens retention. Your brain is calm and receptive here.
+    </div>
+
+    <!-- Afternoon reading -->
+    <div style="font-size:10px;color:var(--success);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📖 Afternoon — Reading (15 min) — COMPREHENSIBLE INPUT</div>
+    <div class="guide-block" style="border-left-color:var(--success);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--success);">INPUT — Read at your level</span>
+      Tap Reading on Today. Lingua.com A1 texts. Same article for 3 days. Do not look up every word — 80% comprehension is enough. The goal is flow, not perfection.<br><br>
+      <strong style="color:var(--text);">After reading — immediate output:</strong> Close the article. Say out loud in Spanish what you just read. 2-3 sentences. Your own words. Imperfect is fine. This is William's summarize → skim → say again cycle.
+    </div>
+
+    <!-- Evening Script -->
+    <div style="font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">🗣 Evening — Script Practice (10 min) — OUTPUT</div>
+    <div class="guide-block" style="border-left-color:var(--accent);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--accent);">OUTPUT — Island drilling</span>
+      Tap Script on Today. Your current island — Introducing Yourself. Question plays → pause → you say your answer → correct answer confirms. Loop the whole script until it flows. This is your speaking practice. No tutor needed yet.
+    </div>
+
+    <!-- Dreaming Spanish evening -->
+    <div style="font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📺 Evening — Dreaming Spanish (20 min) — COMPREHENSIBLE INPUT</div>
+    <div class="guide-block" style="border-left-color:var(--blue);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--blue);">INPUT — Watch, don't study</span>
+      YouTube → Dreaming Spanish → Superbeginner playlist. Sit back. Understand what you can. Do not pause for every word. Let it wash over you. This is passive comprehensible input — William's "fill the tank" principle.<br><br>
+      When you recognise a word from your sentence library: that's spaced repetition happening automatically.
+    </div>
+
+    <!-- Journal -->
+    <div style="font-size:10px;color:var(--warn);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📝 Before Bed — Journal (5 min) — OUTPUT</div>
+    <div class="guide-block" style="border-left-color:var(--warn);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--warn);">OUTPUT — Write your day</span>
+      Tap Journal on Today. 3 sentences about what you did today. Use words you already know. Do not look anything up first — write what comes out. Imperfect Spanish that you produced alone is worth more than perfect Spanish you copied.<br><br>
+      Connect it to your current island: if you're on Introducing Yourself, write about who you are today.
+    </div>
+
+    <!-- Sunday test day -->
+    <div style="font-size:10px;color:var(--danger);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📅 Every Sunday — Test Day (William's method)</div>
+    <div class="guide-block" style="border-left-color:var(--danger);margin-bottom:6px;">
+      <span class="guide-block-label" style="color:var(--danger);">OUTPUT ONLY — No app, no crutch</span>
+      Put the app down. For 15 minutes, speak Spanish out loud about anything — your week, how you feel, what you did. No script. No prompts. Then write for 10 minutes in the Journal, same topic, free flow. This is William's test day. It shows you what actually stuck versus what only works with the app open. The gaps you find go back into Shadow on Monday.
+    </div>
+
+    <!-- Resources summary -->
+    <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📚 Your Resource Stack</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Comprehensible Input (audio)</span>Español con Juan (YouTube/Spotify) · Dreaming Spanish Superbeginner (YouTube) · SpanishPod101 Beginner (Spotify) · Pimsleur Spanish free trial · Mikel NLL course audio files</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Comprehensible Input (video)</span>Dreaming Spanish YouTube · Easy Spanish (street interviews with subtitles) · Butterfly Spanish (grammar explained simply)</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Reading</span>lingua.com/spanish/reading (A1-A2, free) · Short Stories in Spanish for Beginners — Olly Richards (Month 2) · Lingopie (Month 3+, Spanish shows with interactive subtitles)</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Dictionary</span>WordReference.com — always. Not Google Translate.</div>
+    <div class="guide-block"><span class="guide-block-label">Music</span>Marc Anthony · Daddy Yankee · Bad Bunny · Rosalía · Silvio Rodríguez. Lyrics on Spotify. Read while listening.</div>
   </div>
+
 
   <div class="guide-section">
     <div class="guide-section-title">Stage Progression</div>
@@ -4419,12 +4543,434 @@ function setListenMode(mode) {
 }
 
 // ================================================================
-// READING TAB — AI-powered 3-day method
+// BUILT-IN READING ARTICLES — 20 A1-A2 texts for the 3-day method
+// Topics: Carlos's life, Gran Canaria, daily routine, health, Army, Puerto Rico
+// ================================================================
+const READING_ARTICLES = [
+  {
+    id: 1, level: 'A1', topic: 'Introducing Yourself',
+    title: 'Me llamo Carlos',
+    es: `Me llamo Carlos. Soy de Brooklyn, Nueva York. Mi familia es puertorriqueña.
+
+Soy veterano del ejército americano. Estuve en el ejército por diez años. Era paracaidista y policía militar.
+
+Ahora vivo en Gran Canaria. Las Islas Canarias están en el océano Atlántico. El clima aquí es muy bueno.
+
+Tengo dos hijas. Se llaman Isabella y Sofía. Viven en Alemania.
+
+Estoy aprendiendo español. Practico todos los días. Poco a poco mejoro.`,
+    en: `My name is Carlos. I am from Brooklyn, New York. My family is Puerto Rican.\n\nI am a U.S. Army veteran. I was in the Army for ten years. I was a paratrooper and military police.\n\nNow I live in Gran Canaria. The Canary Islands are in the Atlantic Ocean. The climate here is very good.\n\nI have two daughters. Their names are Isabella and Sofía. They live in Germany.\n\nI am learning Spanish. I practice every day. Little by little I am improving.`,
+    qs: [{q: "¿De dónde es Carlos?", a: "De Brooklyn, Nueva York"}, {q: "¿Cuántos años estuvo Carlos en el ejército?", a: "Diez años"}, {q: "¿Dónde viven sus hijas?", a: "En Alemania"}]
+  },
+  {
+    id: 2, level: 'A1', topic: 'Morning Routine',
+    title: 'Mi rutina de la mañana',
+    es: `Me despierto a las seis y media. Primero voy al baño. Me lavo los dientes y me lavo la cara.
+
+Después tomo un vaso de agua con sal. El agua con sal es buena para la salud.
+
+Luego salgo a caminar. Camino por treinta minutos. Me gusta caminar por la mañana.
+
+Cuando vuelvo a casa, hago café. El café está listo en cinco minutos. Me siento y tomo mi café.
+
+Después medito. La meditación me ayuda con el estrés. Me siento bien después de meditar.`,
+    en: `I wake up at six thirty. First I go to the bathroom. I brush my teeth and wash my face.\n\nThen I drink a glass of water with salt. Salt water is good for your health.\n\nThen I go for a walk. I walk for thirty minutes. I like walking in the morning.\n\nWhen I come back home, I make coffee. The coffee is ready in five minutes. I sit down and drink my coffee.\n\nThen I meditate. Meditation helps me with stress. I feel good after meditating.`,
+    qs: [{q: "¿A qué hora se despierta Carlos?", a: "A las seis y media"}, {q: "¿Qué toma Carlos después de lavarse la cara?", a: "Un vaso de agua con sal"}, {q: "¿Qué hace Carlos después de tomar el café?", a: "Medita"}]
+  },
+  {
+    id: 3, level: 'A1', topic: 'Gran Canaria',
+    title: 'Gran Canaria',
+    es: `Gran Canaria es una isla española. Está en el océano Atlántico. Está cerca de África.
+
+El clima en Gran Canaria es muy bueno. Hace sol casi todos los días. No hace mucho frío en invierno.
+
+La capital de Gran Canaria es Las Palmas. Es una ciudad grande y moderna. Tiene playas muy bonitas.
+
+La gente de Gran Canaria es muy amable. Hablan español. Su acento es diferente al español de España.
+
+Me gusta vivir aquí. El clima es bueno para mi salud. Estoy muy contento con mi nueva vida.`,
+    en: `Gran Canaria is a Spanish island. It is in the Atlantic Ocean. It is close to Africa.\n\nThe climate in Gran Canaria is very good. It is sunny almost every day. It is not very cold in winter.\n\nThe capital of Gran Canaria is Las Palmas. It is a large modern city. It has very beautiful beaches.\n\nThe people of Gran Canaria are very friendly. They speak Spanish. Their accent is different from Spanish from Spain.\n\nI like living here. The climate is good for my health. I am very happy with my new life.`,
+    qs: [{q: "¿Dónde están las Islas Canarias?", a: "En el océano Atlántico"}, {q: "¿Cuál es la capital de Gran Canaria?", a: "Las Palmas"}, {q: "¿Por qué le gusta vivir allí a Carlos?", a: "El clima es bueno para su salud"}]
+  },
+  {
+    id: 4, level: 'A1', topic: 'My Health',
+    title: 'Mi salud',
+    es: `Soy veterano con discapacidad. Tengo problemas de espalda, rodillas y cuello. También tengo tinnitus y dolor nervioso.
+
+Cada día hago ejercicio. Camino por la mañana. También voy al gimnasio.
+
+La terapia de sal me ayuda mucho. Voy a la terapia de sal después del gimnasio. Me siento mejor después.
+
+El clima de Gran Canaria es muy bueno para mi salud. No hace mucho frío. El sol me ayuda.
+
+Cuido mi cuerpo todos los días. Como bien. Duermo bien. Me siento mejor que antes.`,
+    en: `I am a disabled veteran. I have problems with my back, knees, and neck. I also have tinnitus and nerve pain.\n\nEvery day I exercise. I walk in the morning. I also go to the gym.\n\nSalt therapy helps me a lot. I go to salt therapy after the gym. I feel better afterwards.\n\nThe climate of Gran Canaria is very good for my health. It is not very cold. The sun helps me.\n\nI take care of my body every day. I eat well. I sleep well. I feel better than before.`,
+    qs: [{q: "¿Por qué es Carlos un veterano con discapacidad?", a: "Tiene problemas de espalda, rodillas y cuello"}, {q: "¿Qué hace Carlos después del gimnasio?", a: "Va a la terapia de sal"}, {q: "¿Cómo se siente Carlos ahora?", a: "Mejor que antes"}]
+  },
+  {
+    id: 5, level: 'A1', topic: 'Puerto Rico',
+    title: 'Puerto Rico',
+    es: `Puerto Rico es una isla en el mar Caribe. Es parte de los Estados Unidos. La capital es San Juan.
+
+La gente de Puerto Rico habla español. Su español tiene un acento especial. También hablan inglés.
+
+Mi familia es de Puerto Rico. Crecí en Brooklyn, Nueva York. Pero mi familia habla español en casa.
+
+La comida de Puerto Rico es muy rica. Me gustan el arroz con pollo y los tostones. También me gusta el café puertorriqueño.
+
+Tengo mucho orgullo de ser puertorriqueño. Es parte de mi identidad. Siempre lo llevo en el corazón.`,
+    en: `Puerto Rico is an island in the Caribbean Sea. It is part of the United States. The capital is San Juan.\n\nThe people of Puerto Rico speak Spanish. Their Spanish has a special accent. They also speak English.\n\nMy family is from Puerto Rico. I grew up in Brooklyn, New York. But my family speaks Spanish at home.\n\nPuerto Rican food is very good. I like rice with chicken and tostones. I also like Puerto Rican coffee.\n\nI am very proud to be Puerto Rican. It is part of my identity. I always carry it in my heart.`,
+    qs: [{q: "¿Dónde está Puerto Rico?", a: "En el mar Caribe"}, {q: "¿Qué idiomas hablan en Puerto Rico?", a: "Español e inglés"}, {q: "¿Qué comida puertorriqueña le gusta a Carlos?", a: "El arroz con pollo y los tostones"}]
+  },
+  {
+    id: 6, level: 'A1', topic: 'The Gym',
+    title: 'El gimnasio',
+    es: `Voy al gimnasio todos los días. El gimnasio está cerca de mi casa. Voy a pie.
+
+Llego al gimnasio a las once. Entreno por una hora. Hago ejercicios para la espalda y las rodillas.
+
+No puedo hacer ejercicios muy fuertes. Tengo problemas de espalda. Pero hago lo que puedo.
+
+El gimnasio me ayuda mucho. Me siento más fuerte. También me ayuda con el dolor.
+
+Después del gimnasio voy a la terapia de sal. La terapia de sal me relaja. Es muy buena para los pulmones.`,
+    en: `I go to the gym every day. The gym is close to my house. I walk there.\n\nI arrive at the gym at eleven. I train for one hour. I do exercises for my back and knees.\n\nI cannot do very intense exercises. I have back problems. But I do what I can.\n\nThe gym helps me a lot. I feel stronger. It also helps me with the pain.\n\nAfter the gym I go to salt therapy. Salt therapy relaxes me. It is very good for the lungs.`,
+    qs: [{q: "¿A qué hora llega Carlos al gimnasio?", a: "A las once"}, {q: "¿Cuánto tiempo entrena Carlos?", a: "Una hora"}, {q: "¿Qué hace Carlos después del gimnasio?", a: "Va a la terapia de sal"}]
+  },
+  {
+    id: 7, level: 'A1', topic: 'My Daughters',
+    title: 'Mis hijas',
+    es: `Tengo dos hijas. Se llaman Isabella y Sofía. Son muy importantes para mí.
+
+Mis hijas viven en Alemania. Están muy lejos. Las extraño mucho.
+
+Hablo con mis hijas por teléfono. Las llamo dos o tres veces por semana. Me alegra escuchar sus voces.
+
+Quiero visitar a mis hijas pronto. Alemania está lejos de Gran Canaria. Pero quiero verlas.
+
+Mis hijas son mi motivación. Trabajo duro para ellas. Las quiero mucho.`,
+    en: `I have two daughters. Their names are Isabella and Sofía. They are very important to me.\n\nMy daughters live in Germany. They are very far away. I miss them very much.\n\nI talk to my daughters on the phone. I call them two or three times a week. I am happy to hear their voices.\n\nI want to visit my daughters soon. Germany is far from Gran Canaria. But I want to see them.\n\nMy daughters are my motivation. I work hard for them. I love them very much.`,
+    qs: [{q: "¿Cómo se llaman las hijas de Carlos?", a: "Isabella y Sofía"}, {q: "¿Dónde viven las hijas de Carlos?", a: "En Alemania"}, {q: "¿Con qué frecuencia llama Carlos a sus hijas?", a: "Dos o tres veces por semana"}]
+  },
+  {
+    id: 8, level: 'A1', topic: 'Learning Spanish',
+    title: 'Aprendiendo español',
+    es: `Estoy aprendiendo español. Practico todos los días. Es difícil pero interesante.
+
+Por la mañana practico con mi aplicación. Escucho frases en español. Las repito en voz alta.
+
+También leo en español. Leo textos cortos y simples. Entiendo la mayoría de las palabras.
+
+Cuando salgo a caminar, escucho podcasts en español. Me ayuda mucho. El español suena más natural.
+
+Cada semana entiendo más. Es lento pero seguro. Un día voy a hablar español con fluidez.`,
+    en: `I am learning Spanish. I practice every day. It is difficult but interesting.\n\nIn the morning I practice with my app. I listen to Spanish phrases. I repeat them out loud.\n\nI also read in Spanish. I read short simple texts. I understand most of the words.\n\nWhen I go walking, I listen to podcasts in Spanish. It helps me a lot. Spanish sounds more natural.\n\nEvery week I understand more. It is slow but steady. One day I will speak Spanish fluently.`,
+    qs: [{q: "¿Cuándo practica Carlos español?", a: "Por la mañana"}, {q: "¿Qué escucha Carlos cuando camina?", a: "Podcasts en español"}, {q: "¿Cómo se siente Carlos con su progreso?", a: "Cada semana entiende más"}]
+  },
+  {
+    id: 9, level: 'A1', topic: 'The Market',
+    title: 'El mercado',
+    es: `Hay un mercado cerca de mi casa. Voy al mercado dos veces por semana. Me gusta ir por la mañana.
+
+En el mercado hay muchas frutas y verduras. También hay carne y pescado. Los precios son buenos.
+
+La gente del mercado es muy amable. Me saludan cuando llego. Estoy aprendiendo a hablar con ellos en español.
+
+Compro frutas para mi batido. Compro arándanos, plátanos y manzanas. También compro verduras para comer.
+
+El mercado es un buen lugar para practicar español. La gente habla despacio conmigo. Me ayudan mucho.`,
+    en: `There is a market near my house. I go to the market twice a week. I like to go in the morning.\n\nAt the market there are many fruits and vegetables. There is also meat and fish. The prices are good.\n\nThe people at the market are very friendly. They greet me when I arrive. I am learning to talk to them in Spanish.\n\nI buy fruit for my smoothie. I buy blueberries, bananas, and apples. I also buy vegetables to eat.\n\nThe market is a good place to practice Spanish. People speak slowly with me. They help me a lot.`,
+    qs: [{q: "¿Con qué frecuencia va Carlos al mercado?", a: "Dos veces por semana"}, {q: "¿Qué compra Carlos para su batido?", a: "Arándanos, plátanos y manzanas"}, {q: "¿Por qué es el mercado bueno para practicar español?", a: "La gente habla despacio con él"}]
+  },
+  {
+    id: 10, level: 'A1', topic: 'Coffee',
+    title: 'El café',
+    es: `Me gusta mucho el café. Tomo café todas las mañanas. Es parte de mi rutina.
+
+En Gran Canaria hay muchas cafeterías. El café aquí es muy bueno. Me gusta el café con leche.
+
+Después de caminar, hago café en casa. Tengo una cafetera pequeña. El café tarda cinco minutos.
+
+Me siento en la mesa con mi café. Escucho español mientras tomo el café. Es un momento tranquilo.
+
+El café me da energía para el día. También me ayuda a pensar. No puedo empezar el día sin café.`,
+    en: `I like coffee very much. I drink coffee every morning. It is part of my routine.\n\nIn Gran Canaria there are many cafés. The coffee here is very good. I like café con leche.\n\nAfter walking, I make coffee at home. I have a small coffee maker. The coffee takes five minutes.\n\nI sit at the table with my coffee. I listen to Spanish while I drink coffee. It is a peaceful moment.\n\nCoffee gives me energy for the day. It also helps me think. I cannot start the day without coffee.`,
+    qs: [{q: "¿Cuándo hace Carlos el café?", a: "Después de caminar"}, {q: "¿Cuánto tarda el café?", a: "Cinco minutos"}, {q: "¿Qué hace Carlos mientras toma el café?", a: "Escucha español"}]
+  },
+  {
+    id: 11, level: 'A1', topic: 'The Non-Lucrative Visa',
+    title: 'Mi visa',
+    es: `Vivo en España con una visa no lucrativa. Esta visa me permite vivir en España. Pero no puedo trabajar.
+
+La visa no lucrativa es para personas que no necesitan trabajar en España. Necesito tener dinero suficiente para vivir.
+
+No trabajo aquí porque tengo esta visa. También tengo lesiones del ejército. Por eso no puedo trabajar.
+
+Quiero quedarme en España para siempre. Quiero ser ciudadano español. Cuando sea ciudadano, puedo trabajar.
+
+Mi plan es aprender español y esperar. Un día voy a empezar mi negocio de coaching en España.`,
+    en: `I live in Spain with a non-lucrative visa. This visa allows me to live in Spain. But I cannot work.\n\nThe non-lucrative visa is for people who do not need to work in Spain. I need to have enough money to live.\n\nI do not work here because I have this visa. I also have injuries from the Army. That is why I cannot work.\n\nI want to stay in Spain forever. I want to become a Spanish citizen. When I am a citizen, I can work.\n\nMy plan is to learn Spanish and wait. One day I will start my coaching business in Spain.`,
+    qs: [{q: "¿Qué tipo de visa tiene Carlos?", a: "Una visa no lucrativa"}, {q: "¿Por qué no puede trabajar Carlos?", a: "Por la visa y sus lesiones"}, {q: "¿Qué quiere hacer Carlos cuando sea ciudadano?", a: "Empezar su negocio de coaching"}]
+  },
+  {
+    id: 12, level: 'A1', topic: 'The Canary Islands',
+    title: 'Las Islas Canarias',
+    es: `Las Islas Canarias son siete islas. Están en el océano Atlántico. Son parte de España.
+
+Las islas más grandes son Gran Canaria y Tenerife. Cada isla es diferente. Todas son muy bonitas.
+
+El clima de las islas es muy especial. Hace sol casi todos los días. La temperatura es agradable todo el año.
+
+Las islas tienen mucha naturaleza. Hay playas bonitas y montañas altas. También hay dunas de arena.
+
+Muchos turistas visitan las islas cada año. Vienen de toda Europa. Las islas son muy populares.`,
+    en: `The Canary Islands are seven islands. They are in the Atlantic Ocean. They are part of Spain.\n\nThe largest islands are Gran Canaria and Tenerife. Each island is different. They are all very beautiful.\n\nThe climate of the islands is very special. It is sunny almost every day. The temperature is pleasant all year.\n\nThe islands have a lot of nature. There are beautiful beaches and tall mountains. There are also sand dunes.\n\nMany tourists visit the islands every year. They come from all over Europe. The islands are very popular.`,
+    qs: [{q: "¿Cuántas islas tiene el archipiélago canario?", a: "Siete islas"}, {q: "¿Cómo es el clima de las islas?", a: "Hace sol casi todos los días"}, {q: "¿Por qué vienen turistas a las islas?", a: "Las islas son muy populares y bonitas"}]
+  },
+  {
+    id: 13, level: 'A2', topic: 'The Army',
+    title: 'El ejército',
+    es: `Estuve en el ejército americano por diez años. Fue una experiencia muy importante en mi vida.
+
+En el ejército aprendí muchas cosas. Aprendí disciplina y trabajo en equipo. También aprendí a ser líder.
+
+Era paracaidista. Saltaba de aviones con un paracaídas. Era emocionante pero peligroso.
+
+También era policía militar. Mi trabajo era mantener el orden en la base. Era una responsabilidad grande.
+
+El ejército me cambió. Me hizo más fuerte mentalmente. Pero también me dejó lesiones en el cuerpo.`,
+    en: `I was in the U.S. Army for ten years. It was a very important experience in my life.\n\nIn the Army I learned many things. I learned discipline and teamwork. I also learned to be a leader.\n\nI was a paratrooper. I jumped from planes with a parachute. It was exciting but dangerous.\n\nI was also military police. My job was to maintain order on the base. It was a big responsibility.\n\nThe Army changed me. It made me mentally stronger. But it also left me with injuries to my body.`,
+    qs: [{q: "¿Cuánto tiempo estuvo Carlos en el ejército?", a: "Diez años"}, {q: "¿Qué era Carlos en el ejército?", a: "Paracaidista y policía militar"}, {q: "¿Qué le dejó el ejército a Carlos?", a: "Fortaleza mental y lesiones en el cuerpo"}]
+  },
+  {
+    id: 14, level: 'A2', topic: 'Coaching',
+    title: 'El coaching',
+    es: `Soy coach de negocios. Ayudo a dueños de negocios a crecer. Me especializo en liderazgo y crecimiento personal.
+
+Mi método de coaching está basado en valores estoicos. Creo que la disciplina y la mentalidad son muy importantes.
+
+Ahora mismo no puedo trabajar en España. Tengo una visa no lucrativa. Pero me preparo para el futuro.
+
+Estudio y aprendo todos los días. Leo libros sobre liderazgo y negocios. También practico español para hablar con futuros clientes.
+
+Cuando sea ciudadano español, voy a empezar mi negocio de coaching aquí. Tengo mucha experiencia y mucha motivación.`,
+    en: `I am a business coach. I help business owners grow. I specialize in leadership and personal growth.\n\nMy coaching method is based on Stoic values. I believe discipline and mindset are very important.\n\nRight now I cannot work in Spain. I have a non-lucrative visa. But I am preparing for the future.\n\nI study and learn every day. I read books about leadership and business. I also practice Spanish to speak with future clients.\n\nWhen I become a Spanish citizen, I will start my coaching business here. I have a lot of experience and a lot of motivation.`,
+    qs: [{q: "¿En qué se especializa Carlos como coach?", a: "En liderazgo y crecimiento personal"}, {q: "¿En qué están basados sus métodos?", a: "En valores estoicos"}, {q: "¿Cuándo va a empezar su negocio en España?", a: "Cuando sea ciudadano español"}]
+  },
+  {
+    id: 15, level: 'A2', topic: 'Meditation',
+    title: 'La meditación',
+    es: `Medito todos los días. La meditación es parte de mi rutina matutina. Medito después de tomar mi café.
+
+La meditación me ayuda de muchas maneras. Me ayuda a controlar el estrés. También me ayuda a concentrarme mejor.
+
+Empecé a meditar hace algunos años. Al principio era difícil. Mi mente se distraía mucho.
+
+Ahora medito por veinte minutos cada mañana. Me siento más tranquilo después. Es el mejor momento del día.
+
+La meditación también me ayuda con el dolor. Cuando me concentro en la respiración, el dolor parece menos fuerte.`,
+    en: `I meditate every day. Meditation is part of my morning routine. I meditate after drinking my coffee.\n\nMeditation helps me in many ways. It helps me control stress. It also helps me concentrate better.\n\nI started meditating some years ago. At first it was difficult. My mind got distracted a lot.\n\nNow I meditate for twenty minutes every morning. I feel calmer afterwards. It is the best moment of the day.\n\nMeditation also helps me with pain. When I focus on my breathing, the pain seems less strong.`,
+    qs: [{q: "¿Cuándo medita Carlos?", a: "Después de tomar el café"}, {q: "¿Cuánto tiempo medita Carlos?", a: "Veinte minutos"}, {q: "¿Cómo le ayuda la meditación con el dolor?", a: "El dolor parece menos fuerte cuando se concentra en la respiración"}]
+  },
+  {
+    id: 16, level: 'A2', topic: 'Brooklyn',
+    title: 'Brooklyn',
+    es: `Crecí en Brooklyn, Nueva York. Brooklyn es uno de los cinco condados de Nueva York. Es un lugar muy especial.
+
+En Brooklyn hay mucha diversidad. Viven personas de todo el mundo. Hay muchas culturas diferentes.
+
+Hay una comunidad puertorriqueña grande en Brooklyn. Muchos de mis vecinos hablaban español. Por eso escuché mucho español de niño.
+
+Brooklyn es una ciudad con mucha energía. Siempre hay algo que hacer. Hay restaurantes, tiendas y parques.
+
+Aunque ahora vivo en Gran Canaria, siempre llevaré Brooklyn en el corazón. Es donde crecí y donde está mi historia.`,
+    en: `I grew up in Brooklyn, New York. Brooklyn is one of the five boroughs of New York. It is a very special place.\n\nIn Brooklyn there is a lot of diversity. People from all over the world live there. There are many different cultures.\n\nThere is a large Puerto Rican community in Brooklyn. Many of my neighbors spoke Spanish. That is why I heard a lot of Spanish as a child.\n\nBrooklyn is a city with a lot of energy. There is always something to do. There are restaurants, shops, and parks.\n\nEven though I now live in Gran Canaria, I will always carry Brooklyn in my heart. It is where I grew up and where my story is.`,
+    qs: [{q: "¿Dónde creció Carlos?", a: "En Brooklyn, Nueva York"}, {q: "¿Por qué escuchó Carlos mucho español de niño?", a: "Muchos vecinos hablaban español"}, {q: "¿Qué lleva Carlos siempre en el corazón?", a: "Brooklyn"}]
+  },
+  {
+    id: 17, level: 'A2', topic: 'My Daily Schedule',
+    title: 'Mi horario del día',
+    es: `Tengo una rutina diaria muy organizada. La rutina me ayuda a mantener el orden en mi vida.
+
+Me levanto a las seis y media. Hago mi rutina de mañana: baño, agua con sal, caminar, café y meditación.
+
+De nueve a diez practico español. Uso mi aplicación para estudiar. Es mi momento de estudio profundo.
+
+A las diez hago mi batido de arándanos. A las once o doce voy al gimnasio. Después voy a la terapia de sal.
+
+Por la tarde descanso y leo. Por la noche practico mi conversación en español. Antes de dormir escribo en mi diario.`,
+    en: `I have a very organized daily routine. The routine helps me maintain order in my life.\n\nI wake up at six thirty. I do my morning routine: bathroom, salt water, walk, coffee, and meditation.\n\nFrom nine to ten I practice Spanish. I use my app to study. It is my deep work time.\n\nAt ten I make my blueberry smoothie. At eleven or twelve I go to the gym. Then I go to salt therapy.\n\nIn the afternoon I rest and read. In the evening I practice my Spanish conversation. Before sleeping I write in my journal.`,
+    qs: [{q: "¿A qué hora se levanta Carlos?", a: "A las seis y media"}, {q: "¿De qué hora a qué hora practica español?", a: "De nueve a diez"}, {q: "¿Qué hace Carlos antes de dormir?", a: "Escribe en su diario"}]
+  },
+  {
+    id: 18, level: 'A2', topic: 'Salt Therapy',
+    title: 'La terapia de sal',
+    es: `La terapia de sal es un tratamiento de salud. Se llama también haloterapia. Se usa sal en el aire para mejorar la salud.
+
+Yo voy a la terapia de sal después del gimnasio. La sala tiene sal en las paredes y en el suelo. El aire está lleno de partículas de sal.
+
+La terapia de sal es muy buena para los pulmones. También ayuda con problemas de piel. Me ayuda a relajarme.
+
+La sesión dura cuarenta y cinco minutos. Me siento en una silla cómoda. Respiro profundo y me relajo.
+
+Empecé a ir a la terapia de sal cuando llegué a Gran Canaria. Me ha ayudado mucho. Me siento mejor con mis lesiones.`,
+    en: `Salt therapy is a health treatment. It is also called halotherapy. Salt is used in the air to improve health.\n\nI go to salt therapy after the gym. The room has salt on the walls and on the floor. The air is full of salt particles.\n\nSalt therapy is very good for the lungs. It also helps with skin problems. It helps me relax.\n\nThe session lasts forty-five minutes. I sit in a comfortable chair. I breathe deeply and relax.\n\nI started going to salt therapy when I arrived in Gran Canaria. It has helped me a lot. I feel better with my injuries.`,
+    qs: [{q: "¿Cómo se llama también la terapia de sal?", a: "Haloterapia"}, {q: "¿Cuánto dura la sesión de terapia de sal?", a: "Cuarenta y cinco minutos"}, {q: "¿Cuándo empezó Carlos a ir a la terapia de sal?", a: "Cuando llegó a Gran Canaria"}]
+  },
+  {
+    id: 19, level: 'A2', topic: 'My Future Plans',
+    title: 'Mis planes para el futuro',
+    es: `Tengo muchos planes para el futuro. El más importante es aprender español con fluidez.
+
+Quiero ser ciudadano español. Para eso necesito vivir en España por cinco años y pasar un examen de español. Estudio todos los días para prepararme.
+
+Cuando sea ciudadano, voy a empezar mi negocio de coaching. Voy a trabajar con empresarios españoles y latinoamericanos.
+
+También quiero visitar a mis hijas más seguido. Quiero que vengan a Gran Canaria a visitarme. Me gustaría mostrarles la isla.
+
+Mi vida está cambiando para mejor. Cada día es una oportunidad nueva. Estoy emocionado con el futuro.`,
+    en: `I have many plans for the future. The most important is to learn Spanish fluently.\n\nI want to become a Spanish citizen. For that I need to live in Spain for five years and pass a Spanish exam. I study every day to prepare.\n\nWhen I become a citizen, I will start my coaching business. I will work with Spanish and Latin American entrepreneurs.\n\nI also want to visit my daughters more often. I want them to come to Gran Canaria to visit me. I would like to show them the island.\n\nMy life is changing for the better. Every day is a new opportunity. I am excited about the future.`,
+    qs: [{q: "¿Cuál es el plan más importante de Carlos?", a: "Aprender español con fluidez"}, {q: "¿Cuántos años necesita vivir en España para ser ciudadano?", a: "Cinco años"}, {q: "¿Con quién quiere trabajar Carlos como coach?", a: "Con empresarios españoles y latinoamericanos"}]
+  },
+  {
+    id: 20, level: 'A2', topic: 'A Day at the Beach',
+    title: 'Un día en la playa',
+    es: `Gran Canaria tiene muchas playas bonitas. La playa más famosa es la Playa del Inglés. Tiene arena dorada y agua azul.
+
+A veces voy a la playa por la tarde. Camino por la orilla del mar. El sonido del mar me relaja.
+
+El agua del mar en las islas no está muy fría. En verano está perfecta para nadar. En invierno está un poco más fresca.
+
+En la playa hay mucha gente. Turistas de toda Europa vienen a las playas de Gran Canaria. También hay canarios que disfrutan su isla.
+
+Me gusta mirar el océano y pensar. Pienso en mi vida, en mis hijas, en mis planes. La playa es un buen lugar para reflexionar.`,
+    en: `Gran Canaria has many beautiful beaches. The most famous beach is Playa del Inglés. It has golden sand and blue water.\n\nSometimes I go to the beach in the afternoon. I walk along the shore. The sound of the sea relaxes me.\n\nThe sea water in the islands is not very cold. In summer it is perfect for swimming. In winter it is a little cooler.\n\nThere are a lot of people at the beach. Tourists from all over Europe come to the beaches of Gran Canaria. There are also Canarians who enjoy their island.\n\nI like to look at the ocean and think. I think about my life, my daughters, my plans. The beach is a good place to reflect.`,
+    qs: [{q: "¿Cuál es la playa más famosa de Gran Canaria?", a: "La Playa del Inglés"}, {q: "¿Cómo está el agua en verano?", a: "Perfecta para nadar"}, {q: "¿En qué piensa Carlos cuando está en la playa?", a: "En su vida, sus hijas y sus planes"}]
+  }
+];
+
+let articleBrowserOpen = false;
+
+function readArticleAloud() {
+  const articleId = parseInt(localStorage.getItem('fluency_reading_article_id') || '1');
+  const article = READING_ARTICLES.find(a => a.id === articleId) || READING_ARTICLES[0];
+  if (!article) return;
+  const btn = document.getElementById('read-aloud-btn');
+  if (btn) btn.textContent = '⏸ Playing...';
+  // Split into sentences and play with small gaps
+  const sentences = article.es.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 2);
+  let idx = 0;
+  function playNext() {
+    if (idx >= sentences.length) {
+      if (btn) btn.textContent = '▶ Hear it';
+      return;
+    }
+    ttsSpeak(sentences[idx], 'es-US', () => {
+      idx++;
+      setTimeout(playNext, 300);
+    });
+  }
+  playNext();
+}
+
+function stopReadingAudio() {
+  ttsStop();
+  const btn = document.getElementById('read-aloud-btn');
+  if (btn) btn.textContent = '▶ Hear it';
+}
+
+function checkRecallWriting() {
+  const articleId = parseInt(localStorage.getItem('fluency_reading_article_id') || '1');
+  const article = READING_ARTICLES.find(a => a.id === articleId) || READING_ARTICLES[0];
+  const checkDisplay = document.getElementById('recall-check-display');
+  const checkText = document.getElementById('recall-check-text');
+  if (!article || !checkDisplay || !checkText) return;
+  checkDisplay.style.display = 'block';
+  checkText.textContent = article.es;
+  showToast('Compare what you wrote with the original — note your gaps', 'var(--success)');
+}
+
+function toggleReadingTranslation() {
+  const enEl = document.getElementById('reading-article-en-display');
+  const btn = document.getElementById('reading-translation-btn');
+  if (!enEl || !btn) return;
+  if (enEl.style.display === 'none') {
+    enEl.style.display = 'block';
+    btn.textContent = 'Hide translation';
+    btn.style.color = 'var(--warn)';
+  } else {
+    enEl.style.display = 'none';
+    btn.textContent = 'Show translation';
+    btn.style.color = '';
+  }
+}
+
+function revealReadingAnswers() {
+  const inputs = document.querySelectorAll('#reading-questions-list input');
+  const revealEl = document.getElementById('reading-answers-reveal');
+  if (!revealEl) return;
+
+  let html = '';
+  inputs.forEach((input, i) => {
+    const userAnswer = input.value.trim();
+    const correctAnswer = input.dataset.answer || '';
+    const userHtml = userAnswer
+      ? '<div style="color:var(--muted);margin-top:2px;">You wrote: ' + sanitize(userAnswer) + '</div>'
+      : '<div style="color:var(--danger);margin-top:2px;">No answer written</div>';
+    html += '<div style="margin-bottom:8px;font-size:12px;"><span style="color:var(--success);font-weight:600;">' + (i+1) + '. ' + sanitize(correctAnswer) + '</span>' + userHtml + '</div>';
+  });
+
+  revealEl.innerHTML = html;
+  revealEl.style.display = 'block';
+}
+
+function toggleArticleBrowser() {
+  articleBrowserOpen = !articleBrowserOpen;
+  const container = document.getElementById('article-browser');
+  const btn = document.getElementById('article-browser-btn');
+  if (!container) return;
+
+  if (articleBrowserOpen) {
+    const currentId = parseInt(localStorage.getItem('fluency_reading_article_id') || '0');
+    container.innerHTML = READING_ARTICLES.map(a => {
+      const isCurrent = a.id === currentId;
+      return `<div onclick="selectArticle(${a.id})" style="padding:9px 12px;border-radius:7px;border:1px solid ${isCurrent ? 'rgba(79,207,138,0.4)' : 'var(--border)'};background:${isCurrent ? 'rgba(79,207,138,0.06)' : 'var(--surface)'};margin-bottom:5px;cursor:pointer;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-size:12px;font-weight:500;color:${isCurrent ? 'var(--success)' : 'var(--text)'};">${a.id}. ${a.title}</div>
+          <span style="font-size:10px;color:var(--muted);background:var(--surface2);border-radius:4px;padding:1px 6px;">${a.level}</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px;">${a.topic}</div>
+      </div>`;
+    }).join('');
+    btn.textContent = '✕ Close';
+  } else {
+    container.innerHTML = '';
+    btn.textContent = '📚 Browse All Articles';
+  }
+}
+
+function selectArticle(id) {
+  const article = READING_ARTICLES.find(a => a.id === id);
+  if (!article) return;
+  localStorage.setItem('fluency_reading_article_id', id);
+  localStorage.setItem('fluency_reading_day', '0');
+  localStorage.setItem('fluency_reading_vocab', '');
+  articleBrowserOpen = false;
+  const container = document.getElementById('article-browser');
+  if (container) container.innerHTML = '';
+  const btn = document.getElementById('article-browser-btn');
+  if (btn) btn.textContent = '📚 Browse All Articles';
+  initReading();
+  showToast('Article selected: ' + article.title, 'var(--success)');
+}
+
+// ================================================================
+// READING — initReading updated to use built-in articles
 // ================================================================
 const READING_TASKS = [
-  { label: 'Day 1 — Read for meaning', task: 'Read once. Get the story. Don\'t stop at every word. Answer the comprehension questions. Note 3 unknown words.' },
-  { label: 'Day 2 — Read out loud', task: 'Read the same text out loud. Focus on rhythm and natural phrasing. No stopping for unknown words.' },
-  { label: 'Day 3 — Shadow writing', task: 'Text open above. Pick one paragraph. Swap in your own life sentence by sentence. Add 2 sentences to Library.' },
+  { label: 'Day 1 — Read for meaning', task: 'Tap ▶ to hear it first. Then read in Spanish. Answer the 3 questions. Note unknown words.' },
+  { label: 'Day 2 — Read out loud', task: 'Tap ▶ to hear a sentence, then repeat it out loud. Focus on rhythm. No stopping.' },
+  { label: 'Day 3 — Write from memory', task: 'Article is hidden. Write what you remember in Spanish. Then check against the original.' },
 ];
 
 function toggleReadingInstructions() {
@@ -4442,10 +4988,7 @@ function toggleReadingInstructions() {
 function initReading() {
   const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
   const vocab = localStorage.getItem('fluency_reading_vocab') || '';
-  const url = localStorage.getItem('fluency_reading_url') || '';
-
-  const urlEl = document.getElementById('reading-article-url');
-  if (urlEl) { urlEl.value = url; urlEl.oninput = () => localStorage.setItem('fluency_reading_url', urlEl.value); }
+  const articleId = parseInt(localStorage.getItem('fluency_reading_article_id') || '1');
 
   const vocabEl = document.getElementById('reading-vocab');
   if (vocabEl && vocab) vocabEl.value = vocab;
@@ -4453,6 +4996,41 @@ function initReading() {
   const savedDisplay = document.getElementById('reading-saved-display');
   const savedText = document.getElementById('reading-saved-text');
   if (vocab && savedDisplay && savedText) { savedDisplay.style.display = 'block'; savedText.textContent = vocab; }
+
+  // Load current article
+  const article = READING_ARTICLES.find(a => a.id === articleId) || READING_ARTICLES[0];
+  const titleEl = document.getElementById('reading-article-title-display');
+  if (titleEl) titleEl.textContent = article.level + ' · ' + article.topic;
+
+  // Show article text — Spanish only by default
+  const displayEl = document.getElementById('reading-article-display');
+  const bodyEl = document.getElementById('reading-article-body-display');
+  const enEl = document.getElementById('reading-article-en-display');
+  const translationBtn = document.getElementById('reading-translation-btn');
+  if (displayEl && bodyEl) {
+    displayEl.style.display = day <= 1 ? 'block' : 'none';
+    bodyEl.textContent = article.es;
+    // Store English for the toggle but never show it by default
+    if (enEl) {
+      enEl.textContent = article.en;
+      enEl.style.display = 'none';
+    }
+    if (translationBtn) translationBtn.textContent = 'Show translation';
+  }
+
+  // Render comprehension questions for Day 1
+  const qSection = document.getElementById('reading-questions-section');
+  const qList = document.getElementById('reading-questions-list');
+  const answersReveal = document.getElementById('reading-answers-reveal');
+  if (qSection && qList && article.qs) {
+    qSection.style.display = day === 0 ? 'block' : 'none';
+    if (answersReveal) answersReveal.style.display = 'none';
+    qList.innerHTML = article.qs.map((q, i) => `
+      <div style="margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--text);font-weight:500;margin-bottom:5px;">${i+1}. ${sanitize(q.q)}</div>
+        <input type="text" placeholder="Tu respuesta..." style="font-size:12px;padding:7px 10px;" data-answer="${sanitize(q.a)}" />
+      </div>`).join('');
+  }
 
   renderReadingDay(day);
   renderPersonalPassage();
@@ -4518,17 +5096,31 @@ function renderReadingDay(day) {
 function advanceReadingDay() {
   const day = parseInt(localStorage.getItem('fluency_reading_day') || '0');
   if (day >= 2) {
+    // Day 3 done — suggest next article
+    const currentId = parseInt(localStorage.getItem('fluency_reading_article_id') || '1');
+    const nextId = currentId < READING_ARTICLES.length ? currentId + 1 : 1;
     localStorage.setItem('fluency_reading_day', '0');
     localStorage.setItem('fluency_reading_vocab', '');
-    document.getElementById('reading-vocab').value = '';
-    const shadow = document.getElementById('reading-shadow');
-    if (shadow) shadow.value = '';
+    const vocabEl = document.getElementById('reading-vocab');
+    if (vocabEl) vocabEl.value = '';
+    const shadowEl = document.getElementById('reading-shadow');
+    if (shadowEl) shadowEl.value = '';
     const savedDisplay = document.getElementById('reading-saved-display');
     if (savedDisplay) savedDisplay.style.display = 'none';
-    showToast('New article — Day 1 starts now', 'var(--success)');
-    renderReadingDay(0);
+    // Auto-load next article
+    localStorage.setItem('fluency_reading_article_id', nextId);
+    initReading();
+    showToast('Article ' + nextId + ' ready — Day 1 starts now', 'var(--success)');
   } else {
     localStorage.setItem('fluency_reading_day', day + 1);
+    // Hide translation and article on day change
+    const enEl = document.getElementById('reading-article-en-display');
+    const translationBtn = document.getElementById('reading-translation-btn');
+    if (enEl) { enEl.style.display = 'none'; }
+    if (translationBtn) { translationBtn.textContent = 'Show translation'; translationBtn.style.color = ''; }
+    // Hide article display on Day 3 (shadow writing day)
+    const displayEl = document.getElementById('reading-article-display');
+    if (displayEl) displayEl.style.display = day + 1 <= 1 ? 'block' : 'none';
     renderReadingDay(day + 1);
     showToast('Day ' + (day + 2) + ' — ' + READING_TASKS[day + 1].label.split(' — ')[1], 'var(--success)');
   }
@@ -4593,51 +5185,28 @@ function renderStageAwareSteps() {
   const dreamingStep = document.getElementById('mstep-4');
   const musicStep = document.getElementById('mstep-5');
 
-  // Reading unlocks at Stage 2 (70+ owned)
-  if (readingStep) {
-    if (stage >= 2) {
-      readingStep.style.display = 'flex';
-      readingStep.style.opacity = '1';
-    } else {
-      readingStep.style.display = 'flex';
-      readingStep.style.opacity = '0.35';
-      readingStep.style.pointerEvents = 'none';
-      const desc = readingStep.querySelector('.ms-desc');
-      if (desc) desc.textContent = '🔒 Unlocks at 70 owned sentences — keep shadowing.';
-    }
+  // All three unlocked from Stage 1 — comprehensible input accelerates drilling
+  [readingStep, dreamingStep, musicStep].forEach(step => {
+    if (!step) return;
+    step.style.display = 'flex';
+    step.style.opacity = '1';
+    step.style.pointerEvents = '';
+  });
+
+  // Restore correct descriptions if they were previously locked
+  const readingDesc = readingStep && readingStep.querySelector('.ms-desc');
+  if (readingDesc && readingDesc.textContent.includes('🔒')) {
+    readingDesc.textContent = 'Open Lingua → same article 3 days → tap done.';
+  }
+  const dreamingDesc = dreamingStep && dreamingStep.querySelector('.ms-desc');
+  if (dreamingDesc && dreamingDesc.textContent.includes('🔒')) {
+    dreamingDesc.textContent = 'YouTube → Dreaming Spanish Superbeginner → tap done.';
+  }
+  const musicDesc = musicStep && musicStep.querySelector('.ms-desc');
+  if (musicDesc && musicDesc.textContent.includes('🔒')) {
+    musicDesc.textContent = 'Spotify or YouTube → Spanish music → sing along → tap done.';
   }
 
-  // Dreaming Spanish unlocks at Stage 3 (150+ owned)
-  if (dreamingStep) {
-    if (stage >= 3) {
-      dreamingStep.style.display = 'flex';
-      dreamingStep.style.opacity = '1';
-      dreamingStep.style.pointerEvents = '';
-    } else {
-      dreamingStep.style.display = 'flex';
-      dreamingStep.style.opacity = '0.35';
-      dreamingStep.style.pointerEvents = 'none';
-      const desc = dreamingStep.querySelector('.ms-desc');
-      if (desc) desc.textContent = '🔒 Unlocks at 150 owned — you\'re building toward this.';
-    }
-  }
-
-  // Music unlocks at Stage 3 (150+ owned)
-  if (musicStep) {
-    if (stage >= 3) {
-      musicStep.style.display = 'flex';
-      musicStep.style.opacity = '1';
-      musicStep.style.pointerEvents = '';
-    } else {
-      musicStep.style.display = 'flex';
-      musicStep.style.opacity = '0.35';
-      musicStep.style.pointerEvents = 'none';
-      const desc = musicStep.querySelector('.ms-desc');
-      if (desc) desc.textContent = '🔒 Unlocks at 150 owned — focus on Shadow and Recall first.';
-    }
-  }
-
-  // Think in Spanish prompts
   renderThinkInSpanish();
 }
 
