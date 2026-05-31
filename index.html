@@ -777,6 +777,17 @@
     </div>
     <div id="listen-now" style="font-size:12px;color:var(--muted)">Not playing</div>
   </div>
+
+  <!-- Weekly batch info -->
+  <div class="card" style="background:rgba(196,160,255,0.05);border-color:rgba(196,160,255,0.2);margin-bottom:0;">
+    <div class="flex-between">
+      <div>
+        <div style="font-size:10px;color:var(--purple);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:3px;">This Week's Batch</div>
+        <div id="listen-batch-info" style="font-size:11px;color:var(--muted);line-height:1.6;"></div>
+      </div>
+      <button onclick="refreshListenBatch()" style="font-size:10px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:3px 8px;cursor:pointer;">↺ Refresh</button>
+    </div>
+  </div>
   <div class="card" style="background:var(--surface2)">
     <div class="flex-between mb8">
       <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;">Now Playing</div>
@@ -3567,6 +3578,106 @@ function writeRate(rating) {
 // ================================================================
 function toggleListen() { listenPlaying ? stopListen() : startListen(); }
 
+// ================================================================
+// WEEKLY LISTEN BATCH
+// Same 15-20 sentences loop all week during walk and passive listening.
+// Priority: current island sentences first, then recent shadow queue.
+// Rotates every 7 days automatically.
+// ================================================================
+function getWeeklyListenBatch() {
+  const BATCH_SIZE = 18;
+
+  // Week number since app start — changes every 7 days
+  const startDate = localStorage.getItem('fluency_start_date');
+  const start = startDate ? new Date(startDate) : new Date();
+  if (!startDate) localStorage.setItem('fluency_start_date', start.toISOString());
+  const weekNum = Math.floor((Date.now() - start.getTime()) / (7 * 24 * 60 * 60 * 1000));
+
+  // Check if we have a cached batch for this week
+  const cachedKey = 'fluency_listen_batch_w' + weekNum;
+  const cached = localStorage.getItem(cachedKey);
+  if (cached) {
+    try {
+      const ids = JSON.parse(cached);
+      const batch = ids.map(id => sentences.find(s => s.id === id)).filter(Boolean);
+      if (batch.length >= 5) return batch;
+    } catch(e) {}
+  }
+
+  // Build new batch for this week
+  const currentIslandId = localStorage.getItem('fluency_current_island') || 'intro';
+  const script = CONVERSATION_SCRIPTS.find(s => s.id === currentIslandId);
+
+  // Priority 1: sentences from current island that are shadowed
+  const islandSentences = [];
+  if (script) {
+    script.pairs.forEach(pair => {
+      // Find matching sentence in library by Spanish text
+      const match = sentences.find(s =>
+        s.es_pr && (s.es_pr.toLowerCase().includes(pair.a_es.toLowerCase().slice(0, 15)))
+      );
+      if (match && match.shadowDone) islandSentences.push(match);
+    });
+  }
+
+  // Priority 2: recently shadowed sentences (last 30 days)
+  const recentShadowed = sentences
+    .filter(s => s.shadowDone && !islandSentences.find(i => i.id === s.id))
+    .sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
+    .slice(0, 30);
+
+  // Priority 3: session drilled this week
+  const sessionIds = JSON.parse(sessionStorage.getItem('fluency_session_drilled') || '[]');
+  const sessionSentences = sentences.filter(s =>
+    sessionIds.includes(s.id) && !islandSentences.find(i => i.id === s.id)
+  );
+
+  // Build batch: island first, then session, then recent
+  const combined = [...islandSentences, ...sessionSentences, ...recentSentences(recentShadowed, weekNum)];
+  const seen = new Set();
+  const batch = [];
+  for (const s of combined) {
+    if (batch.length >= BATCH_SIZE) break;
+    if (!seen.has(s.id) && !s.isAnswer) {
+      batch.push(s);
+      seen.add(s.id);
+    }
+  }
+
+  // Fallback: any shadowed sentences if batch is too small
+  if (batch.length < 5) {
+    sentences.filter(s => s.shadowDone && !s.isAnswer && !seen.has(s.id))
+      .slice(0, BATCH_SIZE - batch.length)
+      .forEach(s => { batch.push(s); seen.add(s.id); });
+  }
+
+  // Cache this week's batch
+  if (batch.length) {
+    localStorage.setItem(cachedKey, JSON.stringify(batch.map(s => s.id)));
+    // Clean up old batch caches
+    for (let i = 0; i < weekNum - 1; i++) {
+      localStorage.removeItem('fluency_listen_batch_w' + i);
+    }
+  }
+
+  return batch;
+}
+
+// Deterministic shuffle based on week number — same order all week
+function recentSentences(pool, weekNum) {
+  const seed = weekNum * 31337;
+  return [...pool].sort((a, b) => ((a.id * seed) % 997) - ((b.id * seed) % 997));
+}
+
+function getWeeklyBatchInfo() {
+  const startDate = localStorage.getItem('fluency_start_date');
+  const start = startDate ? new Date(startDate) : new Date();
+  const weekNum = Math.floor((Date.now() - start.getTime()) / (7 * 24 * 60 * 60 * 1000));
+  const msIntoWeek = (Date.now() - start.getTime()) % (7 * 24 * 60 * 60 * 1000);
+  const daysLeft = 7 - Math.floor(msIntoWeek / (24 * 60 * 60 * 1000));
+  return { weekNum: weekNum + 1, daysLeft };
+}
+
 function startListen(mode) {
   if (!sentences.length) return;
   listenMode = mode || 'general';
@@ -3600,33 +3711,15 @@ function stopListen() {
 
 function playListenNext() {
   if (!listenPlaying) return;
-  // Walk mode — play shadow queue so walk and shadow are in sync
-  // General mode — play all shadowed sentences for reinforcement
   let pool;
   if (listenMode === 'walk') {
-    pool = getShadowQueue();
-    // If shadow queue empty (fresh install) build a proper interleaved preview pool
-    if (!pool.length) {
-      const cats = { daily: 3, social: 2, errands: 2, work: 2, family: 1 };
-      const preview = [];
-      for (const [cat, count] of Object.entries(cats)) {
-        const catSentences = sentences.filter(s => s.cat === cat);
-        preview.push(...catSentences.slice(0, count));
-      }
-      pool = preview.slice(0, 10);
-    }
+    // Walk mode — use weekly batch so same sentences repeat all week
+    pool = getWeeklyListenBatch();
+    if (!pool.length) pool = getShadowQueue().slice(0, 18);
   } else {
-    pool = sentences.filter(s => s.shadowDone);
-    // General mode fallback — use same interleaved preview
-    if (!pool.length) {
-      const cats = { daily: 3, social: 2, errands: 2, work: 2, family: 1 };
-      const preview = [];
-      for (const [cat, count] of Object.entries(cats)) {
-        const catSentences = sentences.filter(s => s.cat === cat);
-        preview.push(...catSentences.slice(0, count));
-      }
-      pool = preview.slice(0, 10);
-    }
+    // General mode — all shadowed sentences
+    pool = sentences.filter(s => s.shadowDone && !s.isAnswer);
+    if (!pool.length) pool = getWeeklyListenBatch();
   }
   if (!pool.length) { stopListen(); return; }
 
@@ -3682,8 +3775,30 @@ function renderListenNow() {
     document.getElementById('listen-es').textContent = '—';
     document.getElementById('listen-dialect-badge').innerHTML = '';
   }
-  // Set default mode to walk
   setListenMode('walk');
+  renderListenBatchInfo();
+}
+
+function renderListenBatchInfo() {
+  const infoEl = document.getElementById('listen-batch-info');
+  if (!infoEl) return;
+  const batch = getWeeklyListenBatch();
+  const { weekNum, daysLeft } = getWeeklyBatchInfo();
+  const islandId = localStorage.getItem('fluency_current_island') || 'intro';
+  const script = CONVERSATION_SCRIPTS.find(s => s.id === islandId);
+  const islandName = script ? script.title : 'Introducing Yourself';
+  infoEl.innerHTML = `<strong style="color:var(--text)">${batch.length} sentences</strong> · Week ${weekNum} · rotates in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}<br>
+    <span style="color:var(--purple)">Island: ${islandName}</span> · same batch loops on repeat all week`;
+}
+
+function refreshListenBatch() {
+  // Clear cached batch to force rebuild
+  const startDate = localStorage.getItem('fluency_start_date');
+  const start = startDate ? new Date(startDate) : new Date();
+  const weekNum = Math.floor((Date.now() - start.getTime()) / (7 * 24 * 60 * 60 * 1000));
+  localStorage.removeItem('fluency_listen_batch_w' + weekNum);
+  renderListenBatchInfo();
+  showToast('Batch refreshed — now includes your latest sessions', 'var(--purple)');
 }
 
 // ================================================================
