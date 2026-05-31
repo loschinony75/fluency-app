@@ -322,8 +322,17 @@
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
   <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
 
-  <!-- Step 0 — Walk + Listen -->
-  <!-- Step 1 — Shadow -->
+  <!-- Step 1 — Walk (first thing — matches actual morning routine) -->
+  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
+    <div class="ms-check" id="mcheck-0"></div>
+    <div class="ms-body">
+      <div class="ms-title">Walk — listen while you move</div>
+      <div class="ms-desc">Tap → phone in pocket → walk → this week's 18 sentences loop in your ears.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
+  </div>
+
+  <!-- Step 2 — Shadow -->
   <div class="mission-step shadow-step" id="mstep-1" onclick="goToStep(1,'shadow')">
     <div class="ms-check" id="mcheck-1"></div>
     <div class="ms-body">
@@ -333,7 +342,7 @@
     <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
   </div>
 
-  <!-- Step 2 — Recall -->
+  <!-- Step 3 — Recall -->
   <div class="mission-step recall-step" id="mstep-2" onclick="goToStep(2,'recall')">
     <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
@@ -343,7 +352,7 @@
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
-  <!-- Step 3 — Write -->
+  <!-- Step 4 — Write -->
   <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
     <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
     <div class="ms-body">
@@ -353,24 +362,14 @@
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
   </div>
 
-  <!-- Step 4 — Script (island practice) -->
+  <!-- Step 5 — Script (island practice — evening) -->
   <div class="mission-step" id="mstep-script" onclick="launchScriptMode()" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);">
     <div class="ms-check" id="mcheck-script" style="border-color:var(--accent);color:var(--accent);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--accent);">Script — your conversation island</div>
-      <div class="ms-desc" id="script-step-desc">Evening practice — drill your current island until the whole conversation is automatic.</div>
+      <div class="ms-desc" id="script-step-desc">Evening — drill your current island until the whole conversation is automatic.</div>
     </div>
     <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-script">→</div></div>
-  </div>
-
-  <!-- Step 5 — Walk -->
-  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
-    <div class="ms-check" id="mcheck-0"></div>
-    <div class="ms-body">
-      <div class="ms-title">Walk — passive listening</div>
-      <div class="ms-desc">Tap → phone in pocket → walk → your sentences play in your ears.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
   </div>
 
   <!-- Step 6 — Reading -->
@@ -378,7 +377,7 @@
     <div class="ms-check" id="mcheck-3r" style="border-color:var(--success);color:var(--success);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--success);">Reading — 3-day method</div>
-      <div class="ms-desc">Open Lingua → same article 3 days → tap done.</div>
+      <div class="ms-desc">Afternoon — hear it, read it, answer questions, note unknown words.</div>
     </div>
     <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-3r">→</div></div>
   </div>
@@ -388,7 +387,7 @@
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
       <div class="ms-title">Dreaming Spanish — watch and absorb</div>
-      <div class="ms-desc">YouTube → Dreaming Spanish Superbeginner → tap done.</div>
+      <div class="ms-desc">Evening — YouTube → Dreaming Spanish Superbeginner → tap done.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
   </div>
@@ -398,7 +397,7 @@
     <div class="ms-check" id="mcheck-5" style="border-color:var(--purple);color:var(--purple);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--purple);">Music — Spanish in your ears</div>
-      <div class="ms-desc">Spotify or YouTube → Spanish music → sing along → tap done.</div>
+      <div class="ms-desc">Any time — Spotify or YouTube → Spanish music → sing along → tap done.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
   </div>
@@ -408,7 +407,7 @@
     <div class="ms-check" id="mcheck-6"></div>
     <div class="ms-body">
       <div class="ms-title">Journal — write your day in Spanish</div>
-      <div class="ms-desc">3 sentences about today → saves to Library → tomorrow's Shadow.</div>
+      <div class="ms-desc">Before bed — 3 sentences → saves to Library → tomorrow's Shadow.</div>
     </div>
     <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-6">→</div></div>
   </div>
