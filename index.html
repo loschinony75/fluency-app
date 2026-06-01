@@ -2385,13 +2385,87 @@ const preloadedSentences = [
   { en: "How do you say that in Spanish?", es_pr: "¿Cómo se dice eso en español?", cat: "social" },
   { en: "I'm still learning.", es_pr: "Todavía estoy aprendiendo.", cat: "social" },
   { en: "My Spanish is not perfect yet.", es_pr: "Mi español todavía no es perfecto.", cat: "social" },
-  { en: "Please speak more slowly.", es_pr: "Por favor habla más despacio.", cat: "social" }
+  { en: "Please speak more slowly.", es_pr: "Por favor habla más despacio.", cat: "social" },
+
+  // ================================================================
+  // GRAMMAR PATTERNS — same verb across all persons, tenses, nuances
+  // ================================================================
+
+  // WAKE UP — all nuances
+  { en: "I wake up at six thirty.", es_pr: "Me despierto a las seis y media.", cat: "daily" },
+  { en: "I woke up early.", es_pr: "Me desperté temprano.", cat: "daily" },
+  { en: "I woke up late.", es_pr: "Me desperté tarde.", cat: "daily" },
+  { en: "I didn't wake up early today.", es_pr: "Hoy no me desperté temprano.", cat: "daily" },
+  { en: "He wakes up at seven.", es_pr: "Él se despierta a las siete.", cat: "daily" },
+  { en: "She woke up early.", es_pr: "Ella se despertó temprano.", cat: "daily" },
+  { en: "We wake up at the same time.", es_pr: "Nos despertamos a la misma hora.", cat: "daily" },
+  { en: "They wake up very early.", es_pr: "Ellos se despiertan muy temprano.", cat: "daily" },
+  { en: "I need to wake up early tomorrow.", es_pr: "Necesito despertarme temprano mañana.", cat: "daily" },
+  { en: "I couldn't wake up this morning.", es_pr: "No pude despertarme esta mañana.", cat: "daily" },
+  { en: "What time do you wake up?", es_pr: "¿A qué hora te despiertas?", cat: "social" },
+  { en: "I always wake up at the same time.", es_pr: "Siempre me despierto a la misma hora.", cat: "daily" },
+  { en: "I woke up and felt good.", es_pr: "Me desperté y me sentí bien.", cat: "daily" },
+
+  // GIVE — all persons (Mikel's apple example)
+  { en: "I give you the apple.", es_pr: "Te doy la manzana.", cat: "daily" },
+  { en: "I will give John an apple.", es_pr: "Le voy a dar una manzana a John.", cat: "daily" },
+  { en: "We will give him an apple.", es_pr: "Le vamos a dar una manzana.", cat: "daily" },
+  { en: "He gives it to John.", es_pr: "Él se la da a John.", cat: "daily" },
+  { en: "She gives it to him.", es_pr: "Ella se la da.", cat: "daily" },
+  { en: "I have to give it to him.", es_pr: "Tengo que dársela.", cat: "daily" },
+  { en: "I want to give it to him.", es_pr: "Quiero dársela.", cat: "daily" },
+  { en: "I can't give it to him.", es_pr: "No puedo dársela.", cat: "daily" },
+  { en: "I gave him the apple.", es_pr: "Le di la manzana.", cat: "daily" },
+  { en: "Give it to me.", es_pr: "Dámela.", cat: "social" },
+  { en: "Don't give it to him.", es_pr: "No se la des.", cat: "social" },
+
+  // SLEEP — all persons and tenses
+  { en: "I sleep eight hours.", es_pr: "Duermo ocho horas.", cat: "daily" },
+  { en: "I slept well last night.", es_pr: "Dormí bien anoche.", cat: "daily" },
+  { en: "I didn't sleep well.", es_pr: "No dormí bien.", cat: "daily" },
+  { en: "I couldn't sleep.", es_pr: "No pude dormir.", cat: "daily" },
+  { en: "He sleeps a lot.", es_pr: "Él duerme mucho.", cat: "daily" },
+  { en: "She didn't sleep last night.", es_pr: "Ella no durmió anoche.", cat: "daily" },
+  { en: "I'm going to sleep now.", es_pr: "Me voy a dormir ahora.", cat: "daily" },
+  { en: "I want to sleep more.", es_pr: "Quiero dormir más.", cat: "daily" },
+  { en: "Did you sleep well?", es_pr: "¿Dormiste bien?", cat: "social" },
+
+  // SPEAK — key for language learning
+  { en: "I speak a little Spanish.", es_pr: "Hablo un poco de español.", cat: "social" },
+  { en: "I don't speak Spanish well yet.", es_pr: "Todavía no hablo bien el español.", cat: "social" },
+  { en: "He speaks Spanish very well.", es_pr: "Él habla muy bien el español.", cat: "social" },
+  { en: "Can you speak more slowly?", es_pr: "¿Puedes hablar más despacio?", cat: "social" },
+  { en: "I want to speak fluently.", es_pr: "Quiero hablar con fluidez.", cat: "daily" },
+  { en: "I'm learning to speak Spanish.", es_pr: "Estoy aprendiendo a hablar español.", cat: "daily" },
+
+  // KNOW — saber vs conocer
+  { en: "I know how to say it.", es_pr: "Sé cómo decirlo.", cat: "social" },
+  { en: "I don't know how to say it.", es_pr: "No sé cómo decirlo.", cat: "social" },
+  { en: "I know Gran Canaria well.", es_pr: "Conozco bien Gran Canaria.", cat: "social" },
+  { en: "She knows Spanish.", es_pr: "Ella sabe español.", cat: "social" },
+  { en: "I didn't know that.", es_pr: "No sabía eso.", cat: "social" },
+
+  // FEEL — physical and emotional
+  { en: "My back hurts.", es_pr: "Me duele la espalda.", cat: "daily" },
+  { en: "My knees hurt.", es_pr: "Me duelen las rodillas.", cat: "daily" },
+  { en: "My neck hurts.", es_pr: "Me duele el cuello.", cat: "daily" },
+  { en: "I have pain in my back.", es_pr: "Tengo dolor de espalda.", cat: "daily" },
+  { en: "I felt better after resting.", es_pr: "Me sentí mejor después de descansar.", cat: "daily" },
+
+  // COME / GO — movement
+  { en: "I'm coming.", es_pr: "Ya voy.", cat: "social" },
+  { en: "He came late.", es_pr: "Él llegó tarde.", cat: "daily" },
+  { en: "She didn't come.", es_pr: "Ella no vino.", cat: "daily" },
+  { en: "Are you coming?", es_pr: "¿Vienes?", cat: "social" },
+  { en: "I went to the gym.", es_pr: "Fui al gimnasio.", cat: "daily" },
+  { en: "Where are you going?", es_pr: "¿A dónde vas?", cat: "social" },
+  { en: "I'm not going out today.", es_pr: "Hoy no salgo.", cat: "daily" }
 ];
 
 // ================================================================
 // STATE
 // ================================================================
-let sentences = JSON.parse(localStorage.getItem('fluency_v12') || 'null');
+let sentences = JSON.parse(localStorage.getItem('fluency_v13') || 'null');
 if (!sentences) {
   const prev = JSON.parse(localStorage.getItem('fluency_v11') || 'null');
   if (prev && prev.length) {
@@ -2410,7 +2484,7 @@ if (!sentences) {
       reviewCount: 0
     }));
   }
-  localStorage.setItem('fluency_v12', JSON.stringify(sentences));
+  localStorage.setItem('fluency_v13', JSON.stringify(sentences));
 }
 
 // Auto-link Q&A pairs in the loaded sentence bank
@@ -2464,7 +2538,7 @@ let missionSteps = JSON.parse(localStorage.getItem('fluency_mission_' + todayKey
 // ================================================================
 // UTILS
 // ================================================================
-function saveSentences() { localStorage.setItem('fluency_v12', JSON.stringify(sentences)); }
+function saveSentences() { localStorage.setItem('fluency_v13', JSON.stringify(sentences)); }
 function getPR(s) { return s.es_pr || s.es_ca || ''; }
 function getCA(s) { return s.es_ca || s.es_pr || ''; }
 function filteredSentences() { return currentCatFilter === 'all' ? sentences : sentences.filter(s => s.cat === currentCatFilter); }
@@ -3095,29 +3169,33 @@ function renderShadow() {
   const s = shadowQueue[shadowIdx];
   const catLabels = { daily: '🗓 Daily Life', social: '💬 Social', errands: '🛒 Errands', work: '💼 Work', family: '👨‍👧 Family' };
   let catLabel;
+
   if (s._scriptQuestion) {
-    catLabel = '📜 Script — ' + (s._scriptTitle || 'Conversation') + ' · say your answer after the question';
+    catLabel = '📜 Script — ' + (s._scriptTitle || 'Conversation');
+    // SCRIPT MODE: show Spanish question as main text, English as subtitle
+    document.getElementById('shadow-en').textContent = s.en; // English question below
+    document.getElementById('shadow-es').textContent = getPR(s) || s.es_pr || ''; // Spanish question as main
+    // Show answer — always visible, never goes away
+    const answerHint = document.getElementById('qa-pair-answer');
+    if (answerHint) {
+      answerHint.style.display = 'block';
+      answerHint.innerHTML =
+        '<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;">Your answer:</span>' +
+        '<span style="color:var(--accent);font-size:15px;font-weight:700;display:block;margin-bottom:2px;">' + sanitize(s._scriptAnswerEs) + '</span>' +
+        '<span style="color:var(--muted);font-size:11px;display:block;">' + sanitize(s._scriptAnswerEn) + '</span>';
+    }
   } else if (s.verbForm && s.verbLabel) {
     catLabel = '📚 Verb Drill — ' + s.verbLabel;
-  } else if (s._warmup) {
-    catLabel = '🔥 Warm-up — you own this';
+    document.getElementById('shadow-en').textContent = s.en && s.en.trim() ? s.en : '(no English translation)';
+    document.getElementById('shadow-es').textContent = getPR(s) || '(no Spanish translation)';
+    const answerHint = document.getElementById('qa-pair-answer');
+    if (answerHint) answerHint.style.display = 'none';
   } else {
-    catLabel = catLabels[s.cat] || s.cat;
-  }
-  const enText = s.en && s.en.trim() ? s.en : '(no English translation)';
-  const esText = getPR(s) || '(no Spanish translation)';
-  document.getElementById('shadow-en').textContent = enText;
-  document.getElementById('shadow-es').textContent = esText;
-
-  // Show answer hint for script questions
-  const answerHint = document.getElementById('qa-pair-answer');
-  if (s._scriptQuestion && answerHint) {
-    answerHint.style.display = 'block';
-    answerHint.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:3px;">Your answer:</span>
-      <span style="color:var(--accent);font-size:13px;font-weight:600;">${sanitize(s._scriptAnswerEs)}</span>
-      <span style="color:var(--muted);font-size:11px;display:block;margin-top:2px;">${sanitize(s._scriptAnswerEn)}</span>`;
-  } else if (answerHint && !s.pairAnswerId) {
-    answerHint.style.display = 'none';
+    catLabel = s._warmup ? '🔥 Warm-up — you own this' : (catLabels[s.cat] || s.cat);
+    document.getElementById('shadow-en').textContent = s.en && s.en.trim() ? s.en : '(no English translation)';
+    document.getElementById('shadow-es').textContent = getPR(s) || '(no Spanish translation)';
+    const answerHint = document.getElementById('qa-pair-answer');
+    if (answerHint && !s.pairAnswerId) answerHint.style.display = 'none';
   }
 
   document.getElementById('shadow-count').textContent = (shadowIdx + 1) + ' / ' + shadowQueue.length + '  ·  ' + catLabel;
@@ -3208,10 +3286,15 @@ function showQAPairPrompt(question, answer) {
 function showQAPairAnswer(answerSentence) {
   const el = document.getElementById('qa-pair-answer');
   if (!el || !answerSentence) return;
-  el.innerHTML = `<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;">✓ Correct answer — repeat it:</span>
-    <span style="color:var(--blue);font-weight:600;font-size:14px;">${sanitize(getPR(answerSentence))}</span>
-    <span style="color:var(--muted);font-size:11px;display:block;margin-top:2px;">${sanitize(answerSentence.en)}</span>`;
-  setTimeout(() => { if (el) el.style.display = 'none'; }, 5000);
+  el.style.display = 'block';
+  el.innerHTML =
+    '<span style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;">✓ Correct answer — repeat it:</span>' +
+    '<span style="color:var(--blue);font-weight:700;font-size:14px;display:block;margin-bottom:2px;">' + sanitize(getPR(answerSentence)) + '</span>' +
+    '<span style="color:var(--muted);font-size:11px;display:block;">' + sanitize(answerSentence.en) + '</span>';
+  // Only auto-hide for non-script Q&A pairs, not script mode
+  if (!shadowQueue[shadowIdx] || !shadowQueue[shadowIdx]._scriptQuestion) {
+    setTimeout(() => { if (el) el.style.display = 'none'; }, 5000);
+  }
 }
 
 function shadowLoop() {
