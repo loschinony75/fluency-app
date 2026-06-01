@@ -383,23 +383,44 @@
   </div>
 
   <!-- Step 7 — Dreaming Spanish -->
-  <div class="mission-step listen-step" id="mstep-4" onclick="completeMissionStep(4)">
+  <div class="mission-step listen-step" id="mstep-4" onclick="openDreamingSpanish()">
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
       <div class="ms-title">Dreaming Spanish — watch and absorb</div>
-      <div class="ms-desc">Evening — YouTube → Dreaming Spanish Superbeginner → tap done.</div>
+      <div class="ms-desc">Same video all week · 20 min daily. After watching:
+        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
+          <li>Say out loud what it was about — your own words in Spanish</li>
+          <li>Write your summary in Spanish (even 1-2 sentences is fine)</li>
+          <li>Write English next to it to confirm meaning</li>
+          <li>Add any sentence with an unknown word to Library</li>
+        </ul>
+        <span style="color:var(--muted);font-size:10px;">90%+ without subtitles = new video next week</span>
+      </div>
     </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">✓</div></div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">→</div></div>
   </div>
 
   <!-- Step 8 — Music -->
-  <div class="mission-step listen-step" id="mstep-5" onclick="completeMissionStep(5)" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
+  <div class="mission-step listen-step" id="mstep-5" onclick="openSpanishMusic()" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
     <div class="ms-check" id="mcheck-5" style="border-color:var(--purple);color:var(--purple);"></div>
     <div class="ms-body">
       <div class="ms-title" style="color:var(--purple);">Music — Spanish in your ears</div>
-      <div class="ms-desc">Any time — Spotify or YouTube → Spanish music → sing along → tap done.</div>
+      <div class="ms-desc">Same song all week · 20 min daily · Language Reactor on for lyrics. During:
+        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
+          <li>Day 1-3: listen and absorb — don't force it</li>
+          <li>Day 4-7: sing along with the Spanish lyrics on screen</li>
+        </ul>
+        After each session:
+        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
+          <li>Say the ONE line that stuck — exact lyrics out loud</li>
+          <li>Write it in Spanish</li>
+          <li>Write English next to it</li>
+          <li>Add any line with an unknown word to Library as a full sentence</li>
+        </ul>
+        <span style="color:var(--muted);font-size:10px;">Singing before lyrics appear = new song next week</span>
+      </div>
     </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-5">✓</div></div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-5">→</div></div>
   </div>
 
   <!-- Step 9 — Journal -->
@@ -1047,6 +1068,21 @@
 
   <div class="guide-section">
     <div class="guide-section-title">Your Full Day — Structure & Resources</div>
+
+    <!-- THE SIMPLE PROCESS — no ambiguity -->
+    <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:10px;letter-spacing:0.05em;">THE PROCESS — READ THIS WHEN CONFUSED</div>
+      <div style="font-size:12px;color:var(--text);line-height:2;">
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Every day:</span> Walk with audio → Shadow → Recall → Write → Script → Reading → Dreaming Spanish → Music → Journal. In that order.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Shadow/Recall/Write:</span> Same sentences until they come out automatically without thinking. That's when they're owned.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Dreaming Spanish:</span> Same video all week. 20 min daily — just watch, let it absorb. After each session: pick ONE phrase that stood out → say it in Spanish → write it → English next to it → add to Library.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Music:</span> Same song all week. 20 min daily. After each session: pick ONE line → write it → English next to it → add to Library.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">The 90% rule:</span> By end of week, can you understand the video without reading subtitles? Yes = new video next week. No = same video one more week. Don't stress — even 60% by end of week 1 is progress.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Reading:</span> Same article for 3 days. Day 1: hear it, read it, answer questions. Day 2: read out loud. Day 3: write from memory, check gaps.</div>
+        <div style="margin-bottom:6px;"><span style="color:var(--accent);font-weight:600;">Script:</span> Same island conversation every evening until the whole thing comes out automatically. Then move to next island.</div>
+        <div style="margin-bottom:0;"><span style="color:var(--accent);font-weight:600;">Journal:</span> Before bed. Write 3 sentences about today in Spanish. No looking things up first. Imperfect Spanish you produced alone is worth more than perfect Spanish you copied.</div>
+      </div>
+    </div>
     <div style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.7;">The number one problem language learners have is not knowing how to structure their time. This is your complete daily plan — input and output alternating all day. Follow this and you are doing more than 99% of learners.</div>
 
     <!-- Morning Triggers -->
@@ -1123,8 +1159,10 @@
     <div style="font-size:10px;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📺 Evening — Dreaming Spanish (20 min) — COMPREHENSIBLE INPUT</div>
     <div class="guide-block" style="border-left-color:var(--blue);margin-bottom:6px;">
       <span class="guide-block-label" style="color:var(--blue);">INPUT — Watch, don't study</span>
-      YouTube → Dreaming Spanish → Superbeginner playlist. Sit back. Understand what you can. Do not pause for every word. Let it wash over you. This is passive comprehensible input — William's "fill the tank" principle.<br><br>
-      When you recognise a word from your sentence library: that's spaced repetition happening automatically.
+      YouTube or Netflix → Spanish content → <strong style="color:var(--text);">Language Reactor on</strong> (dual subtitles: Spanish top, English below). Sit back. Don't pause for every word. This is William's artificial immersion — you're not studying, you're living in Spanish.<br><br>
+      <strong style="color:var(--text);">Stage 1:</strong> Dreaming Spanish Superbeginner on YouTube<br>
+      <strong style="color:var(--text);">Stage 2+:</strong> Any Spanish Netflix show you actually enjoy<br><br>
+      When you recognise a word from your sentence library — that's spaced repetition happening automatically.
     </div>
 
     <!-- Journal -->
@@ -1145,7 +1183,8 @@
     <!-- Resources summary -->
     <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px;margin-top:14px;">📚 Your Resource Stack</div>
     <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Comprehensible Input (audio)</span>Español con Juan (YouTube/Spotify) · Dreaming Spanish Superbeginner (YouTube) · SpanishPod101 Beginner (Spotify) · Pimsleur Spanish free trial · Mikel NLL course audio files</div>
-    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Comprehensible Input (video)</span>Dreaming Spanish YouTube · Easy Spanish (street interviews with subtitles) · Butterfly Spanish (grammar explained simply)</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Comprehensible Input (video)</span>Dreaming Spanish YouTube · Easy Spanish (street interviews with subtitles) · Butterfly Spanish (grammar explained simply) · Any Spanish Netflix show you enjoy</div>
+    <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Language Reactor (Chrome extension — free)</span>Install at languagereactor.com · Adds dual subtitles to YouTube and Netflix · Spanish on top, English below · Use on everything you watch · Stage 1: Dreaming Spanish + Easy Spanish · Stage 2+: Netflix Spanish shows · Rule: if you're bored, switch the show — not the language</div>
     <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Reading</span>lingua.com/spanish/reading (A1-A2, free) · Short Stories in Spanish for Beginners — Olly Richards (Month 2) · Lingopie (Month 3+, Spanish shows with interactive subtitles)</div>
     <div class="guide-block" style="margin-bottom:4px;"><span class="guide-block-label">Dictionary</span>WordReference.com — always. Not Google Translate.</div>
     <div class="guide-block"><span class="guide-block-label">Music</span>Marc Anthony · Daddy Yankee · Bad Bunny · Rosalía · Silvio Rodríguez. Lyrics on Spotify. Read while listening.</div>
@@ -2555,6 +2594,26 @@ function launchVerbDrill() {
     if (vCheck) vCheck.textContent = '✓';
     if (vGo) vGo.textContent = '✓';
   }, 1200);
+}
+
+function openDreamingSpanish() {
+  window.open('https://www.youtube.com/@DreamingSpanish/search?query=superbeginner', '_blank');
+  showExternalStepToast('Dreaming Spanish open — search for Superbeginner videos — come back and tap ✓ Done when finished', 4);
+}
+
+function openSpanishMusic() {
+  window.open('https://www.youtube.com/results?search_query=musica+en+espanol+con+letra', '_blank');
+  showExternalStepToast('Music open — come back and tap ✓ Done when finished', 5);
+}
+
+function showExternalStepToast(msg, stepIdx) {
+  const existing = document.getElementById('external-step-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'external-step-banner';
+  banner.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;gap:10px;align-items:center;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.3);width:calc(100% - 32px);max-width:400px;';
+  banner.innerHTML = '<div style="flex:1;font-size:12px;color:var(--muted);line-height:1.4;">' + msg + '</div><button onclick="completeMissionStep(' + stepIdx + ');document.getElementById(\'external-step-banner\').remove();" style="flex-shrink:0;background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;">✓ Done</button>';
+  document.body.appendChild(banner);
 }
 
 function goToStep(idx, screen) {
