@@ -311,6 +311,7 @@
   </div>
   <div class="nav-tabs" id="main-nav">
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
+    <button class="nav-tab" onclick="showScreen('speak-story')">Speak</button>
     <button class="nav-tab" onclick="showScreen('library')">Library</button>
     <button class="nav-tab" onclick="showScreen('guide')">Guide</button>
   </div>
@@ -319,173 +320,140 @@
 <!-- TODAY -->
 <div class="screen active" id="screen-today">
 
-  <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 9 steps complete</div>
+  <!-- Wake up sentences card - rotates weekly -->
+  <div class="card mb12" id="wakeup-card" style="background:rgba(212,240,60,0.06);border-color:rgba(212,240,60,0.3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">🌅 Say these out loud — Week <span id="wakeup-week-num">1</span></div>
+      <button id="wakeup-play-btn" onclick="playWakeupSentences()" style="background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-mono);">▶ Play</button>
+    </div>
+    <div id="wakeup-sentences" style="line-height:2.2;font-size:13px;"></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;">Same 3 sentences every morning this week. Say them before you leave your bedroom.</div>
+  </div>
 
-  <!-- Step 1 — Walk (first thing — matches actual morning routine) -->
-  <div class="mission-step listen-step" id="mstep-0" onclick="goToStep(0,'listen')">
+  <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 6 steps complete</div>
+
+  <!-- Step 1 — Walk + HyperLingua -->
+  <div class="mission-step listen-step" id="mstep-0" onclick="markStepDone(0)">
     <div class="ms-check" id="mcheck-0"></div>
     <div class="ms-body">
-      <div class="ms-title">Walk — listen while you move</div>
-      <div class="ms-desc">Tap → phone in pocket → walk → this week's 18 sentences loop in your ears.</div>
+      <div class="ms-title">🚶 Walk — HyperLingua in your ears</div>
+      <div class="ms-desc">Open HyperLingua → 300 Q&A Part 1 → Listen & Repeat → phone in pocket → walk. Same 5 questions all week. Tap to mark done when back.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-0">→</div></div>
   </div>
 
-  <!-- Step 2 — Shadow -->
-  <div class="mission-step shadow-step" id="mstep-1" onclick="goToStep(1,'shadow')">
-    <div class="ms-check" id="mcheck-1"></div>
+  <!-- Step 2 — Coffee + Story script -->
+  <div class="mission-step" id="mstep-coffee" onclick="showScreen('speak-story')" style="background:rgba(160,196,255,0.06);border-color:rgba(160,196,255,0.25);">
+    <div class="ms-check" id="mcheck-coffee" style="border-color:var(--blue);color:var(--blue);"></div>
     <div class="ms-body">
-      <div class="ms-title">Shadow — listen and repeat out loud</div>
-      <div class="ms-desc">Play → repeat → loop until it comes out automatically.</div>
+      <div class="ms-title" style="color:var(--blue);">☕ Coffee — read your story script out loud</div>
+      <div class="ms-desc">Open your story in the Speak tab. Read it out loud while you make coffee. Don't memorize yet — just let the sounds and rhythm into your mouth. Same script all week.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-1">→</div></div>
+    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-coffee">→</div></div>
   </div>
 
-  <!-- Step 3 — Recall -->
-  <div class="mission-step recall-step" id="mstep-2" onclick="goToStep(2,'recall')">
+  <!-- Step 3 — SPEAK (the whole game) -->
+  <div class="mission-step" id="mstep-speak" onclick="showScreen('speak-story')" style="background:rgba(212,240,60,0.08);border-color:rgba(212,240,60,0.4);border-width:2px;">
+    <div class="ms-check" id="mcheck-speak" style="border-color:var(--accent);color:var(--accent);border-width:2px;"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--accent);font-size:14px;">🎙 Speak — 15 min on camera</div>
+      <div class="ms-desc" style="line-height:1.9;">
+        <strong style="color:var(--accent);">Do this before opening any app.</strong><br>
+        Min 1–5: Recite your story script from memory. Don't stop for blanks.<br>
+        Min 6–10: Answer this week's 5 Q&A questions out loud in full sentences.<br>
+        Min 11–15: Free talk — anything about your life right now in Spanish.<br>
+        <span style="color:var(--muted);font-size:10px;">Watch back → find ONE gap → DeepL → add to Fluency. Just one.</span>
+      </div>
+    </div>
+    <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-speak">→</div></div>
+  </div>
+
+  <!-- Step 4 — HyperLingua Active Recall -->
+  <div class="mission-step recall-step" id="mstep-2" onclick="markStepDone(2)">
     <div class="ms-check" id="mcheck-2"></div>
     <div class="ms-body">
-      <div class="ms-title">Recall — say it from memory</div>
-      <div class="ms-desc">See English → say Spanish out loud → reveal → rate honestly.</div>
+      <div class="ms-title">⚡ HyperLingua — Active Recall only</div>
+      <div class="ms-desc">Open HyperLingua → same 5 Q&A questions → switch to Active Recall mode → see English → produce Spanish out loud before revealing. Struggle is learning. Tap to mark done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
-  <!-- Step 4 — Write -->
-  <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
-    <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
-    <div class="ms-body">
-      <div class="ms-title" style="color:var(--warn);">Write — type it from memory</div>
-      <div class="ms-desc">See English → type Spanish → reveal → diff shows exactly what you missed.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
-  </div>
-
-  <!-- Step 5 — Script (island practice — evening) -->
-  <div class="mission-step" id="mstep-script" onclick="launchScriptMode()" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);">
-    <div class="ms-check" id="mcheck-script" style="border-color:var(--accent);color:var(--accent);"></div>
-    <div class="ms-body">
-      <div class="ms-title" style="color:var(--accent);">Script — your conversation island</div>
-      <div class="ms-desc" id="script-step-desc">Evening — drill your current island until the whole conversation is automatic.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-script">→</div></div>
-  </div>
-
-  <!-- Step 6 — Reading -->
-  <div class="mission-step" id="mstep-3r" onclick="goToStep(3,'reading')" style="background:rgba(79,207,138,0.06);border-color:rgba(79,207,138,0.2);">
-    <div class="ms-check" id="mcheck-3r" style="border-color:var(--success);color:var(--success);"></div>
-    <div class="ms-body">
-      <div class="ms-title" style="color:var(--success);">Reading — 3-day method</div>
-      <div class="ms-desc">Afternoon — hear it, read it, answer questions, note unknown words.</div>
-    </div>
-    <div class="ms-right"><div class="ms-time">15 min</div><div class="ms-arrow" id="mgo-3r">→</div></div>
-  </div>
-
-  <!-- Step 7 — Dreaming Spanish -->
-  <div class="mission-step listen-step" id="mstep-4" onclick="openDreamingSpanish()">
+  <!-- Step 5 — Evening passive -->
+  <div class="mission-step listen-step" id="mstep-4" onclick="openNickyJam()">
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
-      <div class="ms-title">Dreaming Spanish — watch and absorb</div>
-      <div class="ms-desc">Same video all week · 20 min daily. After watching:
-        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
-          <li>Say out loud what it was about — your own words in Spanish</li>
-          <li>Write your summary in Spanish (even 1-2 sentences is fine)</li>
-          <li>Write English next to it to confirm meaning</li>
-          <li>Add any sentence with an unknown word to Library</li>
-        </ul>
-        <span style="color:var(--muted);font-size:10px;">90%+ without subtitles = new video next week</span>
-      </div>
+      <div class="ms-title">🎵 Evening — PR Spanish passive</div>
+      <div class="ms-desc">Nicky Jam or any Puerto Rican Spanish content. Subtitles on. No effort required. Just let natural Spanish wash over you while you wind down.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">→</div></div>
   </div>
 
-  <!-- Step 8 — Music -->
-  <div class="mission-step listen-step" id="mstep-5" onclick="openSpanishMusic()" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.15);">
-    <div class="ms-check" id="mcheck-5" style="border-color:var(--purple);color:var(--purple);"></div>
+  <!-- Step 6 — Before sleep journal -->
+  <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
+    <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
     <div class="ms-body">
-      <div class="ms-title" style="color:var(--purple);">Music — Spanish in your ears</div>
-      <div class="ms-desc">Same song all week · 20 min daily · Language Reactor on for lyrics. During:
-        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
-          <li>Day 1-3: listen and absorb — don't force it</li>
-          <li>Day 4-7: sing along with the Spanish lyrics on screen</li>
-        </ul>
-        After each session:
-        <ul style="margin:5px 0 0 14px;padding:0;line-height:1.9;">
-          <li>Say the ONE line that stuck — exact lyrics out loud</li>
-          <li>Write it in Spanish</li>
-          <li>Write English next to it</li>
-          <li>Add any line with an unknown word to Library as a full sentence</li>
-        </ul>
-        <span style="color:var(--muted);font-size:10px;">Singing before lyrics appear = new song next week</span>
-      </div>
+      <div class="ms-title" style="color:var(--warn);">🌙 Before sleep — 3 sentences by hand</div>
+      <div class="ms-desc">On paper, not your phone. Write 3 sentences in Spanish about something that happened today. No looking anything up. Imperfect is fine. Put the pen down. Done.</div>
     </div>
-    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-5">→</div></div>
+    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
   </div>
 
-  <!-- Step 9 — Journal -->
-  <div class="mission-step journal-step" id="mstep-6" onclick="openJournal()">
-    <div class="ms-check" id="mcheck-6"></div>
-    <div class="ms-body">
-      <div class="ms-title">Journal — write your day in Spanish</div>
-      <div class="ms-desc">Before bed — 3 sentences → saves to Library → tomorrow's Shadow.</div>
+  <!-- Sunday decision reminder -->
+  <div id="sunday-reminder" style="display:none;" class="card mb12" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.25);">
+    <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:6px;">📅 Sunday — one decision for the week</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.7;">Open HyperLingua → 300 Q&A Part 1 → pick 5 questions that connect to your life this week → save to My Collections. That's it. Everything flows from those 5 questions all week.</div>
+  </div>
+
+  <!-- This week's Q&A reminder -->
+  <div class="card mb12" style="background:var(--surface2);">
+    <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">This week's 5 Q&A questions</div>
+    <div style="font-size:12px;color:var(--text);line-height:2.0;">
+      ¿De dónde eres?<br>
+      ¿Por qué te alistaste en el ejército?<br>
+      ¿Tienes familia?<br>
+      ¿Por qué quieres vivir en España?<br>
+      ¿Cuánto tiempo llevas aprendiendo español?
     </div>
-    <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-6">→</div></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;">Use these in your walk, speaking exercise, and Active Recall every day this week.</div>
   </div>
 
-  <div class="stats-row" style="margin-top:16px;">
-    <div class="stat-chip owned"><div class="stat-chip-num" id="stat-owned">0</div><div class="stat-chip-label">Owned</div></div>
-    <div class="stat-chip due"><div class="stat-chip-num" id="stat-due">0</div><div class="stat-chip-label">Due Today</div></div>
-    <div class="stat-chip new-s"><div class="stat-chip-num" id="stat-new">0</div><div class="stat-chip-label">New</div></div>
-    <div class="stat-chip" style="border-color:rgba(196,160,255,0.3);background:rgba(196,160,255,0.05)"><div class="stat-chip-num" id="stat-streak" style="color:var(--purple)">0</div><div class="stat-chip-label">Day Streak</div></div>
-  </div>
-  <div id="week-chart" style="margin-top:10px;margin-bottom:14px;"></div>
-
-  <!-- Think in Spanish — 3 routine sentences for right now -->
-  <div id="tis-single" style="margin-bottom:14px;border-radius:10px;padding:12px 14px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;" id="tis-single-label">🗣 SAY THESE NOW</div>
-    </div>
-    <div id="tis-sentences-list"></div>
+  <div class="low-energy">
+    <strong>Low energy day?</strong> Just do the speaking exercise. 15 minutes on camera. That's the only non-negotiable.
   </div>
 
-<div class="low-energy">
-    <strong>Not feeling it today?</strong> Just open Listen for 5 minutes. That counts. Consistency beats perfection.
-  </div>
-
-  <div class="card mt16" style="background:var(--surface2)">
-    <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">Before bed</div>
-    <div style="font-size:12px;color:var(--text);line-height:1.7;">Put Listen on while you wind down. Passive only. Your brain consolidates today's sentences overnight.</div>
-  </div>
-
+  <!-- Collapsible daily routine -->
   <div style="margin-top:12px;border:1px solid var(--border);border-radius:10px;overflow:hidden;">
     <button onclick="toggleRoutine()" style="width:100%;background:var(--surface2);border:none;color:var(--text);font-family:var(--font-mono);font-size:12px;padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent;">
-      <span style="color:var(--muted);">📋 Your Daily Routine</span>
+      <span style="color:var(--muted);">📋 Full Daily Routine</span>
       <span id="routine-arrow" style="color:var(--muted);font-size:11px;">▼ tap to expand</span>
     </button>
     <div id="routine-body" style="display:none;padding:14px 16px;background:var(--surface2);border-top:1px solid var(--border);">
-      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">6:30 AM</span><span class="routine-text">Get up — say <em>Me levanto a las seis y media.</em></span></div>
-      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">6:50 AM</span><span class="routine-text">Walk 20 min — Listen on, Spanish commentary on what you see</span></div>
-      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">7:10 AM</span><span class="routine-text">Meditate — after: <em>Acabo de meditar. Me siento tranquilo.</em></span></div>
-      <div class="routine-divider">☕ Coffee + Study — 38 minutes</div>
-      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">10 min</span><span class="routine-text"><strong style="color:var(--blue)">Shadow</strong> — listen and repeat out loud until natural</span></div>
-      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">20 min</span><span class="routine-text"><strong style="color:var(--accent)">Recall</strong> — say it from memory, rate honestly</span></div>
-      <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">8 min</span><span class="routine-text"><strong style="color:var(--purple)">Listen</strong> — put phone down, just let it play</span></div>
-      <div class="routine-divider">📖 Reading — 30 min (same article for 3 days)</div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 1</span><span class="routine-text">Read article once for meaning. Note 3 unknown words. Look up on WordReference.com. Add 1-2 as sentences to Library.</span></div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 2</span><span class="routine-text">Read same article out loud. Focus on rhythm and flow. No stopping for words.</span></div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 3</span><span class="routine-text">Shadow writing — article open, pick one paragraph, swap in your own life, write your version. Add 2 best sentences to Library.</span></div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Day 4</span><span class="routine-text">New article. Start again. Sentences from old article stay in Shadow and Recall indefinitely.</span></div>
-      <div class="routine-divider">🎧 Dreaming Spanish — 30 min</div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">Daily</span><span class="routine-text">YouTube — Dreaming Spanish Superbeginner. Watch actively. Pause on phrases that connect to your life. Say your personal version out loud.</span></div>
-      <div class="routine-divider">💬 Conversation — 60 min</div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">3x/week</span><span class="routine-text">iTalki — PR or Canarian tutor. Bring 5 newest sentences. Let them correct naturally.</span></div>
-      <div class="routine-item" style="border-left-color:var(--success)"><span class="routine-time" style="color:var(--success)">4x/week</span><span class="routine-text">Self-talk — describe your morning, answer questions people ask you, talk about plans, free talk. Keep going through mistakes.</span></div>
-      <div class="routine-divider">During the day</div>
-      <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">All day</span><span class="routine-text">Spanish commentary — say what you are doing as you do it</span></div>
-      <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">Anytime</span><span class="routine-text">Listen passively during errands, cooking, any light task</span></div>
-      <div class="routine-divider">Before bed</div>
-      <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">5 min</span><span class="routine-text">Listen passively while winding down — brain consolidates overnight</span></div>
+      <div class="routine-divider">Morning</div>
+      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">Wake up</span><span class="routine-text">Say this week's 3 sentences out loud before leaving your bedroom — 1 min</span></div>
+      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">Walk</span><span class="routine-text">HyperLingua 300 Q&A → Listen & Repeat → same 5 questions all week — 20 min</span></div>
+      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">Coffee</span><span class="routine-text">Read your story script out loud from your phone — same script all week — 10 min</span></div>
+      <div class="routine-divider">🎙 Speaking exercise — the whole game</div>
+      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">Min 1–5</span><span class="routine-text">Recite story script from memory. Don't stop for blanks. Keep going.</span></div>
+      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">Min 6–10</span><span class="routine-text">Answer this week's 5 Q&A questions out loud in full sentences.</span></div>
+      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">Min 11–15</span><span class="routine-text">Free talk — anything about your life right now. No script.</span></div>
+      <div class="routine-item" style="border-left-color:var(--accent)"><span class="routine-time" style="color:var(--accent)">After</span><span class="routine-text">Watch back → find ONE gap sentence → DeepL → add to Fluency. Just one.</span></div>
+      <div class="routine-divider">After speaking</div>
+      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">20 min</span><span class="routine-text">HyperLingua Active Recall — same 5 Q&A questions. See English → produce Spanish.</span></div>
+      <div class="routine-divider">Evening</div>
+      <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">20 min</span><span class="routine-text">Nicky Jam or PR Spanish content. Subtitles on. Passive. No effort.</span></div>
+      <div class="routine-divider">Before sleep</div>
+      <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">5 min</span><span class="routine-text">Write 3 sentences by hand about your day. No looking anything up. Done.</span></div>
+      <div class="routine-divider">Sunday night</div>
+      <div class="routine-item" style="border-left-color:var(--success);border-bottom:none"><span class="routine-time" style="color:var(--success)">5 min</span><span class="routine-text">Pick 5 new Q&A questions in HyperLingua for next week. That's your only decision.</span></div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
       <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">5 min</span><span class="routine-text"><strong style="color:var(--warn)">Journal</strong> — write your day in Spanish, saves to Library</span></div>
       <div class="routine-item" style="border-left-color:var(--accent);border-bottom:none"><span class="routine-time" style="color:var(--accent)">Sunday</span><span class="routine-text">Record yourself speaking for 2 minutes — no script</span></div>
     </div>
@@ -950,6 +918,133 @@
   </div>
 
   <button class="btn" onclick="completeReadingStep()" style="width:100%;justify-content:center;background:rgba(79,207,138,0.1);border-color:rgba(79,207,138,0.3);color:var(--success);">✓ Mark today's reading complete</button>
+
+</div>
+
+<!-- SPEAK STORY -->
+<div class="screen" id="screen-speak-story">
+
+  <div class="mode-header" style="background:rgba(212,240,60,0.07);border:1px solid rgba(212,240,60,0.3);color:var(--accent);">
+    <strong>🎙 Speak — The Story Method</strong>
+    Same story. 3 recordings. Each pass you find gaps, look them up in DeepL, add them to Shadow. This is the one exercise that closes the gap between drilling and real speaking.
+  </div>
+
+  <!-- Story selector / setup -->
+  <div id="speak-story-setup">
+    <div class="card mb16" style="background:var(--surface2);">
+      <div style="font-size:11px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;font-weight:700;margin-bottom:8px;">This Week's Story</div>
+      <input type="text" id="story-title-input" placeholder="e.g. My Army enlistment story, Arriving in Florida..." style="margin-bottom:10px;" />
+      <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px;">
+        Pick a real story from your life you know completely. Same story <strong style="color:var(--text);">every day for one week.</strong> New story week 2.
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;" id="story-quick-picks">
+        <button class="btn" style="font-size:11px;" onclick="setStoryTitle('My Army enlistment — December 1995')">Army enlistment</button>
+        <button class="btn" style="font-size:11px;" onclick="setStoryTitle('Moving to Florida')">Moving to Florida</button>
+        <button class="btn" style="font-size:11px;" onclick="setStoryTitle('My morning routine')">Morning routine</button>
+        <button class="btn" style="font-size:11px;" onclick="setStoryTitle('My coaching work')">Coaching work</button>
+        <button class="btn" style="font-size:11px;" onclick="setStoryTitle('My plan for Gran Canaria')">Gran Canaria plan</button>
+      </div>
+    </div>
+
+    <!-- Step-by-step instructions -->
+    <div class="card mb12" style="background:rgba(212,240,60,0.04);border-color:rgba(212,240,60,0.2);">
+      <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">The Process — 3 Passes</div>
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div>
+          <div class="guide-step-title">Tell it in English first (2 min)</div>
+          <div class="guide-step-desc">Say the story out loud in English. Get the details straight. Load it into memory so you're not thinking about content AND Spanish at the same time.</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div>
+          <div class="guide-step-title">Record yourself in Spanish (5 min)</div>
+          <div class="guide-step-desc">Open your phone camera. Press record. Tell the story in Spanish. Hit a blank → say the word in English and keep going. <strong style="color:var(--accent);">Do not stop. Do not look anything up yet.</strong></div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div>
+          <div class="guide-step-title">Watch it back — find the gaps</div>
+          <div class="guide-step-desc">Play the video back. Write down every word you didn't know and every sentence you couldn't structure. Use the fields below.</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div>
+          <div class="guide-step-title">Look up gaps in DeepL</div>
+          <div class="guide-step-desc">Translate each gap sentence at <strong style="color:var(--text);">deepl.com</strong> — not Google Translate. Write the correct Spanish next to each one.</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">5</div>
+        <div>
+          <div class="guide-step-title">Add gaps to Shadow → Record again</div>
+          <div class="guide-step-desc">Add the corrected sentences to your Library below. Then record the same story a second time. Repeat steps 3-5 for pass 2 and pass 3.</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-accent btn-full btn-lg" onclick="startSpeakStory()" style="margin-bottom:16px;">Start Today's Session →</button>
+  </div>
+
+  <!-- Active session -->
+  <div id="speak-story-session" style="display:none;">
+
+    <!-- Pass tracker -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;" id="pass-tracker">
+      <div id="pass-pip-0" style="flex:1;padding:8px;border-radius:7px;text-align:center;font-size:11px;font-weight:600;background:rgba(212,240,60,0.15);border:1px solid rgba(212,240,60,0.4);color:var(--accent);">Pass 1</div>
+      <div id="pass-pip-1" style="flex:1;padding:8px;border-radius:7px;text-align:center;font-size:11px;font-weight:600;background:var(--surface2);border:1px solid var(--border);color:var(--muted);">Pass 2</div>
+      <div id="pass-pip-2" style="flex:1;padding:8px;border-radius:7px;text-align:center;font-size:11px;font-weight:600;background:var(--surface2);border:1px solid var(--border);color:var(--muted);">Pass 3</div>
+    </div>
+
+    <div id="story-session-title" style="font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--accent);margin-bottom:14px;"></div>
+
+    <!-- Current pass instructions -->
+    <div id="pass-instructions" class="card mb12" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);">
+      <div id="pass-instruction-text" style="font-size:12px;color:var(--text);line-height:1.8;"></div>
+    </div>
+
+    <!-- Gap capture -->
+    <div class="card mb12" style="background:var(--surface2);">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Gaps from this pass</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6;">
+        Watch the recording back. Write every sentence you couldn't say or got wrong. One per line. Format:<br>
+        <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--accent);">English version | Spanish (after DeepL lookup)</code>
+      </div>
+      <textarea id="gap-input" placeholder="I enlisted in December 1995. | Me alisté en diciembre de 1995.&#10;I wanted to challenge myself. | Quería retarme a mí mismo.&#10;..." style="min-height:100px;font-size:12px;margin-bottom:10px;"></textarea>
+      <button class="btn btn-accent" onclick="saveGapsToLibrary()" style="width:100%;justify-content:center;">
+        ✓ Add gaps to Shadow + advance to next pass
+      </button>
+      <div id="gaps-saved-msg" style="display:none;margin-top:8px;font-size:11px;color:var(--success);text-align:center;"></div>
+    </div>
+
+    <!-- DeepL link -->
+    <div style="margin-bottom:12px;">
+      <a href="https://deepl.com" target="_blank" class="btn btn-full" style="justify-content:center;background:rgba(160,196,255,0.08);border-color:rgba(160,196,255,0.25);color:var(--blue);text-decoration:none;">
+        🔗 Open DeepL — translate your gaps here
+      </a>
+    </div>
+
+    <!-- Session complete -->
+    <div id="speak-story-complete" style="display:none;" class="session-complete">
+      <div class="session-complete-icon">🎙</div>
+      <div class="session-complete-title">Session Complete</div>
+      <div class="session-complete-sub" id="speak-complete-summary"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <button class="btn btn-accent" onclick="markCoffeeDone()">☕ Mark coffee done</button>
+        <button class="btn btn-accent" onclick="markSpeakDone()">🎙 Mark speak done</button>
+        <button class="btn" onclick="resetSpeakStory()">New session</button>
+      </div>
+    </div>
+
+    <!-- Pre-sleep review reminder -->
+    <div class="card" style="background:rgba(240,164,64,0.05);border-color:rgba(240,164,64,0.2);margin-top:8px;">
+      <div style="font-size:11px;color:var(--warn);font-weight:700;margin-bottom:4px;">Before bed tonight</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;">Review today's new sentences in Shadow for 5 minutes. Then write your 3-sentence journal. Sleep consolidates what you studied today.</div>
+    </div>
+  </div>
 
 </div>
 
@@ -2576,18 +2671,18 @@ function showToast(msg, color) {
 let sentencesTimer = null; // kept for reference, shadow completion is activity-based
 
 function initToday() {
-  // Stats
-  document.getElementById('stat-owned').textContent = getOwnedCount();
-  document.getElementById('stat-due').textContent = getDueCount();
-  document.getElementById('stat-new').textContent = getNewCount();
-  document.getElementById('stat-streak').textContent = getStreak();
-  renderWeekChart();
-
+  initWakeupAndSunday();
+  // Stats (only update if elements exist)
+  const so = document.getElementById('stat-owned');
+  const sd = document.getElementById('stat-due');
+  const sn = document.getElementById('stat-new');
+  const ss = document.getElementById('stat-streak');
+  if (so) so.textContent = getOwnedCount();
+  if (sd) sd.textContent = getDueCount();
+  if (sn) sn.textContent = getNewCount();
+  if (ss) ss.textContent = getStreak();
   renderMissionSteps();
   updateMissionProgress();
-  renderStageAwareSteps();
-  renderThinkInSpanish();
-  renderScriptStepTitle();
 }
 
 function renderVerbStepTitle() {
@@ -2737,14 +2832,45 @@ function renderMissionSteps() {
   }
 
 
+  // Speak step — stored in missionState
+  const ms = JSON.parse(localStorage.getItem('missionState') || '{}');
+  const speakDone = !!ms['speak'];
+  const spkStep = document.getElementById('mstep-speak');
+  const spkCheck = document.getElementById('mcheck-speak');
+  const spkGo = document.getElementById('mgo-speak');
+  if (spkStep) {
+    if (speakDone) { spkStep.classList.add('done'); if (spkCheck) spkCheck.textContent = '✓'; if (spkGo) spkGo.textContent = '✓'; }
+    else { spkStep.classList.remove('done'); if (spkCheck) spkCheck.textContent = ''; if (spkGo && spkGo.textContent === '✓') spkGo.textContent = '→'; }
+  }
+
+  // Coffee step
+  const ms3 = JSON.parse(localStorage.getItem('missionState') || '{}');
+  const coffeeDone = !!ms3['coffee'];
+  const coffeeStep = document.getElementById('mstep-coffee');
+  const coffeeCheck = document.getElementById('mcheck-coffee');
+  const coffeeGo = document.getElementById('mgo-coffee');
+  if (coffeeStep) {
+    if (coffeeDone) { coffeeStep.classList.add('done'); if (coffeeCheck) coffeeCheck.textContent = '✓'; if (coffeeGo) coffeeGo.textContent = '✓'; }
+    else { coffeeStep.classList.remove('done'); if (coffeeCheck) coffeeCheck.textContent = ''; }
+  }
+
 }
 
 function updateMissionProgress() {
   const writeDone = localStorage.getItem('fluency_write_' + todayKey) === '1' ? 1 : 0;
-  const scriptDone = localStorage.getItem('fluency_script_' + todayKey) === '1' ? 1 : 0;
-  const done = missionSteps.filter(Boolean).length + writeDone + scriptDone;
-  document.getElementById('today-progress').style.width = (done / 9 * 100) + '%';
-  document.getElementById('today-progress-label').textContent = done + ' of 9 steps complete' + (done === 9 ? ' — Mission complete! 🎉' : '');
+  const ms2 = JSON.parse(localStorage.getItem('missionState') || '{}');
+  const speakDone2 = ms2['speak'] ? 1 : 0;
+  const coffeeDone = ms2['coffee'] ? 1 : 0;
+  const done = missionSteps.filter(Boolean).length + writeDone + speakDone2 + coffeeDone;
+  const total = 6;
+  document.getElementById('today-progress').style.width = (done / total * 100) + '%';
+  document.getElementById('today-progress-label').textContent = done + ' of ' + total + ' steps complete' + (done === total ? ' — Mission complete! 🎉' : '');
+}
+
+function initWakeupAndSunday() {
+  initWakeupSentences();
+  const sunday = document.getElementById('sunday-reminder');
+  if (sunday) sunday.style.display = new Date().getDay() === 0 ? 'block' : 'none';
 }
 
 // ================================================================
@@ -2759,14 +2885,14 @@ function showScreen(name) {
   document.querySelectorAll('.nav-tab').forEach(t => {
     t.classList.remove('active');
     const label = t.textContent.trim().toLowerCase();
-    if (label === name || (name === 'today' && label === 'today') || (name === 'library' && label === 'library') || (name === 'guide' && label === 'guide')) {
+    if (label === name || (name === 'today' && label === 'today') || (name === 'library' && label === 'library') || (name === 'guide' && label === 'guide') || (name === 'speak-story' && label === 'speak')) {
       t.classList.add('active');
     }
   });
   // Nav visible only on Today, Library, Guide — everywhere else just ← Today
   const nav = document.getElementById('main-nav');
   const backBtn = document.getElementById('back-today-btn');
-  const navScreens = ['today', 'library', 'guide'];
+  const navScreens = ['today', 'library', 'guide', 'speak-story'];
   if (nav) nav.style.display = navScreens.includes(name) ? 'flex' : 'none';
   if (backBtn) backBtn.style.display = (name === 'today' || navScreens.includes(name)) ? 'none' : 'block';
   if (name !== 'shadow') clearTimeout(sentencesTimer);
@@ -2783,11 +2909,299 @@ function showScreen(name) {
   if (name === 'recall') initRecall();
   if (name === 'write') initWrite();
   if (name === 'speak') initSpeak();
+  if (name === 'speak-story') initSpeakStory();
   if (name === 'listen') renderListenNow();
   if (name === 'library') renderLibrary();
   if (name === 'guide') initGuide();
   if (name === 'progress') initProgress();
   if (name === 'reading') initReading();
+}
+
+// ================================================================
+// SPEAK STORY — The story recording method
+// ================================================================
+let speakStoryPass = 0;
+let speakStoryTotalGaps = 0;
+
+const PASS_INSTRUCTIONS = [
+  `<strong style="color:var(--accent);">Pass 1 — First recording</strong><br>
+   1. Tell the story in English out loud for 2 minutes to load the details into memory.<br>
+   2. Open your phone camera → press record → tell the story in Spanish for 5 minutes.<br>
+   3. Hit a blank? Say the word in English and keep going. <strong>Do not stop.</strong><br>
+   4. Watch the video back. Write the gaps below using DeepL to find the Spanish.`,
+
+  `<strong style="color:var(--accent);">Pass 2 — Second recording</strong><br>
+   The gaps from Pass 1 are now in your Shadow tab. It will be easier this time.<br>
+   1. Record the same story again for 5 minutes.<br>
+   2. Watch it back. You will probably use different words — that is good.<br>
+   3. Write any new gaps below.`,
+
+  `<strong style="color:var(--accent);">Pass 3 — Third recording</strong><br>
+   By now parts of the story should start coming out automatically.<br>
+   1. Record one final time for 5 minutes.<br>
+   2. Watch back. Note any remaining gaps.<br>
+   3. Add them below — then you are done for today.`
+];
+
+function initSpeakStory() {
+  const savedTitle = localStorage.getItem('speakStoryTitle') || '';
+  const titleInput = document.getElementById('story-title-input');
+  if (titleInput && savedTitle) titleInput.value = savedTitle;
+  speakStoryPass = parseInt(localStorage.getItem('speakStoryPass') || '0');
+  speakStoryTotalGaps = parseInt(localStorage.getItem('speakStoryGaps') || '0');
+  // If session was in progress today, resume
+  const sessionDate = localStorage.getItem('speakStoryDate');
+  const today = new Date().toDateString();
+  if (sessionDate === today && speakStoryPass > 0) {
+    resumeSpeakStory();
+  } else if (sessionDate !== today) {
+    // New day — reset pass counter but keep story title
+    speakStoryPass = 0;
+    speakStoryTotalGaps = 0;
+    localStorage.setItem('speakStoryPass', '0');
+    localStorage.setItem('speakStoryGaps', '0');
+    document.getElementById('speak-story-setup').style.display = 'block';
+    document.getElementById('speak-story-session').style.display = 'none';
+  } else {
+    document.getElementById('speak-story-setup').style.display = 'block';
+    document.getElementById('speak-story-session').style.display = 'none';
+  }
+}
+
+function setStoryTitle(title) {
+  const input = document.getElementById('story-title-input');
+  if (input) { input.value = title; input.focus(); }
+}
+
+function startSpeakStory() {
+  const titleInput = document.getElementById('story-title-input');
+  const title = titleInput ? titleInput.value.trim() : '';
+  if (!title) { titleInput && titleInput.focus(); return; }
+  localStorage.setItem('speakStoryTitle', title);
+  localStorage.setItem('speakStoryDate', new Date().toDateString());
+  speakStoryPass = 0;
+  speakStoryTotalGaps = 0;
+  localStorage.setItem('speakStoryPass', '0');
+  localStorage.setItem('speakStoryGaps', '0');
+  showSpeakSession(title);
+}
+
+function resumeSpeakStory() {
+  const title = localStorage.getItem('speakStoryTitle') || '';
+  showSpeakSession(title);
+}
+
+function showSpeakSession(title) {
+  document.getElementById('speak-story-setup').style.display = 'none';
+  document.getElementById('speak-story-session').style.display = 'block';
+  document.getElementById('speak-story-complete').style.display = 'none';
+  document.getElementById('pass-instructions').style.display = 'block';
+  const titleEl = document.getElementById('story-session-title');
+  if (titleEl) titleEl.textContent = '📖 ' + title;
+  updatePassUI();
+  const gapInput = document.getElementById('gap-input');
+  if (gapInput) gapInput.value = '';
+  const savedMsg = document.getElementById('gaps-saved-msg');
+  if (savedMsg) savedMsg.style.display = 'none';
+}
+
+function updatePassUI() {
+  [0,1,2].forEach(i => {
+    const pip = document.getElementById('pass-pip-' + i);
+    if (!pip) return;
+    if (i < speakStoryPass) {
+      pip.style.background = 'rgba(79,207,138,0.15)';
+      pip.style.borderColor = 'rgba(79,207,138,0.4)';
+      pip.style.color = 'var(--success)';
+      pip.textContent = 'Pass ' + (i+1) + ' ✓';
+    } else if (i === speakStoryPass) {
+      pip.style.background = 'rgba(212,240,60,0.15)';
+      pip.style.borderColor = 'rgba(212,240,60,0.4)';
+      pip.style.color = 'var(--accent)';
+      pip.textContent = 'Pass ' + (i+1) + ' ←';
+    } else {
+      pip.style.background = 'var(--surface2)';
+      pip.style.borderColor = 'var(--border)';
+      pip.style.color = 'var(--muted)';
+      pip.textContent = 'Pass ' + (i+1);
+    }
+  });
+  const instrEl = document.getElementById('pass-instruction-text');
+  if (instrEl && speakStoryPass < 3) instrEl.innerHTML = PASS_INSTRUCTIONS[speakStoryPass];
+}
+
+function saveGapsToLibrary() {
+  const gapInput = document.getElementById('gap-input');
+  const raw = gapInput ? gapInput.value.trim() : '';
+  let added = 0;
+
+  if (raw) {
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    lines.forEach(line => {
+      const parts = line.split('|');
+      if (parts.length >= 2) {
+        const en = parts[0].trim();
+        const es = parts[1].trim();
+        if (en && es) {
+          const s = { id: Date.now() + Math.random(), en, pr: es, ca: '', cat: 'daily', status: 'new', nextReview: Date.now(), mnemonic: '', source: 'speak-story' };
+          sentences.push(s);
+          added++;
+        }
+      } else if (parts.length === 1 && parts[0].trim()) {
+        // Spanish only
+        const s = { id: Date.now() + Math.random(), en: '', pr: parts[0].trim(), ca: '', cat: 'daily', status: 'new', nextReview: Date.now(), mnemonic: '', source: 'speak-story' };
+        sentences.push(s);
+        added++;
+      }
+    });
+    saveSentences();
+    speakStoryTotalGaps += added;
+    localStorage.setItem('speakStoryGaps', speakStoryTotalGaps.toString());
+  }
+
+  speakStoryPass++;
+  localStorage.setItem('speakStoryPass', speakStoryPass.toString());
+
+  const savedMsg = document.getElementById('gaps-saved-msg');
+  if (gapInput) gapInput.value = '';
+
+  if (speakStoryPass >= 3) {
+    // Session complete
+    document.getElementById('pass-instructions').style.display = 'none';
+    const gapCard = document.getElementById('gap-input').closest('.card');
+    if (gapCard) gapCard.style.display = 'none';
+    document.getElementById('speak-story-complete').style.display = 'block';
+    const summary = document.getElementById('speak-complete-summary');
+    if (summary) summary.innerHTML = `3 passes complete. <strong style="color:var(--accent);">${speakStoryTotalGaps} new sentences</strong> added to Shadow.<br><br>Same story tomorrow. By day 3-4 parts will come out automatically — that's the transfer happening.`;
+    localStorage.setItem('speakStoryPass', '3');
+  } else {
+    updatePassUI();
+    if (savedMsg) {
+      savedMsg.style.display = 'block';
+      savedMsg.textContent = added > 0 ? `✓ ${added} sentence${added>1?'s':''} added to Shadow. Now record Pass ${speakStoryPass + 1}.` : `✓ Pass ${speakStoryPass} logged. Now record Pass ${speakStoryPass + 1}.`;
+    }
+  }
+}
+
+function markCoffeeDone() {
+  const ms = JSON.parse(localStorage.getItem('missionState') || '{}');
+  ms['coffee'] = true;
+  localStorage.setItem('missionState', JSON.stringify(ms));
+  showToast('☕ Coffee script done ✓', 'var(--blue)');
+  showScreen('today');
+}
+
+function markSpeakDone() {
+  // Mark the speak mission step done on Today tab
+  const check = document.getElementById('mcheck-speak');
+  const step = document.getElementById('mstep-speak');
+  if (check) check.innerHTML = '✓';
+  if (step) step.classList.add('done');
+  const ms = JSON.parse(localStorage.getItem('missionState') || '{}');
+  ms['speak'] = true;
+  localStorage.setItem('missionState', JSON.stringify(ms));
+  showScreen('today');
+}
+
+function resetSpeakStory() {
+  speakStoryPass = 0;
+  speakStoryTotalGaps = 0;
+  localStorage.setItem('speakStoryPass', '0');
+  localStorage.setItem('speakStoryGaps', '0');
+  localStorage.removeItem('speakStoryDate');
+  document.getElementById('speak-story-setup').style.display = 'block';
+  document.getElementById('speak-story-session').style.display = 'none';
+}
+
+// ================================================================
+// WAKE UP SENTENCES — weekly rotation
+// ================================================================
+const WAKEUP_WEEKS = [
+  // Week 1 — daily routine
+  ["Me levanté hace un momento.", "Hoy voy a hablar español.", "Cada día hablo mejor que ayer."],
+  // Week 2 — morning actions
+  ["Acabo de despertarme.", "Voy a caminar esta mañana.", "Me siento listo para practicar."],
+  // Week 3 — who you are
+  ["Soy de Brooklyn, Nueva York.", "Tengo raíces puertorriqueñas.", "Estoy aprendiendo español para reconectar con mis raíces."],
+  // Week 4 — Gran Canaria plan
+  ["Me voy a mudar a Gran Canaria.", "Estoy preparando mi nueva vida en España.", "Cada día me acerco más a mi meta."],
+  // Week 5 — Army roots
+  ["Me alisté en el ejército a los diecinueve años.", "Serví durante diez años.", "Fui soldado y ahora soy asesor de liderazgo."],
+  // Week 6 — family
+  ["Tengo dos hijas que viven en Alemania.", "Las extraño pero hablamos seguido.", "Mi familia me da fuerza todos los días."],
+  // Week 7 — learning progress
+  ["Llevo varios meses aprendiendo español.", "Cada semana entiendo más.", "No me rindo — sigo adelante."],
+  // Week 8 — gratitude + mindset
+  ["Me siento bien cuando hablo español.", "El esfuerzo de hoy es el progreso de mañana.", "Voy a dar lo mejor de mí hoy."]
+];
+
+let wakeupSentenceList = [];
+
+function initWakeupSentences() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const weekNum = Math.floor((now - start) / (7 * 24 * 60 * 60 * 1000));
+  const idx = weekNum % WAKEUP_WEEKS.length;
+  wakeupSentenceList = WAKEUP_WEEKS[idx];
+  const el = document.getElementById('wakeup-sentences');
+  const wn = document.getElementById('wakeup-week-num');
+  if (wn) wn.textContent = (idx + 1);
+  renderWakeupSentences(-1);
+}
+
+function renderWakeupSentences(activeIdx) {
+  const el = document.getElementById('wakeup-sentences');
+  if (!el) return;
+  el.innerHTML = wakeupSentenceList.map((s, i) =>
+    `<div id="wakeup-row-${i}" style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:background 0.2s;border-radius:4px;${i === activeIdx ? 'background:rgba(212,240,60,0.12);' : ''}">
+      <span style="color:${i === activeIdx ? 'var(--accent)' : 'var(--muted)'};font-size:14px;flex-shrink:0;">${i === activeIdx ? '▶' : '▸'}</span>
+      <span style="font-style:italic;color:${i === activeIdx ? 'var(--accent)' : 'var(--text)'};">${s}</span>
+    </div>`
+  ).join('');
+}
+
+function playWakeupSentences() {
+  if (!wakeupSentenceList.length) return;
+  const btn = document.getElementById('wakeup-play-btn');
+  if (btn) { btn.textContent = '⏹ Stop'; btn.onclick = stopWakeupSentences; }
+  playWakeupIdx(0);
+}
+
+function stopWakeupSentences() {
+  ttsStop();
+  renderWakeupSentences(-1);
+  const btn = document.getElementById('wakeup-play-btn');
+  if (btn) { btn.textContent = '▶ Play'; btn.onclick = playWakeupSentences; }
+}
+
+function playWakeupIdx(i) {
+  if (i >= wakeupSentenceList.length) {
+    stopWakeupSentences();
+    return;
+  }
+  renderWakeupSentences(i);
+  ttsSpeak(wakeupSentenceList[i], 'es-US', () => {
+    // Pause 1.2s between sentences so user can repeat
+    setTimeout(() => playWakeupIdx(i + 1), 1200);
+  }, 0.85);
+}
+
+function markStepDone(idx) {
+  missionSteps[idx] = true;
+  const check = document.getElementById('mcheck-' + idx);
+  const step = document.getElementById('mstep-' + idx);
+  const go = document.getElementById('mgo-' + idx);
+  if (step) step.classList.add('done');
+  if (check) check.textContent = '✓';
+  if (go) go.textContent = '✓';
+  localStorage.setItem('fluency_mission_' + todayKey, JSON.stringify(missionSteps));
+  updateMissionProgress();
+  showToast('Step done ✓', 'var(--success)');
+}
+
+function openNickyJam() {
+  window.open('https://www.youtube.com/results?search_query=nicky+jam+con+letra', '_blank');
+  showExternalStepToast('Nicky Jam open — subtitles on — come back and tap ✓ Done when finished', 4);
 }
 
 // ================================================================
