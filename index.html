@@ -323,11 +323,15 @@
   <!-- Wake up sentences card - rotates weekly -->
   <div class="card mb12" id="wakeup-card" style="background:rgba(212,240,60,0.06);border-color:rgba(212,240,60,0.3);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">🌅 Say these out loud — Week <span id="wakeup-week-num">1</span></div>
+      <div>
+        <div style="font-size:10px;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">🌅 Say these out loud — Week <span id="wakeup-week-num">1</span></div>
+        <div id="wakeup-tense-label" style="font-size:10px;font-weight:700;margin-top:2px;"></div>
+      </div>
       <button id="wakeup-play-btn" onclick="playWakeupSentences()" style="background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-mono);">▶ Play</button>
     </div>
     <div id="wakeup-sentences" style="line-height:2.2;font-size:13px;"></div>
-    <div style="font-size:10px;color:var(--muted);margin-top:8px;">Same 3 sentences every morning this week. Say them before you leave your bedroom.</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px;">Mon–Wed: present · Thu–Fri: past · Sat: future · Sun: mix. Same topic all week.</div>
+    <div id="wakeup-all-tenses" style="margin-top:10px;"></div>
   </div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
@@ -379,17 +383,32 @@
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-2">→</div></div>
   </div>
 
-  <!-- Step 5 — Evening passive -->
-  <div class="mission-step listen-step" id="mstep-4" onclick="openNickyJam()">
+  <!-- Step 5 — Music -->
+  <div class="mission-step" id="mstep-music" onclick="openSpanishMusic()" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.25);">
+    <div class="ms-check" id="mcheck-music" style="border-color:var(--purple);color:var(--purple);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--purple);">🎵 Music — same PR Spanish song all week</div>
+      <div class="ms-desc" style="line-height:1.9;">
+        Spotify → your song → lyrics visible.<br>
+        <strong style="color:var(--purple);">Day 1-3:</strong> listen and absorb, don't force it.<br>
+        <strong style="color:var(--purple);">Day 4-7:</strong> sing along with lyrics on screen.<br>
+        <span style="color:var(--muted);font-size:10px;">After: say ONE line out loud → write it in Spanish → English next to it.</span>
+      </div>
+    </div>
+    <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-music">→</div></div>
+  </div>
+
+  <!-- Step 6 — Evening Lingopie -->
+  <div class="mission-step listen-step" id="mstep-4" onclick="openLingopie()">
     <div class="ms-check" id="mcheck-4"></div>
     <div class="ms-body">
-      <div class="ms-title">🎵 Evening — PR Spanish passive</div>
-      <div class="ms-desc">Nicky Jam or any Puerto Rican Spanish content. Subtitles on. No effort required. Just let natural Spanish wash over you while you wind down.</div>
+      <div class="ms-title">📺 Evening — Spanish show on Lingopie</div>
+      <div class="ms-desc">Lingopie → Caribbean Spanish content → subtitles on in Spanish. No effort. Just let natural Spanish wash over you. Tap any word you don't know.</div>
     </div>
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">→</div></div>
   </div>
 
-  <!-- Step 6 — Before sleep journal -->
+  <!-- Step 7 — Before sleep journal -->
   <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
     <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
     <div class="ms-body">
@@ -402,20 +421,49 @@
   <!-- Sunday decision reminder -->
   <div id="sunday-reminder" style="display:none;" class="card mb12" style="background:rgba(196,160,255,0.06);border-color:rgba(196,160,255,0.25);">
     <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:6px;">📅 Sunday — one decision for the week</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.7;">Open HyperLingua → 300 Q&A Part 1 → pick 5 questions that connect to your life this week → save to My Collections. That's it. Everything flows from those 5 questions all week.</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.7;">Write this week's paragraph in English → DeepL → add to Speak tab. Pick 5 Q&A questions that match the topic. That's it. Everything flows from those two things all week.</div>
   </div>
 
-  <!-- This week's Q&A reminder -->
+  <!-- This week's Q&A with conjugations -->
   <div class="card mb12" style="background:var(--surface2);">
-    <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">This week's 5 Q&A questions</div>
-    <div style="font-size:12px;color:var(--text);line-height:2.0;">
-      ¿De dónde eres?<br>
-      ¿Por qué te alistaste en el ejército?<br>
-      ¿Tienes familia?<br>
-      ¿Por qué quieres vivir en España?<br>
-      ¿Cuánto tiempo llevas aprendiendo español?
+    <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">This week's Q&A — daily routine</div>
+
+    <div style="font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 1 — Present tense</div>
+    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--accent);">
+      ¿A qué hora te despiertas? <span style="color:var(--muted);font-size:10px;">What time do you wake up?</span><br>
+      ¿Qué haces primero cuando te levantas? <span style="color:var(--muted);font-size:10px;">What do you do first when you get up?</span><br>
+      ¿Cuánto tiempo caminas por las mañanas? <span style="color:var(--muted);font-size:10px;">How long do you walk in the mornings?</span><br>
+      ¿Cómo te gusta el café? <span style="color:var(--muted);font-size:10px;">How do you like your coffee?</span><br>
+      ¿Cuántas veces a la semana vas al gimnasio? <span style="color:var(--muted);font-size:10px;">How many times a week do you go to the gym?</span>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-top:8px;">Use these in your walk, speaking exercise, and Active Recall every day this week.</div>
+
+    <div style="font-size:10px;color:var(--blue);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 2 — Past tense</div>
+    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--blue);">
+      ¿A qué hora te despertaste hoy? <span style="color:var(--muted);font-size:10px;">What time did you wake up today?</span><br>
+      ¿Qué hiciste esta mañana al levantarte? <span style="color:var(--muted);font-size:10px;">What did you do this morning when you got up?</span><br>
+      ¿Cuánto tiempo caminaste hoy? <span style="color:var(--muted);font-size:10px;">How long did you walk today?</span><br>
+      ¿Ya tomaste tu café hoy? <span style="color:var(--muted);font-size:10px;">Did you already have your coffee today?</span><br>
+      ¿Fuiste al gimnasio ayer? <span style="color:var(--muted);font-size:10px;">Did you go to the gym yesterday?</span>
+    </div>
+
+    <div style="font-size:10px;color:var(--success);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 3 — Future tense</div>
+    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--success);">
+      ¿A qué hora te vas a despertar mañana? <span style="color:var(--muted);font-size:10px;">What time are you going to wake up tomorrow?</span><br>
+      ¿Qué vas a hacer mañana por la mañana? <span style="color:var(--muted);font-size:10px;">What are you going to do tomorrow morning?</span><br>
+      ¿Vas a caminar mañana? <span style="color:var(--muted);font-size:10px;">Are you going to walk tomorrow?</span><br>
+      ¿Vas a tomar café mañana? <span style="color:var(--muted);font-size:10px;">Are you going to have coffee tomorrow?</span><br>
+      ¿Cuándo vas a ir al gimnasio? <span style="color:var(--muted);font-size:10px;">When are you going to go to the gym?</span>
+    </div>
+
+    <div style="font-size:10px;color:var(--warn);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 4 — Mix randomly</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--warn);">
+      Any version of each question in any order. Your brain has to recognize the tense and respond automatically. Real conversation pressure.
+    </div>
+
+    <div style="font-size:10px;color:var(--purple);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 5 — Free talk</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.8;padding-left:8px;border-left:2px solid var(--purple);">
+      No questions. Talk about your morning routine freely for 5 min. What you did. What you usually do. What you'll do tomorrow. All three tenses naturally.
+    </div>
   </div>
 
   <div class="low-energy">
@@ -2771,8 +2819,32 @@ function openDreamingSpanish() {
 }
 
 function openSpanishMusic() {
-  window.open('https://www.youtube.com/results?search_query=musica+en+espanol+con+letra', '_blank');
-  showExternalStepToast('Music open — come back and tap ✓ Done when finished', 5);
+  window.open('https://open.spotify.com/search/nicky%20jam/tracks', '_blank');
+  showExternalMissionToast('Spotify open — find your song → lyrics visible → come back and tap ✓ Done', 'music');
+}
+
+function openLingopie() {
+  window.open('https://lingopie.com', '_blank');
+  showExternalStepToast('Lingopie open — subtitles on in Spanish — come back and tap ✓ Done when finished', 4);
+}
+
+function showExternalMissionToast(msg, key) {
+  const existing = document.getElementById('external-step-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'external-step-banner';
+  banner.style.cssText = 'position:fixed;bottom:80px;left:12px;right:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
+  banner.innerHTML = '<div style="flex:1;font-size:12px;color:var(--muted);line-height:1.4;">' + msg + '</div><button onclick="markMissionKey(\'' + key + '\');document.getElementById(\'external-step-banner\').remove();" style="flex-shrink:0;background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;">✓ Done</button>';
+  document.body.appendChild(banner);
+}
+
+function markMissionKey(key) {
+  const ms = JSON.parse(localStorage.getItem('missionState') || '{}');
+  ms[key] = true;
+  localStorage.setItem('missionState', JSON.stringify(ms));
+  renderMissionSteps();
+  updateMissionProgress();
+  showToast('✓ Done', 'var(--success)');
 }
 
 function showExternalStepToast(msg, stepIdx) {
@@ -2854,6 +2926,17 @@ function renderMissionSteps() {
     else { coffeeStep.classList.remove('done'); if (coffeeCheck) coffeeCheck.textContent = ''; }
   }
 
+  // Music step
+  const msMusic = JSON.parse(localStorage.getItem('missionState') || '{}');
+  const musicDone = !!msMusic['music'];
+  const musicStep = document.getElementById('mstep-music');
+  const musicCheck = document.getElementById('mcheck-music');
+  const musicGo = document.getElementById('mgo-music');
+  if (musicStep) {
+    if (musicDone) { musicStep.classList.add('done'); if (musicCheck) musicCheck.textContent = '✓'; if (musicGo) musicGo.textContent = '✓'; }
+    else { musicStep.classList.remove('done'); if (musicCheck) musicCheck.textContent = ''; }
+  }
+
 }
 
 function updateMissionProgress() {
@@ -2861,8 +2944,9 @@ function updateMissionProgress() {
   const ms2 = JSON.parse(localStorage.getItem('missionState') || '{}');
   const speakDone2 = ms2['speak'] ? 1 : 0;
   const coffeeDone = ms2['coffee'] ? 1 : 0;
-  const done = missionSteps.filter(Boolean).length + writeDone + speakDone2 + coffeeDone;
-  const total = 6;
+  const musicDone2 = ms2['music'] ? 1 : 0;
+  const done = missionSteps.filter(Boolean).length + writeDone + speakDone2 + coffeeDone + musicDone2;
+  const total = 7;
   document.getElementById('today-progress').style.width = (done / total * 100) + '%';
   document.getElementById('today-progress-label').textContent = done + ' of ' + total + ' steps complete' + (done === total ? ' — Mission complete! 🎉' : '');
 }
@@ -3114,48 +3198,217 @@ function resetSpeakStory() {
 }
 
 // ================================================================
-// WAKE UP SENTENCES — weekly rotation
+// WAKE UP SENTENCES — weekly topics, daily conjugation rotation
+// Each week has 3 conjugations: [present, past, future]
+// Each conjugation has 3 sentences: [[es, en], [es, en], [es, en]]
+// Day 1 = present, Day 2 = past, Day 3 = future, Day 4 = present, Day 5 = past, Day 6 = future, Day 7 = mix
 // ================================================================
 const WAKEUP_WEEKS = [
-  // Week 1 — daily routine
-  ["Me levanté hace un momento.", "Hoy voy a hablar español.", "Cada día hablo mejor que ayer."],
-  // Week 2 — morning actions
-  ["Acabo de despertarme.", "Voy a caminar esta mañana.", "Me siento listo para practicar."],
-  // Week 3 — who you are
-  ["Soy de Brooklyn, Nueva York.", "Tengo raíces puertorriqueñas.", "Estoy aprendiendo español para reconectar con mis raíces."],
-  // Week 4 — Gran Canaria plan
-  ["Me voy a mudar a Gran Canaria.", "Estoy preparando mi nueva vida en España.", "Cada día me acerco más a mi meta."],
-  // Week 5 — Army roots
-  ["Me alisté en el ejército a los diecinueve años.", "Serví durante diez años.", "Fui soldado y ahora soy asesor de liderazgo."],
-  // Week 6 — family
-  ["Tengo dos hijas que viven en Alemania.", "Las extraño pero hablamos seguido.", "Mi familia me da fuerza todos los días."],
-  // Week 7 — learning progress
-  ["Llevo varios meses aprendiendo español.", "Cada semana entiendo más.", "No me rindo — sigo adelante."],
-  // Week 8 — gratitude + mindset
-  ["Me siento bien cuando hablo español.", "El esfuerzo de hoy es el progreso de mañana.", "Voy a dar lo mejor de mí hoy."]
+  // Week 1 — waking up and morning start
+  {
+    present: [
+      ["Me despierto entre las seis y las seis y media.", "I wake up between six and six thirty."],
+      ["Tengo sueño pero me levanto.", "I'm sleepy but I'm getting up."],
+      ["Hoy voy a hablar español.", "Today I'm going to speak Spanish."]
+    ],
+    past: [
+      ["Me desperté a las seis esta mañana.", "I woke up at six this morning."],
+      ["Tuve sueño pero me levanté.", "I was sleepy but I got up."],
+      ["Ayer hablé español todo el día.", "Yesterday I spoke Spanish all day."]
+    ],
+    future: [
+      ["Mañana me voy a despertar a las seis.", "Tomorrow I'm going to wake up at six."],
+      ["Voy a levantarme aunque tenga sueño.", "I'm going to get up even if I'm sleepy."],
+      ["Mañana voy a hablar más español.", "Tomorrow I'm going to speak more Spanish."]
+    ]
+  },
+  // Week 2 — morning routine
+  {
+    present: [
+      ["Voy al baño y me lavo la cara con agua fría.", "I go to the bathroom and wash my face with cold water."],
+      ["Me tomo un vaso de agua con sal.", "I drink a glass of salt water."],
+      ["Preparo el café antes de salir a caminar.", "I make coffee before going out to walk."]
+    ],
+    past: [
+      ["Fui al baño y me lavé la cara.", "I went to the bathroom and washed my face."],
+      ["Me tomé el agua con sal esta mañana.", "I drank the salt water this morning."],
+      ["Preparé el café antes de salir.", "I made coffee before going out."]
+    ],
+    future: [
+      ["Voy a lavarme la cara con agua fría.", "I'm going to wash my face with cold water."],
+      ["Me voy a tomar el agua con sal.", "I'm going to drink the salt water."],
+      ["Voy a preparar el café primero.", "I'm going to make coffee first."]
+    ]
+  },
+  // Week 3 — walk and meditation
+  {
+    present: [
+      ["Salgo a caminar unos veinte minutos.", "I go out to walk about twenty minutes."],
+      ["Cuando regreso, medito por diez minutos.", "When I get back, I meditate for ten minutes."],
+      ["Me siento tranquilo después de meditar.", "I feel calm after meditating."]
+    ],
+    past: [
+      ["Salí a caminar veinte minutos esta mañana.", "I went out to walk twenty minutes this morning."],
+      ["Medité diez minutos cuando regresé.", "I meditated ten minutes when I got back."],
+      ["Me sentí tranquilo después de meditar.", "I felt calm after meditating."]
+    ],
+    future: [
+      ["Voy a salir a caminar en un momento.", "I'm going to go out to walk in a moment."],
+      ["Voy a meditar cuando regrese.", "I'm going to meditate when I get back."],
+      ["Me voy a sentir bien después de meditar.", "I'm going to feel good after meditating."]
+    ]
+  },
+  // Week 4 — coffee and Spanish practice
+  {
+    present: [
+      ["Me gusta el café con leche y un poquito de azúcar.", "I like coffee with milk and a little sugar."],
+      ["Empiezo a practicar español con mi café.", "I start practicing Spanish with my coffee."],
+      ["Trato de estudiar unas tres horas.", "I try to study about three hours."]
+    ],
+    past: [
+      ["Me tomé el café con leche esta mañana.", "I had my coffee with milk this morning."],
+      ["Empecé a practicar español después del café.", "I started practicing Spanish after coffee."],
+      ["Estudié tres horas esta mañana.", "I studied three hours this morning."]
+    ],
+    future: [
+      ["Voy a tomarme el café con leche.", "I'm going to have my coffee with milk."],
+      ["Voy a empezar a practicar español.", "I'm going to start practicing Spanish."],
+      ["Voy a estudiar tres horas hoy.", "I'm going to study three hours today."]
+    ]
+  },
+  // Week 5 — gym and health
+  {
+    present: [
+      ["Voy al gimnasio tres veces a la semana.", "I go to the gym three times a week."],
+      ["Necesito mantener mi fuerza a medida que me pongo mayor.", "I need to maintain my strength as I get older."],
+      ["Antes de ir al gimnasio me tomo el batido.", "Before going to the gym I have my smoothie."]
+    ],
+    past: [
+      ["Fui al gimnasio esta mañana.", "I went to the gym this morning."],
+      ["Me tomé el batido antes de salir.", "I had my smoothie before going out."],
+      ["Hice ejercicio por una hora.", "I worked out for an hour."]
+    ],
+    future: [
+      ["Voy a ir al gimnasio mañana.", "I'm going to go to the gym tomorrow."],
+      ["Voy a tomarme el batido antes de salir.", "I'm going to have my smoothie before going out."],
+      ["Voy a hacer ejercicio por una hora.", "I'm going to work out for an hour."]
+    ]
+  },
+  // Week 6 — salt therapy and errands
+  {
+    present: [
+      ["Después del gimnasio voy a la terapia de sal.", "After the gym I go to salt therapy."],
+      ["La terapia de sal me ayuda con las alergias.", "Salt therapy helps me with allergies."],
+      ["Es un lugar relajante con la luz tenue.", "It's a relaxing place with dim lighting."]
+    ],
+    past: [
+      ["Fui a la terapia de sal después del gimnasio.", "I went to salt therapy after the gym."],
+      ["Me relajé en la silla reclinable.", "I relaxed in the lounge chair."],
+      ["Después fui al súper a comprar la cena.", "Afterwards I went to the supermarket to buy dinner."]
+    ],
+    future: [
+      ["Voy a ir a la terapia de sal más tarde.", "I'm going to go to salt therapy later."],
+      ["Voy a relajarme en la silla reclinable.", "I'm going to relax in the lounge chair."],
+      ["Después voy a ir al súper.", "Afterwards I'm going to go to the supermarket."]
+    ]
+  },
+  // Week 7 — evening wind down
+  {
+    present: [
+      ["Cuando llego a casa preparo la cena.", "When I get home I prepare dinner."],
+      ["Después de cenar me ducho y me relajo.", "After dinner I shower and relax."],
+      ["Me preparo para dormir temprano.", "I get ready for bed early."]
+    ],
+    past: [
+      ["Llegué a casa y preparé la cena.", "I got home and prepared dinner."],
+      ["Me duché después de cenar.", "I showered after dinner."],
+      ["Me acosté temprano anoche.", "I went to bed early last night."]
+    ],
+    future: [
+      ["Cuando llegue a casa voy a preparar la cena.", "When I get home I'm going to prepare dinner."],
+      ["Me voy a duchar después de cenar.", "I'm going to shower after dinner."],
+      ["Me voy a acostar temprano esta noche.", "I'm going to go to bed early tonight."]
+    ]
+  },
+  // Week 8 — mindset
+  {
+    present: [
+      ["Cada día hablo mejor que ayer.", "Every day I speak better than yesterday."],
+      ["No me rindo — sigo adelante.", "I don't give up — I keep going."],
+      ["El esfuerzo de hoy es el progreso de mañana.", "Today's effort is tomorrow's progress."]
+    ],
+    past: [
+      ["Ayer hablé mejor que el día anterior.", "Yesterday I spoke better than the day before."],
+      ["No me rendí aunque fue difícil.", "I didn't give up even though it was hard."],
+      ["El esfuerzo de ayer ya es progreso.", "Yesterday's effort is already progress."]
+    ],
+    future: [
+      ["Mañana voy a hablar mejor que hoy.", "Tomorrow I'm going to speak better than today."],
+      ["No me voy a rendir.", "I'm not going to give up."],
+      ["El esfuerzo de hoy va a dar frutos.", "Today's effort is going to pay off."]
+    ]
+  }
 ];
 
+const TENSE_LABELS = ['present', 'past', 'future', 'present', 'past', 'future', 'present'];
+const TENSE_DISPLAY = ['Present', 'Past', 'Future', 'Present', 'Past', 'Future', 'Mix — any tense'];
+const TENSE_COLORS = ['var(--accent)', 'var(--blue)', 'var(--success)', 'var(--accent)', 'var(--blue)', 'var(--success)', 'var(--purple)'];
+
 let wakeupSentenceList = [];
+let wakeupTenseLabel = '';
+let wakeupTenseColor = '';
 
 function initWakeupSentences() {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 1);
   const weekNum = Math.floor((now - start) / (7 * 24 * 60 * 60 * 1000));
-  const idx = weekNum % WAKEUP_WEEKS.length;
-  wakeupSentenceList = WAKEUP_WEEKS[idx];
-  const el = document.getElementById('wakeup-sentences');
+  const weekIdx = weekNum % WAKEUP_WEEKS.length;
+  const dayOfWeek = now.getDay(); // 0=Sun, 1=Mon...6=Sat
+  const dayIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Mon=0, Sun=6
+  const tenseKey = TENSE_LABELS[dayIdx];
+  wakeupTenseLabel = TENSE_DISPLAY[dayIdx];
+  wakeupTenseColor = TENSE_COLORS[dayIdx];
+  wakeupSentenceList = WAKEUP_WEEKS[weekIdx][tenseKey];
   const wn = document.getElementById('wakeup-week-num');
-  if (wn) wn.textContent = (idx + 1);
+  if (wn) wn.textContent = (weekIdx + 1);
   renderWakeupSentences(-1);
+  // Show all 3 tenses below so you can see the full week
+  const allEl = document.getElementById('wakeup-all-tenses');
+  if (allEl) {
+    const week = WAKEUP_WEEKS[weekIdx];
+    allEl.innerHTML = `
+      <details style="margin-top:4px;">
+        <summary style="font-size:10px;color:var(--muted);cursor:pointer;user-select:none;">▾ See all 3 tenses this week</summary>
+        <div style="margin-top:8px;">
+          ${['present','past','future'].map((t, ti) => {
+            const colors = ['var(--accent)','var(--blue)','var(--success)'];
+            const labels = ['Present','Past','Future'];
+            return `<div style="margin-bottom:8px;">
+              <div style="font-size:10px;color:${colors[ti]};font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">${labels[ti]}</div>
+              ${week[t].map(([es,en]) => `
+                <div style="font-size:11px;padding:3px 0;border-bottom:1px solid var(--border);">
+                  <span style="font-style:italic;color:var(--text);">${es}</span>
+                  <span style="color:var(--muted);display:block;font-size:10px;">${en}</span>
+                </div>`).join('')}
+            </div>`;
+          }).join('')}
+        </div>
+      </details>`;
+  }
 }
 
 function renderWakeupSentences(activeIdx) {
   const el = document.getElementById('wakeup-sentences');
+  const tl = document.getElementById('wakeup-tense-label');
+  if (tl) tl.innerHTML = `<span style="color:${wakeupTenseColor};text-transform:uppercase;letter-spacing:0.06em;font-size:12px;font-weight:800;background:rgba(255,255,255,0.05);padding:2px 8px;border-radius:4px;border:1px solid ${wakeupTenseColor};display:inline-block;margin-top:2px;">📍 Today: ${wakeupTenseLabel} tense</span>`;
   if (!el) return;
-  el.innerHTML = wakeupSentenceList.map((s, i) =>
-    `<div id="wakeup-row-${i}" style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;transition:background 0.2s;border-radius:4px;${i === activeIdx ? 'background:rgba(212,240,60,0.12);' : ''}">
-      <span style="color:${i === activeIdx ? 'var(--accent)' : 'var(--muted)'};font-size:14px;flex-shrink:0;">${i === activeIdx ? '▶' : '▸'}</span>
-      <span style="font-style:italic;color:${i === activeIdx ? 'var(--accent)' : 'var(--text)'};">${s}</span>
+  el.innerHTML = wakeupSentenceList.map(([es, en], i) =>
+    `<div id="wakeup-row-${i}" style="padding:8px 6px;border-bottom:1px solid var(--border);border-radius:4px;transition:background 0.2s;${i === activeIdx ? 'background:rgba(212,240,60,0.1);' : ''}">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="color:${i === activeIdx ? wakeupTenseColor : 'var(--muted)'};font-size:14px;flex-shrink:0;">${i === activeIdx ? '▶' : '▸'}</span>
+        <span style="font-style:italic;color:${i === activeIdx ? wakeupTenseColor : 'var(--text)'};">${es}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;padding-left:22px;">${en}</div>
     </div>`
   ).join('');
 }
@@ -3180,8 +3433,7 @@ function playWakeupIdx(i) {
     return;
   }
   renderWakeupSentences(i);
-  ttsSpeak(wakeupSentenceList[i], 'es-US', () => {
-    // Pause 1.2s between sentences so user can repeat
+  ttsSpeak(wakeupSentenceList[i][0], 'es-US', () => {
     setTimeout(() => playWakeupIdx(i + 1), 1200);
   }, 0.85);
 }
