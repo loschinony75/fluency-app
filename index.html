@@ -335,7 +335,7 @@
   </div>
 
   <div class="progress-bar-wrap mb8"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
-  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 6 steps complete</div>
+  <div class="text-muted text-sm mb16" id="today-progress-label">0 of 8 steps complete</div>
 
   <!-- Step 1 — Walk + HyperLingua -->
   <div class="mission-step listen-step" id="mstep-0" onclick="markStepDone(0)">
@@ -408,11 +408,21 @@
     <div class="ms-right"><div class="ms-time">20 min</div><div class="ms-arrow" id="mgo-4">→</div></div>
   </div>
 
-  <!-- Step 7 — Before sleep journal -->
+  <!-- Step 7 — Before sleep Fluency Recall -->
+  <div class="mission-step recall-step" id="mstep-recall-night" onclick="goToStep(2,'recall')" style="background:rgba(160,196,255,0.06);border-color:rgba(160,196,255,0.25);">
+    <div class="ms-check" id="mcheck-recall-night" style="border-color:var(--blue);color:var(--blue);"></div>
+    <div class="ms-body">
+      <div class="ms-title" style="color:var(--blue);">🔁 Before sleep — Fluency Active Recall</div>
+      <div class="ms-desc">Open Fluency app → Recall tab → today's gap sentences only. See English → say Spanish out loud before revealing. Your brain consolidates what you recall right before sleep.</div>
+    </div>
+    <div class="ms-right"><div class="ms-time">10 min</div><div class="ms-arrow" id="mgo-recall-night">→</div></div>
+  </div>
+
+  <!-- Step 8 — Before sleep journal -->
   <div class="mission-step journal-step" id="mstep-3w" onclick="goToStep(-1,'write')">
     <div class="ms-check" id="mcheck-3w" style="border-color:var(--warn);color:var(--warn);"></div>
     <div class="ms-body">
-      <div class="ms-title" style="color:var(--warn);">🌙 Before sleep — 3 sentences by hand</div>
+      <div class="ms-title" style="color:var(--warn);">✍️ Before sleep — 3 sentences by hand</div>
       <div class="ms-desc">On paper, not your phone. Write 3 sentences in Spanish about something that happened today. No looking anything up. Imperfect is fine. Put the pen down. Done.</div>
     </div>
     <div class="ms-right"><div class="ms-time">5 min</div><div class="ms-arrow" id="mgo-3w">→</div></div>
@@ -424,46 +434,9 @@
     <div style="font-size:11px;color:var(--muted);line-height:1.7;">Write this week's paragraph in English → DeepL → add to Speak tab. Pick 5 Q&A questions that match the topic. That's it. Everything flows from those two things all week.</div>
   </div>
 
-  <!-- This week's Q&A with conjugations -->
-  <div class="card mb12" style="background:var(--surface2);">
-    <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">This week's Q&A — daily routine</div>
-
-    <div style="font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 1 — Present tense</div>
-    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--accent);">
-      ¿A qué hora te despiertas? <span style="color:var(--muted);font-size:10px;">What time do you wake up?</span><br>
-      ¿Qué haces primero cuando te levantas? <span style="color:var(--muted);font-size:10px;">What do you do first when you get up?</span><br>
-      ¿Cuánto tiempo caminas por las mañanas? <span style="color:var(--muted);font-size:10px;">How long do you walk in the mornings?</span><br>
-      ¿Cómo te gusta el café? <span style="color:var(--muted);font-size:10px;">How do you like your coffee?</span><br>
-      ¿Cuántas veces a la semana vas al gimnasio? <span style="color:var(--muted);font-size:10px;">How many times a week do you go to the gym?</span>
-    </div>
-
-    <div style="font-size:10px;color:var(--blue);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 2 — Past tense</div>
-    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--blue);">
-      ¿A qué hora te despertaste hoy? <span style="color:var(--muted);font-size:10px;">What time did you wake up today?</span><br>
-      ¿Qué hiciste esta mañana al levantarte? <span style="color:var(--muted);font-size:10px;">What did you do this morning when you got up?</span><br>
-      ¿Cuánto tiempo caminaste hoy? <span style="color:var(--muted);font-size:10px;">How long did you walk today?</span><br>
-      ¿Ya tomaste tu café hoy? <span style="color:var(--muted);font-size:10px;">Did you already have your coffee today?</span><br>
-      ¿Fuiste al gimnasio ayer? <span style="color:var(--muted);font-size:10px;">Did you go to the gym yesterday?</span>
-    </div>
-
-    <div style="font-size:10px;color:var(--success);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 3 — Future tense</div>
-    <div style="font-size:12px;color:var(--text);line-height:2.1;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--success);">
-      ¿A qué hora te vas a despertar mañana? <span style="color:var(--muted);font-size:10px;">What time are you going to wake up tomorrow?</span><br>
-      ¿Qué vas a hacer mañana por la mañana? <span style="color:var(--muted);font-size:10px;">What are you going to do tomorrow morning?</span><br>
-      ¿Vas a caminar mañana? <span style="color:var(--muted);font-size:10px;">Are you going to walk tomorrow?</span><br>
-      ¿Vas a tomar café mañana? <span style="color:var(--muted);font-size:10px;">Are you going to have coffee tomorrow?</span><br>
-      ¿Cuándo vas a ir al gimnasio? <span style="color:var(--muted);font-size:10px;">When are you going to go to the gym?</span>
-    </div>
-
-    <div style="font-size:10px;color:var(--warn);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 4 — Mix randomly</div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:10px;padding-left:8px;border-left:2px solid var(--warn);">
-      Any version of each question in any order. Your brain has to recognize the tense and respond automatically. Real conversation pressure.
-    </div>
-
-    <div style="font-size:10px;color:var(--purple);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;">Day 5 — Free talk</div>
-    <div style="font-size:12px;color:var(--muted);line-height:1.8;padding-left:8px;border-left:2px solid var(--purple);">
-      No questions. Talk about your morning routine freely for 5 min. What you did. What you usually do. What you'll do tomorrow. All three tenses naturally.
-    </div>
+  <!-- This week's Q&A — today only -->
+  <div class="card mb12" id="qa-today-card" style="background:var(--surface2);">
+    <div id="qa-today-content"></div>
   </div>
 
   <div class="low-energy">
@@ -491,7 +464,8 @@
       <div class="routine-divider">Evening</div>
       <div class="routine-item" style="border-left-color:var(--purple)"><span class="routine-time" style="color:var(--purple)">20 min</span><span class="routine-text">Nicky Jam or PR Spanish content. Subtitles on. Passive. No effort.</span></div>
       <div class="routine-divider">Before sleep</div>
-      <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">5 min</span><span class="routine-text">Write 3 sentences by hand about your day. No looking anything up. Done.</span></div>
+      <div class="routine-item" style="border-left-color:var(--blue)"><span class="routine-time" style="color:var(--blue)">10 min</span><span class="routine-text"><strong style="color:var(--blue)">Fluency Active Recall</strong> — today's gap sentences → see English → say Spanish out loud before revealing.</span></div>
+      <div class="routine-item" style="border-left-color:var(--warn)"><span class="routine-time" style="color:var(--warn)">5 min</span><span class="routine-text">Write 3 sentences by hand about your day. No looking anything up. Put the pen down. Done.</span></div>
       <div class="routine-divider">Sunday night</div>
       <div class="routine-item" style="border-left-color:var(--success);border-bottom:none"><span class="routine-time" style="color:var(--success)">5 min</span><span class="routine-text">Pick 5 new Q&A questions in HyperLingua for next week. That's your only decision.</span></div>
     </div>
@@ -2720,7 +2694,7 @@ let sentencesTimer = null; // kept for reference, shadow completion is activity-
 
 function initToday() {
   initWakeupAndSunday();
-  // Stats (only update if elements exist)
+  renderTodayQA();
   const so = document.getElementById('stat-owned');
   const sd = document.getElementById('stat-due');
   const sn = document.getElementById('stat-new');
@@ -2946,7 +2920,7 @@ function updateMissionProgress() {
   const coffeeDone = ms2['coffee'] ? 1 : 0;
   const musicDone2 = ms2['music'] ? 1 : 0;
   const done = missionSteps.filter(Boolean).length + writeDone + speakDone2 + coffeeDone + musicDone2;
-  const total = 7;
+  const total = 8;
   document.getElementById('today-progress').style.width = (done / total * 100) + '%';
   document.getElementById('today-progress-label').textContent = done + ' of ' + total + ' steps complete' + (done === total ? ' — Mission complete! 🎉' : '');
 }
@@ -3454,6 +3428,181 @@ function markStepDone(idx) {
 function openNickyJam() {
   window.open('https://www.youtube.com/results?search_query=nicky+jam+con+letra', '_blank');
   showExternalStepToast('Nicky Jam open — subtitles on — come back and tap ✓ Done when finished', 4);
+}
+
+// ================================================================
+// TODAY'S Q&A — shows only today's questions based on day of week
+// ================================================================
+const QA_DAYS = [
+  {
+    label: 'Present tense', color: 'var(--accent)',
+    desc: 'Answer each question in present tense out loud.',
+    questions: [
+      ['¿A qué hora te despiertas?', 'What time do you wake up?', 'Me despierto entre las seis y las seis y media.'],
+      ['¿Qué haces primero cuando te levantas?', 'What do you do first when you get up?', 'Voy al baño, me tomo un vaso de agua con sal y me lavo la cara.'],
+      ['¿Cuánto tiempo caminas por las mañanas?', 'How long do you walk in the mornings?', 'Camino unos veinte minutos.'],
+      ['¿Cómo te gusta el café?', 'How do you like your coffee?', 'Me gusta con leche y un poquito de azúcar.'],
+      ['¿Cuántas veces a la semana vas al gimnasio?', 'How many times a week do you go to the gym?', 'Voy tres veces a la semana para mantener mi fuerza.']
+    ]
+  },
+  {
+    label: 'Past tense', color: 'var(--blue)',
+    desc: 'Answer each question in past tense. What you actually did today.',
+    questions: [
+      ['¿A qué hora te despertaste hoy?', 'What time did you wake up today?', 'Hoy me desperté a las seis.'],
+      ['¿Qué hiciste esta mañana al levantarte?', 'What did you do this morning when you got up?', 'Fui al baño, me tomé el agua con sal y me lavé la cara.'],
+      ['¿Cuánto tiempo caminaste hoy?', 'How long did you walk today?', 'Caminé veinte minutos esta mañana.'],
+      ['¿Ya tomaste tu café hoy?', 'Did you already have your coffee today?', 'Sí, ya me lo tomé con leche y azúcar.'],
+      ['¿Fuiste al gimnasio ayer?', 'Did you go to the gym yesterday?', 'Sí, fui ayer. Hice ejercicio por una hora.']
+    ]
+  },
+  {
+    label: 'Future tense', color: 'var(--success)',
+    desc: 'Answer each question in future tense. What you plan to do.',
+    questions: [
+      ['¿A qué hora te vas a despertar mañana?', 'What time are you going to wake up tomorrow?', 'Mañana me voy a despertar a las seis.'],
+      ['¿Qué vas a hacer mañana por la mañana?', 'What are you going to do tomorrow morning?', 'Voy a hacer lo mismo de siempre — caminar, meditar y café.'],
+      ['¿Vas a caminar mañana?', 'Are you going to walk tomorrow?', 'Sí, voy a caminar mañana por la mañana.'],
+      ['¿Vas a tomar café mañana?', 'Are you going to have coffee tomorrow?', 'Sí, voy a tomar café con leche como siempre.'],
+      ['¿Cuándo vas a ir al gimnasio?', 'When are you going to go to the gym?', 'Voy a ir el martes, jueves y sábado.']
+    ]
+  },
+  {
+    label: 'Mix — any tense', color: 'var(--warn)',
+    desc: 'Questions come in any tense. Your brain has to recognize and respond automatically. Real conversation pressure.',
+    questions: [
+      ['¿A qué hora te despertaste hoy?', 'What time did you wake up today?', 'Hoy me desperté a las seis.'],
+      ['¿Qué vas a hacer mañana por la mañana?', 'What are you going to do tomorrow morning?', 'Voy a caminar, meditar y tomar café.'],
+      ['¿Cuánto tiempo caminas por las mañanas?', 'How long do you walk in the mornings?', 'Camino unos veinte minutos.'],
+      ['¿Ya tomaste tu café hoy?', 'Did you already have your coffee today?', 'Sí, ya me lo tomé.'],
+      ['¿Cuándo vas a ir al gimnasio?', 'When are you going to go to the gym?', 'Voy a ir el martes, jueves y sábado.']
+    ]
+  },
+  {
+    label: 'Free talk', color: 'var(--purple)',
+    desc: 'No questions today. Talk freely about your morning routine for 5 minutes. What you did. What you usually do. What you\'ll do tomorrow. All three tenses naturally.',
+    questions: []
+  }
+];
+
+let qaPlaying = false;
+let qaCurrentIdx = -1;
+let qaCurrentDay = null;
+
+function renderTodayQA() {
+  const el = document.getElementById('qa-today-content');
+  if (!el) return;
+  const dayOfWeek = new Date().getDay();
+  const dayIdx = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const qaIdx = Math.min(dayIdx, QA_DAYS.length - 1);
+  qaCurrentDay = QA_DAYS[qaIdx];
+  const dayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+  if (qaCurrentDay.questions.length === 0) {
+    el.innerHTML = `
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">Today's Q&A — ${dayNames[dayIdx]}</div>
+      <div style="font-size:12px;color:${qaCurrentDay.color};font-weight:700;margin-bottom:8px;padding:4px 8px;border-left:3px solid ${qaCurrentDay.color};">🗣 ${qaCurrentDay.label}</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.8;">${qaCurrentDay.desc}</div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;">Today's Q&A — ${dayNames[dayIdx]}</div>
+        <span style="font-size:10px;font-weight:700;color:${qaCurrentDay.color};border:1px solid ${qaCurrentDay.color};border-radius:4px;padding:2px 7px;text-transform:uppercase;display:inline-block;margin-top:3px;">${qaCurrentDay.label}</span>
+      </div>
+      <button id="qa-play-all-btn" onclick="playAllQA()" style="background:${qaCurrentDay.color};color:var(--bg);border:none;border-radius:6px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-mono);">▶ Play All</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${qaCurrentDay.desc}</div>
+    ${qaCurrentDay.questions.map((q, i) => `
+      <div id="qa-row-${i}" style="margin-bottom:10px;padding:8px 10px;border-radius:7px;background:rgba(255,255,255,0.03);border-left:3px solid ${qaCurrentDay.color};transition:background 0.2s;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+          <div style="flex:1;">
+            <div style="font-size:12px;color:var(--text);font-weight:600;margin-bottom:2px;">${q[0]}</div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">${q[1]}</div>
+          </div>
+          <button onclick="playOneQA(${i})" style="flex-shrink:0;background:transparent;border:1px solid ${qaCurrentDay.color};color:${qaCurrentDay.color};border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;" id="qa-btn-${i}">▶</button>
+        </div>
+        <details>
+          <summary style="font-size:10px;color:${qaCurrentDay.color};cursor:pointer;user-select:none;">▾ Sample answer</summary>
+          <div style="font-size:11px;color:var(--text);margin-top:4px;font-style:italic;">${q[2]}</div>
+        </details>
+      </div>`).join('')}`;
+}
+
+function playAllQA() {
+  if (!qaCurrentDay || !qaCurrentDay.questions.length) return;
+  const btn = document.getElementById('qa-play-all-btn');
+  if (qaPlaying) {
+    ttsStop();
+    qaPlaying = false;
+    qaCurrentIdx = -1;
+    if (btn) btn.textContent = '▶ Play All';
+    resetQAHighlight();
+    return;
+  }
+  qaPlaying = true;
+  if (btn) btn.textContent = '⏹ Stop';
+  playQAIdx(0);
+}
+
+function playOneQA(i) {
+  ttsStop();
+  qaPlaying = false;
+  qaCurrentIdx = i;
+  resetQAHighlight();
+  highlightQARow(i);
+  const q = qaCurrentDay.questions[i];
+  const btn = document.getElementById('qa-btn-' + i);
+  if (btn) btn.textContent = '⏹';
+  // Read question, pause 2s for user to answer, then read sample answer
+  ttsSpeak(q[0], 'es-US', () => {
+    setTimeout(() => {
+      ttsSpeak(q[2], 'es-US', () => {
+        resetQAHighlight();
+        if (btn) btn.textContent = '▶';
+      }, 0.85);
+    }, 2000);
+  }, 0.85);
+}
+
+function playQAIdx(i) {
+  if (!qaPlaying || i >= qaCurrentDay.questions.length) {
+    qaPlaying = false;
+    qaCurrentIdx = -1;
+    resetQAHighlight();
+    const btn = document.getElementById('qa-play-all-btn');
+    if (btn) btn.textContent = '▶ Play All';
+    return;
+  }
+  qaCurrentIdx = i;
+  resetQAHighlight();
+  highlightQARow(i);
+  const q = qaCurrentDay.questions[i];
+  // Read question → 2.5s pause (user answers) → read sample answer → next
+  ttsSpeak(q[0], 'es-US', () => {
+    setTimeout(() => {
+      ttsSpeak(q[2], 'es-US', () => {
+        setTimeout(() => playQAIdx(i + 1), 1000);
+      }, 0.85);
+    }, 2500);
+  }, 0.85);
+}
+
+function highlightQARow(i) {
+  const row = document.getElementById('qa-row-' + i);
+  if (row) row.style.background = 'rgba(212,240,60,0.07)';
+}
+
+function resetQAHighlight() {
+  if (!qaCurrentDay) return;
+  qaCurrentDay.questions.forEach((_, i) => {
+    const row = document.getElementById('qa-row-' + i);
+    if (row) row.style.background = 'rgba(255,255,255,0.03)';
+    const btn = document.getElementById('qa-btn-' + i);
+    if (btn) btn.textContent = '▶';
+  });
 }
 
 // ================================================================
