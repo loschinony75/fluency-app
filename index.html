@@ -296,9 +296,9 @@ const WAKEUP_WEEKS = [
   { present: [["Después del gimnasio voy a la terapia de sal.","After the gym I go to salt therapy."],["La terapia de sal me ayuda con las alergias.","Salt therapy helps me with allergies."],["Es un lugar relajante con la luz tenue.","It's a relaxing place with dim lighting."]],
     past: [["Fui a la terapia de sal después del gimnasio.","I went to salt therapy after the gym."],["Me relajé en la silla reclinable.","I relaxed in the lounge chair."],["Después fui al súper a comprar la cena.","Afterwards I went to the supermarket to buy dinner."]],
     future: [["Voy a ir a la terapia de sal más tarde.","I'm going to go to salt therapy later."],["Voy a relajarme en la silla reclinable.","I'm going to relax in the lounge chair."],["Después voy a ir al súper.","Afterwards I'm going to go to the supermarket."]] },
-  { present: [["Cuando llego a casa preparo la cena.","When I get home I prepare dinner."],["Después de cenar me baño y me relajo.","After dinner I shower and relax."],["Me preparo para dormir temprano.","I get ready for bed early."]],
-    past: [["Llegué a casa y preparé la cena.","I got home and prepared dinner."],["Me bañé después de cenar.","I showered after dinner."],["Me acosté temprano anoche.","I went to bed early last night."]],
-    future: [["Cuando llegue a casa voy a preparar la cena.","When I get home I'm going to prepare dinner."],["Me voy a bañar después de cenar.","I'm going to shower after dinner."],["Me voy a acostar temprano esta noche.","I'm going to go to bed early tonight."]] },
+  { present: [["Cuando llego a casa preparo la cena.","When I get home I prepare dinner."],["Después de cenar me baño y me relajo.","After dinner I shower and relax."],["Me voy pa la cama temprano.","I go to bed early."]],
+    past: [["Llegué a casa y preparé la cena.","I got home and prepared dinner."],["Me bañé después de cenar.","I showered after dinner."],["Anoche me fui pa la cama temprano.","Last night I went to bed early."]],
+    future: [["Cuando llegue a casa voy a preparar la cena.","When I get home I'm going to prepare dinner."],["Me voy a bañar después de cenar.","I'm going to shower after dinner."],["Esta noche me voy pa la cama temprano.","Tonight I'm going to bed early."]] },
   { present: [["Cada día hablo mejor que ayer.","Every day I speak better than yesterday."],["No me rindo — sigo adelante.","I don't give up — I keep going."],["El esfuerzo de hoy es el progreso de mañana.","Today's effort is tomorrow's progress."]],
     past: [["Ayer hablé mejor que el día anterior.","Yesterday I spoke better than the day before."],["No me rendí aunque fue difícil.","I didn't give up even though it was hard."],["El esfuerzo de ayer ya es progreso.","Yesterday's effort is already progress."]],
     future: [["Mañana voy a hablar mejor que hoy.","Tomorrow I'm going to speak better than today."],["No me voy a rendir.","I'm not going to give up."],["El esfuerzo de hoy va a dar frutos.","Today's effort is going to pay off."]] }
@@ -611,16 +611,19 @@ function renderJournal() {
 // ================================================================
 const DEFAULT_SCRIPT = [
   {es:'Me levanté como a las seis y media.', en:'I woke up around six thirty.'},
-  {es:'Aunque a veces tengo sueño, no me quedo en la cama.', en:'Even though I\'m sometimes sleepy, I don\'t stay in bed.'},
-  {es:'Lo primero que hago es ir al baño, tomarme un vaso de agua con sal y lavarme la cara.', en:'The first thing I do is go to the bathroom, drink a glass of salt water and wash my face.'},
-  {es:'Después salgo a caminar unos veinte minutos porque me ayuda a despejar la mente.', en:'Then I go out to walk about twenty minutes because it helps me clear my mind.'},
-  {es:'Cuando regreso, preparo el café y mientras se hace, medito por diez minutos.', en:'When I get back I make the coffee and while it\'s brewing I meditate for ten minutes.'},
-  {es:'Me gusta el café con leche y un poquito de azúcar.', en:'I like coffee with milk and a little sugar.'},
-  {es:'Después de tomar mi café empiezo a practicar español, trato de estudiar unas tres horas.', en:'After having my coffee I start practicing Spanish, I try to study about three hours.'},
-  {es:'Antes de ir al gimnasio me tomo un batido de arándanos con proteína.', en:'Before going to the gym I have a blueberry protein smoothie.'},
-  {es:'Voy al gimnasio tres veces a la semana para mantener mi fuerza.', en:'I go to the gym three times a week to maintain my strength.'},
-  {es:'Después del gimnasio voy a la terapia de sal — es un cuarto relajante con la luz tenue donde me siento y descanso.', en:'After the gym I go to salt therapy — it\'s a relaxing room with dim lighting where I sit and rest.'},
-  {es:'Cuando termino voy al súper, llego a casa, preparo la cena y después de comer me baño y me preparo para dormir.', en:'When I finish I go to the supermarket, get home, prepare dinner and after eating I shower and get ready for bed.'},
+  {es:'Tenía sueño pero me levanté.', en:'I was sleepy but I got up.'},
+  {es:'Fui al baño, tomé agua con sal y me lavé la cara.', en:'Went to the bathroom, drank salt water and washed my face.'},
+  {es:'Salí a caminar como veinte minutos.', en:'Went out to walk about twenty minutes.'},
+  {es:'Cuando volví, puse el café.', en:'When I got back, I put on the coffee.'},
+  {es:'Mientras se hacía, medité diez minutos.', en:'While it brewed, I meditated ten minutes.'},
+  {es:'Me gusta el café con leche y un chin de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
+  {es:'Después empecé a practicar español.', en:'Then I started practicing Spanish.'},
+  {es:'Trato de estudiar como tres horas.', en:'I try to study about three hours.'},
+  {es:'Antes del gym me tomo el batido.', en:'Before the gym I have my smoothie.'},
+  {es:'Voy al gym tres veces a la semana.', en:'I go to the gym three times a week.'},
+  {es:'Después del gym voy a la terapia de sal — me relaja un montón.', en:'After the gym I go to salt therapy — it relaxes me a lot.'},
+  {es:'Cuando termino voy al súper, llego a casa y preparo la cena.', en:'When I finish I go to the supermarket, get home and make dinner.'},
+  {es:'Después de comer me baño y me voy pa la cama.', en:'After eating I shower and go to bed.'},
 ];
 
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
