@@ -212,6 +212,13 @@
     <button class="btn btn-accent btn-full" onclick="addScriptSentence()">+ Add</button>
   </div>
 
+  <!-- Reset script -->
+  <div class="card" style="margin-top:8px;background:rgba(240,164,64,0.05);border-color:rgba(240,164,64,0.2);">
+    <div style="font-size:11px;color:var(--warn);font-weight:700;margin-bottom:4px;">Reset script to latest version</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Tap this if your sentences look outdated. This resets to the current PR Spanish version. Your Journal entries are not affected.</div>
+    <button class="btn btn-full" onclick="resetScript()" style="color:var(--warn);border-color:var(--warn);justify-content:center;">🔄 Reset Script</button>
+  </div>
+
 </div>
 
 <!-- PATTERNS -->
@@ -748,7 +755,15 @@ function rateRecall(rating) {
   }
 }
 
-function saveScript() { saveData('script_v2', scriptSentences); }
+function resetScript() {
+  if (confirm('Reset script to the latest PR Spanish version? Your Journal entries will not be affected.')) {
+    localStorage.removeItem('script_v2');
+    scriptSentences = DEFAULT_SCRIPT.map((s,i) => ({...s, id:i+1, owned:false}));
+    saveScript();
+    renderScript();
+    showToast('Script reset ✓');
+  }
+}
 
 function toggleScriptOwned(id) {
   const s = scriptSentences.find(x=>x.id===id);
