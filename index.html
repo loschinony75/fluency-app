@@ -278,7 +278,7 @@ function showScreen(name) {
 // WAKE UP SENTENCES
 // ================================================================
 const WAKEUP_WEEKS = [
-  { present: [["Me despierto entre las seis y las seis y media.","I wake up between six and six thirty."],["Tengo sueño pero me levanto.","I'm sleepy but I'm getting up."],["Hoy voy a hablar español.","Today I'm going to speak Spanish."]],
+  { present: [["Me levanto entre las seis y seis y media.","I get up between six and six thirty."],["Tengo sueño pero me levanto.","I'm sleepy but I'm getting up."],["Hoy voy a hablar español.","Today I'm going to speak Spanish."]],
     past: [["Me desperté a las seis esta mañana.","I woke up at six this morning."],["Tuve sueño pero me levanté.","I was sleepy but I got up."],["Ayer hablé español todo el día.","Yesterday I spoke Spanish all day."]],
     future: [["Mañana me voy a despertar a las seis.","Tomorrow I'm going to wake up at six."],["Voy a levantarme aunque tenga sueño.","I'm going to get up even if I'm sleepy."],["Mañana voy a hablar más español.","Tomorrow I'm going to speak more Spanish."]] },
   { present: [["Voy al baño y me lavo la cara con agua fría.","I go to the bathroom and wash my face with cold water."],["Me tomo un vaso de agua con sal.","I drink a glass of salt water."],["Preparo el café antes de salir a caminar.","I make coffee before going out to walk."]],
@@ -430,7 +430,7 @@ function updateProgress() {
 // ================================================================
 const QA_DAYS = [
   { label:'Present', color:'var(--accent)', desc:'Answer each question in present tense out loud.', qs:[
-    ['¿A qué hora te despiertas?','What time do you wake up?','Me despierto entre las seis y las seis y media.'],
+    ['¿A qué hora te despiertas?','What time do you wake up?','Me levanto entre las seis y seis y media.'],
     ['¿Qué haces primero cuando te levantas?','What do you do first when you get up?','Voy al baño, me tomo un vaso de agua con sal y me lavo la cara.'],
     ['¿Cuánto tiempo caminas por las mañanas?','How long do you walk in the mornings?','Camino unos veinte minutos.'],
     ['¿Cómo te gusta el café?','How do you like your coffee?','Me gusta con leche y un poquito de azúcar.'],
@@ -610,7 +610,7 @@ function renderJournal() {
 // SCRIPT
 // ================================================================
 const DEFAULT_SCRIPT = [
-  {es:'Me levanto entre las seis y las seis y media.', en:'I get up between six and six thirty.'},
+  {es:'Me levanté como a las seis y media.', en:'I woke up around six thirty.'},
   {es:'Aunque a veces tengo sueño, no me quedo en la cama.', en:'Even though I\'m sometimes sleepy, I don\'t stay in bed.'},
   {es:'Lo primero que hago es ir al baño, tomarme un vaso de agua con sal y lavarme la cara.', en:'The first thing I do is go to the bathroom, drink a glass of salt water and wash my face.'},
   {es:'Después salgo a caminar unos veinte minutos porque me ayuda a despejar la mente.', en:'Then I go out to walk about twenty minutes because it helps me clear my mind.'},
