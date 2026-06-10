@@ -164,20 +164,44 @@
 <!-- SCRIPT -->
 <div class="screen" id="screen-script">
 
-  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Your Story Script</div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Shadow each sentence with your ElevenLabs audio. One sentence at a time. Don't try to memorize the whole thing at once.</div>
+  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Script — Shadow & Recall</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Shadow first until the sound is familiar. Then switch to Recall — see English, produce Spanish from memory before revealing. The struggle is the learning.</div>
 
-  <!-- Script sentences - shadowing one at a time -->
-  <div id="script-sentences"></div>
+  <!-- Mode toggle -->
+  <div style="display:flex;gap:6px;margin-bottom:16px;">
+    <button id="mode-shadow-btn" onclick="setScriptMode('shadow')" style="flex:1;padding:9px;border-radius:7px;border:2px solid var(--blue);background:rgba(160,196,255,0.1);color:var(--blue);font-family:var(--font-mono);font-size:12px;font-weight:600;cursor:pointer;">🔊 Shadow</button>
+    <button id="mode-recall-btn" onclick="setScriptMode('recall')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">⚡ Recall</button>
+  </div>
 
-  <div class="card" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);margin-top:8px;">
-    <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px;">How to use this screen</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.8;">
-      1. Generate ElevenLabs audio for each sentence separately<br>
-      2. Play audio → pause → repeat out loud → match the rhythm<br>
-      3. When a sentence comes out automatically → mark it owned<br>
-      4. Add new sentences from your speaking exercise gaps below
+  <!-- Progress -->
+  <div style="font-size:11px;color:var(--muted);margin-bottom:10px;" id="script-progress-label"></div>
+
+  <!-- Shadow mode -->
+  <div id="shadow-mode">
+    <div class="card" style="background:rgba(160,196,255,0.05);border-color:rgba(160,196,255,0.2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:6px;">How to shadow</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.9;">
+        1. Tap ▶ Play to hear the sentence<br>
+        2. Pause — repeat out loud matching the exact rhythm<br>
+        3. Do this until it comes out automatically<br>
+        4. Then tap Mark owned and move to the next
+      </div>
     </div>
+    <div id="script-sentences"></div>
+  </div>
+
+  <!-- Recall mode -->
+  <div id="recall-mode" style="display:none;">
+    <div class="card" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px;">How to recall</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.9;">
+        1. Read the English<br>
+        2. Close your eyes — say the Spanish out loud from memory<br>
+        3. Tap Reveal to check yourself<br>
+        4. Rate honestly — the struggle is the learning
+      </div>
+    </div>
+    <div id="recall-container"></div>
   </div>
 
   <!-- Add to script -->
@@ -586,27 +610,141 @@ function renderJournal() {
 // SCRIPT
 // ================================================================
 const DEFAULT_SCRIPT = [
-  {es:'Me despierto entre las seis y las seis y media.', en:'I wake up between six and six thirty.'},
-  {es:'Lo primero que hago es ir al baño.', en:'The first thing I do is go to the bathroom.'},
-  {es:'Me tomo un vaso de agua con sal.', en:'I drink a glass of salt water.'},
-  {es:'Me cepillo los dientes y me lavo la cara.', en:'I brush my teeth and wash my face.'},
-  {es:'Salgo a caminar unos veinte minutos.', en:'I go out to walk about twenty minutes.'},
-  {es:'Cuando regreso preparo la cafetera.', en:'When I get back I prepare the coffee maker.'},
-  {es:'Mientras se hace el café medito por diez minutos.', en:'While the coffee is being made I meditate for ten minutes.'},
+  {es:'Me levanto entre las seis y las seis y media.', en:'I get up between six and six thirty.'},
+  {es:'Aunque a veces tengo sueño, no me quedo en la cama.', en:'Even though I\'m sometimes sleepy, I don\'t stay in bed.'},
+  {es:'Lo primero que hago es ir al baño, tomarme un vaso de agua con sal y lavarme la cara.', en:'The first thing I do is go to the bathroom, drink a glass of salt water and wash my face.'},
+  {es:'Después salgo a caminar unos veinte minutos porque me ayuda a despejar la mente.', en:'Then I go out to walk about twenty minutes because it helps me clear my mind.'},
+  {es:'Cuando regreso, preparo el café y mientras se hace, medito por diez minutos.', en:'When I get back I make the coffee and while it\'s brewing I meditate for ten minutes.'},
   {es:'Me gusta el café con leche y un poquito de azúcar.', en:'I like coffee with milk and a little sugar.'},
-  {es:'Empiezo a practicar español con mi café.', en:'I start practicing Spanish with my coffee.'},
-  {es:'Trato de estudiar unas tres horas antes de ir al gimnasio.', en:'I try to study about three hours before going to the gym.'},
-  {es:'Antes de salir me tomo un batido de arándanos con proteína.', en:'Before going out I have a blueberry protein smoothie.'},
-  {es:'Voy al gimnasio tres veces a la semana.', en:'I go to the gym three times a week.'},
-  {es:'Necesito mantener mi fuerza a medida que me pongo mayor.', en:'I need to maintain my strength as I get older.'},
-  {es:'Después del gimnasio voy a la terapia de sal.', en:'After the gym I go to salt therapy.'},
-  {es:'Es un lugar relajante — estás en un cuarto con la luz tenue.', en:"It's a relaxing place — you're in a room with dim lighting."},
-  {es:'Cuando termino generalmente voy al supermercado.', en:'When I finish I usually go to the supermarket.'},
-  {es:'Al llegar a casa preparo y como la cena.', en:'When I get home I prepare and eat dinner.'},
-  {es:'Después de cenar me relajo, me baño y me preparo para dormir.', en:'After dinner I relax, shower, and get ready for bed.'},
+  {es:'Después de tomar mi café empiezo a practicar español, trato de estudiar unas tres horas.', en:'After having my coffee I start practicing Spanish, I try to study about three hours.'},
+  {es:'Antes de ir al gimnasio me tomo un batido de arándanos con proteína.', en:'Before going to the gym I have a blueberry protein smoothie.'},
+  {es:'Voy al gimnasio tres veces a la semana para mantener mi fuerza.', en:'I go to the gym three times a week to maintain my strength.'},
+  {es:'Después del gimnasio voy a la terapia de sal — es un cuarto relajante con la luz tenue donde me siento y descanso.', en:'After the gym I go to salt therapy — it\'s a relaxing room with dim lighting where I sit and rest.'},
+  {es:'Cuando termino voy al súper, llego a casa, preparo la cena y después de comer me baño y me preparo para dormir.', en:'When I finish I go to the supermarket, get home, prepare dinner and after eating I shower and get ready for bed.'},
 ];
 
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
+let scriptMode = 'shadow';
+
+function setScriptMode(mode) {
+  scriptMode = mode;
+  const shadowBtn = document.getElementById('mode-shadow-btn');
+  const recallBtn = document.getElementById('mode-recall-btn');
+  const shadowDiv = document.getElementById('shadow-mode');
+  const recallDiv = document.getElementById('recall-mode');
+  if (mode === 'shadow') {
+    shadowBtn.style.background = 'rgba(160,196,255,0.1)';
+    shadowBtn.style.borderColor = 'var(--blue)';
+    shadowBtn.style.borderWidth = '2px';
+    shadowBtn.style.color = 'var(--blue)';
+    recallBtn.style.background = 'none';
+    recallBtn.style.borderColor = 'var(--border2)';
+    recallBtn.style.borderWidth = '1px';
+    recallBtn.style.color = 'var(--muted)';
+    shadowDiv.style.display = 'block';
+    recallDiv.style.display = 'none';
+  } else {
+    recallBtn.style.background = 'rgba(212,240,60,0.1)';
+    recallBtn.style.borderColor = 'var(--accent)';
+    recallBtn.style.borderWidth = '2px';
+    recallBtn.style.color = 'var(--accent)';
+    shadowBtn.style.background = 'none';
+    shadowBtn.style.borderColor = 'var(--border2)';
+    shadowBtn.style.borderWidth = '1px';
+    shadowBtn.style.color = 'var(--muted)';
+    shadowDiv.style.display = 'none';
+    recallDiv.style.display = 'block';
+    renderRecall();
+  }
+}
+
+// RECALL state
+let recallQueue = [];
+let recallIdx = 0;
+let recallRevealed = false;
+
+function renderRecall() {
+  // Only use sentences that haven't been marked owned yet — they still need work
+  recallQueue = scriptSentences.filter(s => !s.owned);
+  if (!recallQueue.length) {
+    // All owned — allow reviewing owned ones too
+    recallQueue = [...scriptSentences];
+  }
+  recallIdx = 0;
+  recallRevealed = false;
+  showRecallCard();
+}
+
+function showRecallCard() {
+  const el = document.getElementById('recall-container');
+  if (!el || !recallQueue.length) return;
+  const s = recallQueue[recallIdx];
+  const progress = `${recallIdx + 1} of ${recallQueue.length}`;
+  recallRevealed = false;
+  el.innerHTML = `
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-bottom:16px;">${progress}</div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">What is this in Spanish?</div>
+      <div style="font-size:16px;color:var(--text);font-weight:600;line-height:1.5;margin-bottom:16px;">${s.en}</div>
+      <div id="recall-answer" style="display:none;padding:12px;background:rgba(212,240,60,0.06);border:1px solid rgba(212,240,60,0.2);border-radius:8px;margin-bottom:12px;">
+        <div style="font-size:14px;color:var(--accent);font-style:italic;line-height:1.5;">${s.es}</div>
+      </div>
+      <button id="recall-reveal-btn" class="btn btn-full" onclick="revealRecall()" style="margin-bottom:10px;justify-content:center;">Reveal Spanish</button>
+      <button class="btn btn-full" onclick="playRecallSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);justify-content:center;margin-bottom:16px;">▶ Hear it</button>
+    </div>
+    <div id="recall-rating" style="display:none;">
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;">How did you do?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn" onclick="rateRecall('again')" style="justify-content:center;color:var(--warn);border-color:var(--warn);background:rgba(240,164,64,0.08);">🔁 Again</button>
+        <button class="btn" onclick="rateRecall('got-it')" style="justify-content:center;color:var(--success);border-color:var(--success);background:rgba(79,207,138,0.08);">✓ Got it</button>
+      </div>
+    </div>`;
+}
+
+function revealRecall() {
+  recallRevealed = true;
+  const ans = document.getElementById('recall-answer');
+  const btn = document.getElementById('recall-reveal-btn');
+  const rating = document.getElementById('recall-rating');
+  if (ans) ans.style.display = 'block';
+  if (btn) btn.style.display = 'none';
+  if (rating) rating.style.display = 'block';
+}
+
+function playRecallSentence(id) {
+  const s = scriptSentences.find(x => x.id === id);
+  if (s) ttsSpeak(s.es, null, 0.85);
+}
+
+function rateRecall(rating) {
+  if (rating === 'got-it') {
+    // Mark owned if they got it
+    const s = recallQueue[recallIdx];
+    const orig = scriptSentences.find(x => x.id === s.id);
+    if (orig) { orig.owned = true; saveScript(); }
+    recallIdx++;
+    if (recallIdx >= recallQueue.length) {
+      const el = document.getElementById('recall-container');
+      if (el) el.innerHTML = `
+        <div style="text-align:center;padding:40px 16px;">
+          <div style="font-size:32px;margin-bottom:12px;">🎉</div>
+          <div style="font-family:var(--font-head);font-size:16px;color:var(--accent);margin-bottom:8px;">Session complete</div>
+          <div style="font-size:12px;color:var(--muted);">Every sentence recalled. Come back tomorrow to keep them sharp.</div>
+          <button class="btn btn-accent" style="margin-top:16px;" onclick="renderRecall()">Go again</button>
+        </div>`;
+      renderScript();
+    } else {
+      showRecallCard();
+    }
+  } else {
+    // Again — move to end of queue
+    const s = recallQueue.splice(recallIdx, 1)[0];
+    recallQueue.push(s);
+    if (recallIdx >= recallQueue.length) recallIdx = 0;
+    showRecallCard();
+  }
+}
+
 function saveScript() { saveData('script_v2', scriptSentences); }
 
 function toggleScriptOwned(id) {
@@ -637,20 +775,26 @@ function playScriptSentence(id) {
 }
 
 function renderScript() {
+  const owned = scriptSentences.filter(s=>s.owned).length;
+  const lbl = document.getElementById('script-progress-label');
+  if (lbl) lbl.innerHTML = `<span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span> · <span style="color:var(--muted);">Shadow first → then Recall</span>`;
   const el = document.getElementById('script-sentences');
   if (!el) return;
-  const owned = scriptSentences.filter(s=>s.owned).length;
-  el.innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:12px;">${owned} of ${scriptSentences.length} sentences owned</div>` +
-    scriptSentences.map(s => `
-      <div class="scard" style="${s.owned?'opacity:0.5':''}">
-        <div class="scard-es">${s.es}</div>
-        <div class="scard-en">${s.en}</div>
-        <div class="scard-actions">
-          <button class="btn btn-sm" onclick="playScriptSentence(${s.id})">▶ Play</button>
-          <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
-          <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
+  el.innerHTML = scriptSentences.map(s => `
+    <div class="scard" style="${s.owned?'opacity:0.5;border-color:rgba(79,207,138,0.3);':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
+        <div style="flex:1;">
+          <div class="scard-es">${s.es}</div>
+          <div class="scard-en">${s.en}</div>
         </div>
-      </div>`).join('');
+        ${s.owned ? '<span style="color:var(--success);font-size:18px;flex-shrink:0;">✓</span>' : ''}
+      </div>
+      <div class="scard-actions">
+        <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
+        <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
+        <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
+      </div>
+    </div>`).join('');
 }
 
 // ================================================================
