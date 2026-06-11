@@ -239,40 +239,46 @@ function saveData(key, val) { try { localStorage.setItem(key, JSON.stringify(val
 function loadData(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; } }
 
 // ================================================================
-// TTS
+// TTS — uses Google Translate proxy (same as old app)
 // ================================================================
+let currentAudio = null;
+
 function ttsSpeak(text, onDone, speed) {
+  if (!text) { if (onDone) onDone(); return; }
   ttsStop();
   const rate = speed || 0.85;
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.rate = rate;
-  utter.onend = () => { if (onDone) onDone(); };
-  utter.onerror = () => { if (onDone) onDone(); };
-
-  const voices = window.speechSynthesis.getVoices();
-  // Priority order: PR Spanish, US Spanish, any Spanish
-  const preferred = [
-    voices.find(v => v.lang === 'es-PR'),
-    voices.find(v => v.lang === 'es-US'),
-    voices.find(v => v.lang === 'es-MX'),
-    voices.find(v => v.lang === 'es-ES'),
-    voices.find(v => v.lang.startsWith('es')),
-  ].find(Boolean);
-
-  if (preferred) {
-    utter.voice = preferred;
-    utter.lang = preferred.lang;
-  } else {
+  const audio = new Audio('/tts?text=' + encodeURIComponent(text) + '&lang=es-US');
+  currentAudio = audio;
+  audio.onended = () => { currentAudio = null; if (onDone) onDone(); };
+  audio.onerror = () => {
+    // Fallback to browser speech synthesis if proxy fails
+    currentAudio = null;
+    const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'es-US';
-  }
-
-  window.speechSynthesis.speak(utter);
+    utter.rate = rate;
+    utter.onend = () => { if (onDone) onDone(); };
+    window.speechSynthesis.speak(utter);
+  };
+  audio.play().then(() => { audio.playbackRate = rate; }).catch(() => {
+    currentAudio = null;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'es-US';
+    utter.rate = rate;
+    utter.onend = () => { if (onDone) onDone(); };
+    window.speechSynthesis.speak(utter);
+  });
 }
 
-function ttsStop() { window.speechSynthesis.cancel(); }
-
-// Load voices — mobile loads them async
-window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+function ttsStop() {
+  if (currentAudio) {
+    currentAudio.onended = null;
+    currentAudio.onerror = null;
+    currentAudio.pause();
+    currentAudio.src = '';
+    currentAudio = null;
+  }
+  window.speechSynthesis.cancel();
+}
 
 // ================================================================
 // TOAST
