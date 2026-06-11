@@ -79,6 +79,7 @@
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
     <button class="nav-tab" onclick="showScreen('journal')">Journal</button>
     <button class="nav-tab" onclick="showScreen('script')">Script</button>
+    <button class="nav-tab" onclick="showScreen('dialogues')">Dialogues</button>
     <button class="nav-tab" onclick="showScreen('patterns')">Patterns</button>
   </div>
 </nav>
@@ -221,6 +222,25 @@
 
 </div>
 
+<!-- DIALOGUES -->
+<div class="screen" id="screen-dialogues">
+
+  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Dialogues</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Real PR Spanish conversations you'll actually have. Shadow the whole exchange as one unit. Both sides. That's how chunks become automatic.</div>
+
+  <div id="dialogues-list"></div>
+
+  <!-- Add dialogue -->
+  <div class="card" style="margin-top:12px;">
+    <div class="section-label">Add new dialogue</div>
+    <input type="text" id="dlg-title" placeholder="Title e.g. At the gym..." style="margin-bottom:8px;" />
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Lines — one per row, format: Spanish | English</div>
+    <textarea id="dlg-lines" placeholder="¿Cuándo llegas? | When are you getting here?&#10;Ya llego. | I'm almost there.&#10;Ya llegué. | I'm here." style="min-height:100px;font-size:12px;margin-bottom:10px;"></textarea>
+    <button class="btn btn-accent btn-full" onclick="addDialogue()">+ Add Dialogue</button>
+  </div>
+
+</div>
+
 <!-- PATTERNS -->
 <div class="screen" id="screen-patterns">
 
@@ -305,6 +325,7 @@ function showScreen(name) {
   if (name === 'journal') renderJournal();
   if (name === 'script') renderScript();
   if (name === 'patterns') renderPatterns();
+  if (name === 'dialogues') renderDialogues();
 }
 
 // ================================================================
@@ -597,9 +618,11 @@ function toggleOwned(id) {
 }
 
 function deleteSentence(id) {
+  if (!confirm('Delete this sentence?')) return;
   sentences = sentences.filter(x => x.id!==id);
   saveSentences();
   renderJournal();
+  showToast('Deleted');
 }
 
 function setFilter(f) {
@@ -797,8 +820,10 @@ function toggleScriptOwned(id) {
 }
 
 function deleteScriptSentence(id) {
+  if (!confirm('Delete this sentence?')) return;
   scriptSentences = scriptSentences.filter(x=>x.id!==id);
   saveScript(); renderScript();
+  showToast('Deleted');
 }
 
 function addScriptSentence() {
@@ -837,6 +862,138 @@ function renderScript() {
         <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
         <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
         <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ================================================================
+// DIALOGUES
+// ================================================================
+const DEFAULT_DIALOGUES = [
+  { id:1, title:'Llegando — Arriving', owned:false, lines:[
+    {es:'¿Cuándo llegas?', en:'When are you getting here?'},
+    {es:'Ya llego.', en:'I\'m almost there.'},
+    {es:'Ya llegué.', en:'I\'m here.'}
+  ]},
+  { id:2, title:'Saliendo — Leaving', owned:false, lines:[
+    {es:'¿Pa ónde vas?', en:'Where are you going?'},
+    {es:'Voy pal gym.', en:'I\'m going to the gym.'},
+    {es:'Vuelvo en un rato.', en:'I\'ll be back in a little while.'}
+  ]},
+  { id:3, title:'El café — Morning coffee', owned:false, lines:[
+    {es:'¿Ya tomaste el café?', en:'Did you have your coffee yet?'},
+    {es:'Ahorita lo pongo.', en:'I\'m putting it on right now.'},
+    {es:'Ya está listo.', en:'It\'s ready now.'}
+  ]},
+  { id:4, title:'En el gym — At the gym', owned:false, lines:[
+    {es:'¿Cuánto tiempo llevas aquí?', en:'How long have you been here?'},
+    {es:'Como una hora.', en:'About an hour.'},
+    {es:'¿Ya vas a salir?', en:'Are you heading out already?'},
+    {es:'Sí, ya voy.', en:'Yeah, I\'m heading out.'}
+  ]},
+  { id:5, title:'Con las nenas — With your daughters', owned:false, lines:[
+    {es:'¿Cómo estás Papi?', en:'How are you Dad?'},
+    {es:'Aquí, tranquilo. ¿Y tú?', en:'Here, relaxed. And you?'},
+    {es:'Bien, extrañándote.', en:'Good, missing you.'}
+  ]}
+];
+
+let dialogues = loadData('dialogues_v1', DEFAULT_DIALOGUES);
+function saveDialogues() { saveData('dialogues_v1', dialogues); }
+
+let dlgPlaying = false;
+let dlgCurrentId = null;
+
+function addDialogue() {
+  const title = document.getElementById('dlg-title').value.trim();
+  const raw = document.getElementById('dlg-lines').value.trim();
+  if (!title || !raw) return;
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean).map(l => {
+    const parts = l.split('|');
+    return { es: (parts[0]||'').trim(), en: (parts[1]||'').trim() };
+  }).filter(l => l.es);
+  if (!lines.length) return;
+  dialogues.push({ id: Date.now(), title, owned: false, lines });
+  saveDialogues();
+  document.getElementById('dlg-title').value = '';
+  document.getElementById('dlg-lines').value = '';
+  renderDialogues();
+  showToast('Dialogue added ✓');
+}
+
+function deleteDialogue(id) {
+  dialogues = dialogues.filter(d => d.id !== id);
+  saveDialogues();
+  renderDialogues();
+  showToast('Deleted');
+}
+
+function toggleDialogueOwned(id) {
+  const d = dialogues.find(x => x.id === id);
+  if (d) { d.owned = !d.owned; saveDialogues(); renderDialogues(); }
+}
+
+function playDialogue(id) {
+  const d = dialogues.find(x => x.id === id);
+  if (!d) return;
+  dlgCurrentId = id;
+  dlgPlaying = true;
+  const btn = document.getElementById('dlg-play-' + id);
+  if (btn) btn.textContent = '⏹ Stop';
+  playDialogueLine(id, 0);
+}
+
+function stopDialogue(id) {
+  ttsStop();
+  dlgPlaying = false;
+  dlgCurrentId = null;
+  const btn = document.getElementById('dlg-play-' + id);
+  if (btn) btn.textContent = '▶ Play All';
+  // Reset line highlights
+  const d = dialogues.find(x => x.id === id);
+  if (d) d.lines.forEach((_, i) => {
+    const row = document.getElementById('dlg-line-' + id + '-' + i);
+    if (row) row.style.background = 'rgba(255,255,255,0.02)';
+  });
+}
+
+function playDialogueLine(id, idx) {
+  const d = dialogues.find(x => x.id === id);
+  if (!d || !dlgPlaying || dlgCurrentId !== id) return;
+  if (idx >= d.lines.length) { stopDialogue(id); return; }
+  // Highlight current line
+  d.lines.forEach((_, i) => {
+    const row = document.getElementById('dlg-line-' + id + '-' + i);
+    if (row) row.style.background = i === idx ? 'rgba(212,240,60,0.08)' : 'rgba(255,255,255,0.02)';
+  });
+  ttsSpeak(d.lines[idx].es, () => {
+    setTimeout(() => playDialogueLine(id, idx + 1), 1500);
+  }, 0.85);
+}
+
+function renderDialogues() {
+  const el = document.getElementById('dialogues-list');
+  if (!el) return;
+  if (!dialogues.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 16px;font-size:13px;">No dialogues yet. Add one below.</div>';
+    return;
+  }
+  el.innerHTML = dialogues.map(d => `
+    <div class="card" style="margin-bottom:12px;${d.owned ? 'opacity:0.5;border-color:rgba(79,207,138,0.3);' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--accent);">${d.title}</div>
+        <div style="display:flex;gap:6px;">
+          <button id="dlg-play-${d.id}" class="btn btn-sm" onclick="dlgPlaying&&dlgCurrentId===${d.id}?stopDialogue(${d.id}):playDialogue(${d.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play All</button>
+          <button class="btn btn-sm" onclick="toggleDialogueOwned(${d.id})" style="color:${d.owned ? 'var(--success)' : 'var(--muted)'};">${d.owned ? '✓' : 'Own'}</button>
+          <button class="btn btn-sm" onclick="deleteDialogue(${d.id})" style="color:var(--muted);">✕</button>
+        </div>
+      </div>
+      <div style="border-left:2px solid rgba(212,240,60,0.3);padding-left:10px;">
+        ${d.lines.map((l, i) => `
+          <div id="dlg-line-${d.id}-${i}" style="padding:6px 8px;border-radius:5px;margin-bottom:4px;background:rgba(255,255,255,0.02);transition:background 0.2s;">
+            <div style="font-size:12px;color:var(--text);font-style:italic;">${l.es}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px;">${l.en}</div>
+          </div>`).join('')}
       </div>
     </div>`).join('');
 }
