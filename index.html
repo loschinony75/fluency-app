@@ -799,7 +799,10 @@ function recallGotIt() {
   const s = recallQueue[recallIdx];
   if (s) {
     const orig = scriptSentences.find(x => x.id == s.id);
-    if (orig) { orig.owned = true; saveScript(); }
+    if (orig) {
+      orig.owned = true;
+      try { saveData('script_v2', scriptSentences); } catch(e) {}
+    }
   }
   recallIdx++;
   showRecallCard();
