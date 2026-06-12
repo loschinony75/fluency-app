@@ -857,12 +857,27 @@ function playScriptSentence(id) {
   if (s) ttsSpeak(s.es, null, 0.85);
 }
 
+function addScriptSentence() {
+  const es = document.getElementById('script-es').value.trim();
+  const en = document.getElementById('script-en').value.trim();
+  if (!es) return;
+  scriptSentences.push({id:Date.now(),es,en,owned:false});
+  saveScript();
+  document.getElementById('script-es').value='';
+  document.getElementById('script-en').value='';
+  setScriptMode('shadow');
+  renderScript();
+  showToast('Added to script ✓');
+}
+
 function renderScript() {
   const owned = scriptSentences.filter(s=>s.owned).length;
   const lbl = document.getElementById('script-progress-label');
   if (lbl) lbl.innerHTML = `<span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span> · <span style="color:var(--muted);">Shadow first → then Recall</span>`;
   const el = document.getElementById('script-sentences');
   if (!el) return;
+  const shadowDiv = document.getElementById('shadow-mode');
+  if (shadowDiv) shadowDiv.style.display = 'block';
   el.innerHTML = scriptSentences.map(s => `
     <div class="scard" style="${s.owned?'opacity:0.5;border-color:rgba(79,207,138,0.3);':''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
