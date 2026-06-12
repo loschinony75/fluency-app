@@ -776,12 +776,17 @@ function playRecallSentence(id) {
 }
 
 function rateRecall(rating) {
+  const s = recallQueue[recallIdx];
+  if (!s) { renderRecall(); return; }
+
   if (rating === 'got-it') {
-    const s = recallQueue[recallIdx];
+    // Mark owned
     const orig = scriptSentences.find(x => x.id == s.id);
     if (orig) { orig.owned = true; saveScript(); }
-    recallIdx++;
-    if (recallIdx >= recallQueue.length) {
+    // Remove from queue
+    recallQueue.splice(recallIdx, 1);
+    // Check if queue is empty
+    if (recallQueue.length === 0) {
       const el = document.getElementById('recall-container');
       if (el) el.innerHTML = `
         <div style="text-align:center;padding:40px 16px;">
@@ -791,12 +796,16 @@ function rateRecall(rating) {
           <button class="btn btn-accent" style="margin-top:16px;" onclick="renderRecall()">Go again</button>
         </div>`;
       renderScript();
-    } else {
-      showRecallCard();
+      return;
     }
+    // Keep index in bounds
+    if (recallIdx >= recallQueue.length) recallIdx = 0;
+    showRecallCard();
   } else {
-    const s = recallQueue.splice(recallIdx, 1)[0];
+    // Again — move current to end of queue
+    recallQueue.splice(recallIdx, 1);
     recallQueue.push(s);
+    // Keep index in bounds
     if (recallIdx >= recallQueue.length) recallIdx = 0;
     showRecallCard();
   }
