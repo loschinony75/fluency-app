@@ -610,7 +610,7 @@ function addSentence() {
 }
 
 function toggleOwned(id) {
-  const s = sentences.find(x => x.id===id);
+  const s = sentences.find(x => x.id == id);
   if (!s) return;
   s.status = s.status==='owned' ? 'new' : 'owned';
   saveSentences();
@@ -619,7 +619,7 @@ function toggleOwned(id) {
 
 function deleteSentence(id) {
   if (!confirm('Delete this sentence?')) return;
-  sentences = sentences.filter(x => x.id!==id);
+  sentences = sentences.filter(x => x.id != id);
   saveSentences();
   renderJournal();
   showToast('Deleted');
@@ -821,7 +821,7 @@ function toggleScriptOwned(id) {
 
 function deleteScriptSentence(id) {
   if (!confirm('Delete this sentence?')) return;
-  scriptSentences = scriptSentences.filter(x=>x.id!==id);
+  scriptSentences = scriptSentences.filter(x => x.id != id);
   saveScript(); renderScript();
   showToast('Deleted');
 }
@@ -922,7 +922,8 @@ function addDialogue() {
 }
 
 function deleteDialogue(id) {
-  dialogues = dialogues.filter(d => d.id !== id);
+  if (!confirm('Delete this dialogue?')) return;
+  dialogues = dialogues.filter(d => d.id != id);
   saveDialogues();
   renderDialogues();
   showToast('Deleted');
