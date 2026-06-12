@@ -683,6 +683,7 @@ const DEFAULT_SCRIPT = [
 ];
 
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
+function saveScript() { saveData('script_v2', scriptSentences); }
 let scriptMode = 'shadow';
 
 function setScriptMode(mode) {
@@ -799,10 +800,7 @@ function recallGotIt() {
   const s = recallQueue[recallIdx];
   if (s) {
     const orig = scriptSentences.find(x => x.id == s.id);
-    if (orig) {
-      orig.owned = true;
-      try { saveData('script_v2', scriptSentences); } catch(e) {}
-    }
+    if (orig) { orig.owned = true; saveScript(); }
   }
   recallIdx++;
   showRecallCard();
