@@ -78,7 +78,7 @@
   <div class="nav-tabs" id="main-nav">
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
     <button class="nav-tab" onclick="showScreen('journal')">Journal</button>
-    <button class="nav-tab" onclick="showScreen('script')">Script</button>
+    <button class="nav-tab" onclick="showScreen('script')">Islands</button>
     <button class="nav-tab" onclick="showScreen('dialogues')">Dialogues</button>
     <button class="nav-tab" onclick="showScreen('patterns')">Patterns</button>
   </div>
@@ -105,26 +105,20 @@
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="today-progress" style="width:0%"></div></div>
   <div style="font-size:11px;color:var(--muted);margin-bottom:14px;" id="today-label">0 of 6 steps complete</div>
 
-  <!-- Steps -->
+  <!-- Six steps -->
   <div id="steps-container"></div>
 
-  <!-- Today's Q&A -->
-  <div class="qa-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div>
-        <div class="section-label">Today's Q&A</div>
-        <span id="qa-tense-badge" style="font-size:10px;font-weight:700;border-radius:4px;padding:2px 7px;border:1px solid;display:inline-block;text-transform:uppercase;"></span>
-      </div>
-      <button id="qa-play-btn" onclick="playAllQA()" style="background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">▶ Play All</button>
-    </div>
-    <div id="qa-desc" style="font-size:11px;color:var(--muted);margin-bottom:10px;"></div>
-    <div id="qa-rows"></div>
+  <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px;">
+    <strong style="color:var(--accent);">One non-negotiable:</strong> Speak before any app. Everything else supports that.
   </div>
 
-  <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;">
-    <strong style="color:var(--accent);">One non-negotiable:</strong> Do the speaking exercise before any app. 15 minutes on camera. Everything else supports that.
-  </div>
+</div>
 
+<!-- STEP DETAIL SCREEN -->
+<div class="screen" id="screen-step-detail">
+  <button onclick="showScreen('today')" style="background:none;border:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;padding:0;margin-bottom:16px;">← Back to Today</button>
+  <div id="step-detail-content"></div>
+  <button id="step-mark-done-btn" class="btn btn-accent btn-full" style="margin-top:20px;justify-content:center;" onclick="markCurrentStepDone()">✓ Mark Done</button>
 </div>
 
 <!-- JOURNAL — Correction Journal -->
@@ -165,8 +159,14 @@
 <!-- SCRIPT -->
 <div class="screen" id="screen-script">
 
-  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Script — Shadow & Recall</div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Shadow first until the sound is familiar. Then switch to Recall — see English, produce Spanish from memory before revealing. The struggle is the learning.</div>
+  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Islands — Shadow & Recall</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Pick your island for today. Shadow first, then Recall. One island at a time.</div>
+
+  <!-- Island selector -->
+  <div style="margin-bottom:14px;">
+    <div class="section-label">Today's island</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;" id="island-selector"></div>
+  </div>
 
   <!-- Mode toggle -->
   <div style="display:flex;gap:6px;margin-bottom:16px;">
@@ -320,6 +320,10 @@ function showScreen(name) {
   });
   const s = document.getElementById('screen-' + name);
   if (s) s.classList.add('active');
+  // Hide nav on detail screens
+  const nav = document.getElementById('main-nav');
+  const navScreens = ['today','journal','script','dialogues','patterns'];
+  if (nav) nav.style.display = navScreens.includes(name) ? 'flex' : 'none';
   ttsStop();
   if (name === 'today') initToday();
   if (name === 'journal') renderJournal();
@@ -429,49 +433,281 @@ function playWakeupIdx(i) {
 // TODAY STEPS
 // ================================================================
 const STEPS = [
-  { id:'walk',   emoji:'🚶', title:'Walk — HyperLingua in ears',        desc:'HyperLingua → 300 Q&A → Listen & Repeat → phone in pocket. Same 5 questions all week.',                    time:'20 min', color:'var(--purple)', action: ()=>markStep('walk') },
-  { id:'coffee', emoji:'☕', title:'Coffee — shadow your script',         desc:'Open Script tab → read each sentence out loud with your ElevenLabs audio playing. Same sentences all week.', time:'10 min', color:'var(--blue)',   action: ()=>showScreen('script') },
-  { id:'speak',  emoji:'🎙', title:'Speak — 3 x 5 min recordings',       desc:'BEFORE any app. Phone camera. Tell your story 3 times. Find 1 gap after each pass. Add to Journal.',         time:'20 min', color:'var(--accent)', action: ()=>markStep('speak') },
-  { id:'recall', emoji:'⚡', title:'HyperLingua — Active Recall',         desc:"Same 5 Q&A questions → Active Recall mode → see English → produce Spanish. Struggle is the learning.",       time:'20 min', color:'var(--accent)', action: ()=>markStep('recall') },
-  { id:'music',  emoji:'🎵', title:'Music — same PR song all week',       desc:'Spotify → lyrics visible. Day 1-3: absorb. Day 4-7: sing along. After: write 1 line that stuck.',            time:'20 min', color:'var(--purple)', action: ()=>{ window.open('https://open.spotify.com/search/nicky%20jam','_blank'); markStep('music'); } },
-  { id:'night',  emoji:'🌙', title:'Before sleep — Journal Recall + write', desc:'Open Journal → say each sentence before reading it → then write 3 sentences by hand on paper.',          time:'15 min', color:'var(--warn)',   action: ()=>showScreen('journal') },
+  {
+    id: 'podcast',
+    emoji: '🎧',
+    title: 'Podcast',
+    subtitle: 'Walk · Deep Listen · Speak & Write',
+    color: 'var(--blue)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px;">🎧 Podcast</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Three sections — walk, listen, then speak and write.</div>
+
+      <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">This week's section</div>
+        <div style="font-size:12px;color:var(--text);">Rocky and Kevin — beginning to "aprendí a la mala"</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">Same section every day this week. Deeper each time.</div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Walk — Passive Listen</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Put the podcast section in your ears<br>
+          • Walk normally, phone in pocket<br>
+          • Just let it wash over you — no effort
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Deep Listen</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Sit down — notifications off — nothing else<br>
+          • Play the same section start to finish<br>
+          • Full attention — just understand what's happening<br>
+          • Don't write, don't analyze — when it ends, stop
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read the Transcript</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Open the Rocky and Kevin transcript<br>
+          • Read the same section straight through<br>
+          • Don't stop to look up words<br>
+          • Only write a word if you see it 3+ times
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Summarize Out Loud</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Press record on your phone<br>
+          • Say in Spanish what the section was about<br>
+          • Even one sentence is enough — just try<br>
+          • If a word doesn't come, say it in English and keep going<br>
+          • Example: <em style="color:var(--accent);">Rocky y Kevin hablan de aprender español y el miedo de hablar.</em>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Write & Correct</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Write 2-3 sentences in Spanish here in chat with Claude<br>
+          • Claude corrects them<br>
+          • Handwrite the corrected version — Spanish left, English right
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑥ Shadow</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Say each corrected sentence out loud 3 times<br>
+          • Match the rhythm — not just the words<br>
+          • Add to your Journal tab in the app
+        </div>
+      </div>
+
+      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Same every day this week</div>
+        <div style="font-size:11px;color:var(--muted);">Don't switch sections mid-week. The compound effect happens through repetition of the same content — deeper each day.</div>
+      </div>`
+  },
+  {
+    id: 'fluency',
+    emoji: '📱',
+    title: 'Fluency App',
+    subtitle: 'Read · Recall · Speak & Correct',
+    color: 'var(--accent)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;">📱 Fluency App</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Read your Spanish, recall it, then speak and get corrected.</div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Read Your Islands</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Open Fluency app<br>
+          • Read today's island sentences slowly<br>
+          • Read your Dialogues tab<br>
+          • Read your Journal tab<br>
+          • No speaking, no writing — just absorb<br>
+          • If a sentence jumps out say it once softly then keep reading
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Read at Your Level</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Pick something you understand at least 80% of<br>
+          • Rocky and Kevin transcript — one section<br>
+          • Or Maldeamores subtitles — one scene<br>
+          • Or your correction sentences from this week<br>
+          • Read straight through without stopping<br>
+          • Don't look up every word — if you don't know it keep going<br>
+          • Only write a word if you've seen it 3+ times<br>
+          • When done — say out loud in Spanish what it was about
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Recall</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Switch to Recall mode<br>
+          • Today's island — see English, say Spanish out loud, then reveal<br>
+          • Got it → moving toward automatic<br>
+          • Again → write it by hand immediately in notebook Section 2<br>
+          • Again sentences reviewed first thing next morning
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak & Correct</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Press record — morning routine, military background, free talk — 5 min<br>
+          • Write 3-5 sentences in Spanish in your chat with Claude<br>
+          • Claude corrects them<br>
+          • Handwrite each correction — Spanish left, English right<br>
+          • Say each correction out loud 3 times matching the rhythm
+        </div>
+      </div>`
+  },
+  {
+    id: 'hyperlingua',
+    emoji: '🔁',
+    title: 'HyperLingua',
+    subtitle: 'Q&A active recall — 10 sentences',
+    color: 'var(--purple)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--purple);margin-bottom:4px;">🔁 HyperLingua</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">General conversational patterns — always after your personal sentences.</div>
+      <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+        • Open HyperLingua<br>
+        • Your saved 5 Q&A questions<br>
+        • Listen and Repeat 3 times first<br>
+        • Then switch to Active Recall<br>
+        • See English — produce Spanish out loud before revealing<br>
+        • Stop after 10 sentences — no more
+      </div>`
+  },
+  {
+    id: 'music',
+    emoji: '🎵',
+    title: 'Music',
+    subtitle: 'Same PR song all week',
+    color: 'var(--purple)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--purple);margin-bottom:4px;">🎵 Music</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Same Puerto Rican Spanish song all week. Build it gradually.</div>
+      <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+        • <strong style="color:var(--text);">Day 1-3</strong> — listen and absorb, don't force it<br>
+        • <strong style="color:var(--text);">Day 4-7</strong> — sing along with lyrics on screen<br>
+        • After each session — say ONE line that stuck out loud<br>
+        • Write it in Spanish in your notebook<br>
+        • Write English next to it<br>
+        • Add any line with an unknown word to your Journal tab
+      </div>`
+  },
+  {
+    id: 'winddown',
+    emoji: '📺',
+    title: 'Wind Down',
+    subtitle: 'Maldeamores or Nicky Jam — passive',
+    color: 'var(--success)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--success);margin-bottom:4px;">📺 Wind Down</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Passive Puerto Rican Spanish while you relax. No effort required.</div>
+      <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+        • Put on Maldeamores or Nicky Jam<br>
+        • Subtitles on in Spanish<br>
+        • No effort — just let it play<br>
+        • If one line catches your ear — repeat it once, keep watching<br>
+        • Your brain is consolidating everything from today
+      </div>`
+  },
+  {
+    id: 'sleep',
+    emoji: '✍️',
+    title: 'Before Sleep',
+    subtitle: '3 sentences by hand',
+    color: 'var(--warn)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--warn);margin-bottom:4px;">✍️ Before Sleep</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Close the loop on your day. What your brain hears last gets consolidated overnight.</div>
+      <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+        • Open your notebook to Section 3<br>
+        • Write 3 sentences in Spanish about something real that happened today<br>
+        • Imperfect is fine — no looking anything up<br>
+        • Put the pen down — done<br><br>
+        • <strong style="color:var(--warn);">Sunday only</strong> — cover one side of Section 1 and test yourself on the week's corrections
+      </div>
+
+      <div style="margin-top:16px;background:rgba(240,164,64,0.06);border:1px solid rgba(240,164,64,0.2);border-radius:8px;padding:12px 14px;">
+        <div style="font-size:11px;color:var(--warn);font-weight:700;margin-bottom:6px;">Your Notebook — 3 Sections</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.9;">
+          <strong style="color:var(--text);">Section 1</strong> — Corrections from Claude chat<br>
+          <strong style="color:var(--text);">Section 2</strong> — Again sentences from recall<br>
+          <strong style="color:var(--text);">Section 3</strong> — Before sleep sentences
+        </div>
+      </div>`
+  }
 ];
 
-function getTodayKey() { const d=new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
-function getStepsDone() { return loadData('steps_'+getTodayKey(), {}); }
-function markStep(id) {
-  const done = getStepsDone();
-  done[id] = true;
-  saveData('steps_'+getTodayKey(), done);
-  renderSteps();
-  updateProgress();
-  showToast('✓ Done');
+let currentStepId = null;
+
+function openStepDetail(id) {
+  const step = STEPS.find(s => s.id === id);
+  if (!step) return;
+  currentStepId = id;
+  const content = document.getElementById('step-detail-content');
+  if (content) content.innerHTML = step.detail;
+  const done = getTodayDone();
+  const btn = document.getElementById('step-mark-done-btn');
+  if (btn) {
+    if (done[id]) {
+      btn.textContent = '✓ Already done';
+      btn.style.background = 'var(--success)';
+      btn.style.opacity = '0.7';
+    } else {
+      btn.textContent = '✓ Mark Done';
+      btn.style.background = 'var(--accent)';
+      btn.style.opacity = '1';
+    }
+  }
+  showScreen('step-detail');
 }
 
+function markCurrentStepDone() {
+  if (!currentStepId) return;
+  const done = getTodayDone();
+  done[currentStepId] = true;
+  saveTodayDone(done);
+  const btn = document.getElementById('step-mark-done-btn');
+  if (btn) { btn.textContent = '✓ Done'; btn.style.background = 'var(--success)'; }
+  setTimeout(() => showScreen('today'), 600);
+}
+
+function getTodayKey2() { const d=new Date(); return `done_${d.getFullYear()}_${d.getMonth()}_${d.getDate()}`; }
+function getTodayDone() { return loadData(getTodayKey2(), {}); }
+function saveTodayDone(done) { saveData(getTodayKey2(), done); }
+
 function renderSteps() {
-  const done = getStepsDone();
+  const done = getTodayDone();
   const container = document.getElementById('steps-container');
   if (!container) return;
   container.innerHTML = STEPS.map(s => {
     const isDone = !!done[s.id];
-    return `<div class="step${isDone?' done':''}" onclick="stepAction('${s.id}')" style="background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.06);">
-      <div class="step-check" style="border-color:${s.color};color:${s.color};">${isDone?'✓':''}</div>
-      <div class="step-body">
-        <div class="step-title" style="color:${s.color};">${s.emoji} ${s.title}</div>
-        <div class="step-desc">${s.desc}</div>
+    return `<div onclick="openStepDetail('${s.id}')" style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.02);border:1px solid ${isDone ? 'rgba(79,207,138,0.3)' : 'rgba(255,255,255,0.06)'};border-radius:10px;padding:13px 14px;margin-bottom:8px;cursor:pointer;${isDone ? 'opacity:0.5;' : ''}-webkit-tap-highlight-color:transparent;">
+      <div style="width:24px;height:24px;border-radius:50%;border:2px solid ${s.color};color:${s.color};display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">${isDone ? '✓' : ''}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:500;color:${s.color};">${s.emoji} ${s.title}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${s.subtitle}</div>
       </div>
-      <div class="step-right"><span>${s.time}</span><span>${isDone?'✓':'→'}</span></div>
+      <div style="color:var(--muted);font-size:12px;">${isDone ? '✓' : '→'}</div>
     </div>`;
   }).join('');
 }
 
-function stepAction(id) {
-  const s = STEPS.find(x => x.id === id);
-  if (s) s.action();
-}
-
 function updateProgress() {
-  const done = getStepsDone();
+  const done = getTodayDone();
   const count = STEPS.filter(s => done[s.id]).length;
   const el = document.getElementById('today-progress');
   const lbl = document.getElementById('today-label');
@@ -584,7 +820,6 @@ function initToday() {
   initWakeup();
   renderSteps();
   updateProgress();
-  initQA();
 }
 
 // ================================================================
@@ -665,6 +900,170 @@ function renderJournal() {
 // ================================================================
 // SCRIPT
 // ================================================================
+// ================================================================
+// ISLANDS
+// ================================================================
+const ISLANDS = [
+  {
+    id: 'rutina',
+    name: 'Mi rutina diaria',
+    emoji: '🌅',
+    color: 'var(--accent)',
+    sentences: [
+      {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
+      {es:'Voy pal baño, me cepillo los dientes y me lavo la cara.', en:'I go to the bathroom, brush my teeth and wash my face.'},
+      {es:'Me tomo un vaso de agua con sal.', en:'I drink a glass of salt water.'},
+      {es:'Salgo a caminar como veinte minutos.', en:'I go out to walk about twenty minutes.'},
+      {es:'Cuando vuelvo, pongo el café y mientras se hace, medito.', en:'When I get back, I put on the coffee and while it\'s brewing, I meditate.'},
+      {es:'Después de meditar me tomo el café con calma.', en:'After meditating I have my coffee calmly.'},
+      {es:'Me gusta el café con leche y un chin de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
+      {es:'Después empiezo a practicar español.', en:'Then I start practicing Spanish.'},
+      {es:'Trato de estudiar como tres horas.', en:'I try to study about three hours.'},
+      {es:'Antes del gym me tomo el batido.', en:'Before the gym I have my smoothie.'},
+      {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
+      {es:'Después del gym voy pa la terapia de sal — me relaja un montón.', en:'After the gym I go to salt therapy — it relaxes me a lot.'},
+      {es:'Cuando termino voy pal súper, llego a casa y preparo la cena.', en:'When I finish I go to the supermarket, get home and make dinner.'},
+      {es:'Después de comer me baño y me voy pa la cama.', en:'After eating I shower and go to bed.'},
+    ]
+  },
+  {
+    id: 'historia',
+    name: 'Mi historia',
+    emoji: '🏙',
+    color: 'var(--blue)',
+    sentences: [
+      {es:'Soy de Brooklyn, Nueva York.', en:'I am from Brooklyn, New York.'},
+      {es:'Mis padres son de Puerto Rico.', en:'My parents are from Puerto Rico.'},
+      {es:'Crecí entre dos culturas — la americana y la boricua.', en:'I grew up between two cultures — American and Puerto Rican.'},
+      {es:'De niño vivía en Brooklyn pero siempre sentí esa conexión con la isla.', en:'As a child I lived in Brooklyn but always felt that connection to the island.'},
+      {es:'Tengo raíces puertorriqueñas y me siento orgulloso de eso.', en:'I have Puerto Rican roots and I am proud of that.'},
+      {es:'El español siempre estuvo en mi vida aunque no lo hablaba bien.', en:'Spanish was always in my life even though I didn\'t speak it well.'},
+      {es:'Ahora estoy reconectando con mis raíces a través del español.', en:'Now I am reconnecting with my roots through Spanish.'},
+    ]
+  },
+  {
+    id: 'militar',
+    name: 'Mi servicio militar',
+    emoji: '🎖',
+    color: 'var(--success)',
+    sentences: [
+      {es:'Me alisté en el ejército a los diecinueve años.', en:'I enlisted in the Army at nineteen years old.'},
+      {es:'Me alisté en diciembre de 1995.', en:'I enlisted in December 1995.'},
+      {es:'Serví durante diez años.', en:'I served for ten years.'},
+      {es:'Fui soldado de infantería y policía militar.', en:'I was an infantry soldier and military police.'},
+      {es:'Fui paracaidista también.', en:'I was also a paratrooper.'},
+      {es:'El ejército me enseñó lo que es la verdadera disciplina.', en:'The Army taught me what true discipline is.'},
+      {es:'Serví hasta el 2005.', en:'I served until 2005.'},
+      {es:'Soy veterano discapacitado del ejército americano.', en:'I am a disabled veteran of the US Army.'},
+      {es:'Recibo compensación del gobierno por mi servicio.', en:'I receive government compensation for my service.'},
+      {es:'Mi compensación me permite vivir en España sin trabajar.', en:'My compensation allows me to live in Spain without working.'},
+      {es:'Estoy orgulloso de haber servido.', en:'I am proud to have served.'},
+      {es:'Fui soldado y ahora soy asesor de liderazgo.', en:'I was a soldier and now I am a leadership advisor.'},
+    ]
+  },
+  {
+    id: 'familia',
+    name: 'Mi familia',
+    emoji: '👨‍👧‍👧',
+    color: 'var(--purple)',
+    sentences: [
+      {es:'Tengo dos hijas que viven en Alemania.', en:'I have two daughters who live in Germany.'},
+      {es:'Las extraño pero hablamos seguido.', en:'I miss them but we talk often.'},
+      {es:'Mi familia me da fuerza todos los días.', en:'My family gives me strength every day.'},
+      {es:'Mis hijas van a visitarme en Gran Canaria.', en:'My daughters are going to visit me in Gran Canaria.'},
+      {es:'Aunque estamos lejos, siempre estamos conectados.', en:'Even though we are far, we are always connected.'},
+    ]
+  },
+  {
+    id: 'grancanaria',
+    name: 'Mi plan Gran Canaria',
+    emoji: '🌊',
+    color: 'var(--warn)',
+    sentences: [
+      {es:'Me voy a mudar a Gran Canaria, España.', en:'I am going to move to Gran Canaria, Spain.'},
+      {es:'Mi plan es irme en febrero del 2027.', en:'My plan is to go in February 2027.'},
+      {es:'Voy a vivir en Las Palmas, cerca del mar.', en:'I am going to live in Las Palmas, near the sea.'},
+      {es:'Estoy preparando mi visa de residencia no lucrativa.', en:'I am preparing my non-lucrative residence visa.'},
+      {es:'Gran Canaria tiene un clima perfecto todo el año.', en:'Gran Canaria has perfect weather all year round.'},
+      {es:'El español canario es muy similar al español boricua.', en:'Canarian Spanish is very similar to Puerto Rican Spanish.'},
+      {es:'Estoy emocionado por este nuevo capítulo de mi vida.', en:'I am excited about this new chapter of my life.'},
+    ]
+  },
+  {
+    id: 'espanol',
+    name: 'Mi español',
+    emoji: '🗣',
+    color: 'var(--accent)',
+    sentences: [
+      {es:'Llevo varios meses aprendiendo español.', en:'I have been learning Spanish for several months.'},
+      {es:'Estoy aprendiendo para reconectar con mis raíces.', en:'I am learning to reconnect with my roots.'},
+      {es:'Practico español todos los días.', en:'I practice Spanish every day.'},
+      {es:'Cada día hablo mejor que ayer.', en:'Every day I speak better than yesterday.'},
+      {es:'No me rindo — sigo adelante.', en:'I don\'t give up — I keep going.'},
+      {es:'El español boricua es el que yo quiero hablar.', en:'Puerto Rican Spanish is what I want to speak.'},
+      {es:'Poco a poco me va saliendo más natural.', en:'Little by little it is coming out more naturally.'},
+    ]
+  },
+  {
+    id: 'conectores',
+    name: 'Frases de conexión',
+    emoji: '🔗',
+    color: 'var(--blue)',
+    sentences: [
+      {es:'Salgo ahorita.', en:'I\'m heading out in a bit.'},
+      {es:'Ya volví.', en:'I\'m back.'},
+      {es:'Voy pal baño.', en:'I\'m going to the bathroom.'},
+      {es:'Vuelvo en un rato.', en:'I\'ll be back in a little while.'},
+      {es:'Ya llego.', en:'I\'m almost there.'},
+      {es:'Ya llegué.', en:'I\'m here.'},
+      {es:'Me voy pa la cama.', en:'I\'m going to bed.'},
+      {es:'Aunque a veces tengo sueño, no me quedo en la cama.', en:'Even though I\'m sometimes sleepy, I don\'t stay in bed.'},
+      {es:'Cuando vuelvo, pongo el café.', en:'When I get back, I put on the coffee.'},
+      {es:'Después de meditar me siento tranquilo.', en:'After meditating I feel calm.'},
+      {es:'Aprendí a la mala.', en:'I learned the hard way.'},
+      {es:'El miedo hay que dejarlo.', en:'You have to let go of the fear.'},
+      {es:'Me salió natural.', en:'It came out naturally.'},
+    ]
+  }
+];
+
+let currentIslandId = loadData('current_island', 'rutina');
+
+function renderIslandSelector() {
+  const el = document.getElementById('island-selector');
+  if (!el) return;
+  el.innerHTML = ISLANDS.map(island => `
+    <button onclick="selectIsland('${island.id}')" style="font-size:11px;padding:6px 10px;border-radius:6px;border:1px solid ${island.id === currentIslandId ? island.color : 'var(--border)'};background:${island.id === currentIslandId ? 'rgba(255,255,255,0.05)' : 'none'};color:${island.id === currentIslandId ? island.color : 'var(--muted)'};cursor:pointer;font-family:var(--font-mono);">
+      ${island.emoji} ${island.name}
+    </button>`).join('');
+}
+
+function selectIsland(id) {
+  currentIslandId = id;
+  saveData('current_island', id);
+  const island = ISLANDS.find(x => x.id === id);
+  if (island) {
+    scriptSentences = island.sentences.map((s,i) => ({...s, id: i+1, owned: false}));
+  }
+  renderIslandSelector();
+  setScriptMode('shadow');
+  renderScript();
+  showToast('Island: ' + (island ? island.name : id));
+}
+
+function initIslands() {
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  if (island) {
+    const saved = loadData('island_sentences_' + currentIslandId, null);
+    if (saved) {
+      scriptSentences = saved;
+    } else {
+      scriptSentences = island.sentences.map((s,i) => ({...s, id: i+1, owned: false}));
+    }
+  }
+  renderIslandSelector();
+}
+
 const DEFAULT_SCRIPT = [
   {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
   {es:'Voy pal baño, me cepillo los dientes y me lavo la cara.', en:'I go to the bathroom, brush my teeth and wash my face.'},
@@ -683,7 +1082,7 @@ const DEFAULT_SCRIPT = [
 ];
 
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
-function saveScript() { saveData('script_v2', scriptSentences); }
+function saveScript() { saveData('island_sentences_' + currentIslandId, scriptSentences); }
 let scriptMode = 'shadow';
 
 function setScriptMode(mode) {
@@ -871,9 +1270,11 @@ function addScriptSentence() {
 }
 
 function renderScript() {
+  initIslands();
+  const island = ISLANDS.find(x => x.id === currentIslandId);
   const owned = scriptSentences.filter(s=>s.owned).length;
   const lbl = document.getElementById('script-progress-label');
-  if (lbl) lbl.innerHTML = `<span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span> · <span style="color:var(--muted);">Shadow first → then Recall</span>`;
+  if (lbl) lbl.innerHTML = `<span style="color:${island ? island.color : 'var(--accent)'};">${island ? island.emoji + ' ' + island.name : 'Script'}</span> · <span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span>`;
   const el = document.getElementById('script-sentences');
   if (!el) return;
   const shadowDiv = document.getElementById('shadow-mode');
