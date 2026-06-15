@@ -81,6 +81,7 @@
     <button class="nav-tab" onclick="showScreen('script')">Islands</button>
     <button class="nav-tab" onclick="showScreen('dialogues')">Dialogues</button>
     <button class="nav-tab" onclick="showScreen('patterns')">Patterns</button>
+    <button class="nav-tab" onclick="showScreen('vocab')">Vocab</button>
   </div>
 </nav>
 
@@ -251,6 +252,19 @@
 
 </div>
 
+<!-- VOCAB -->
+<div class="screen" id="screen-vocab">
+
+  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Vocabulary</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:6px;line-height:1.6;">The most-used Spanish words — each in a sentence about your real life. Tap ▶ to hear it. Shadow the sentence, not the isolated word.</div>
+
+  <!-- Filter by category -->
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="vocab-filter"></div>
+
+  <div id="vocab-list"></div>
+
+</div>
+
 <script>
 // ================================================================
 // STORAGE
@@ -322,7 +336,7 @@ function showScreen(name) {
   if (s) s.classList.add('active');
   // Hide nav on detail screens
   const nav = document.getElementById('main-nav');
-  const navScreens = ['today','journal','script','dialogues','patterns'];
+  const navScreens = ['today','journal','script','dialogues','patterns','vocab'];
   if (nav) nav.style.display = navScreens.includes(name) ? 'flex' : 'none';
   ttsStop();
   if (name === 'today') initToday();
@@ -330,6 +344,7 @@ function showScreen(name) {
   if (name === 'script') renderScript();
   if (name === 'patterns') renderPatterns();
   if (name === 'dialogues') renderDialogues();
+  if (name === 'vocab') renderVocab();
 }
 
 // ================================================================
@@ -445,82 +460,71 @@ const STEPS = [
 
       <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
         <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">This week's section</div>
-        <div style="font-size:12px;color:var(--text);">Rocky and Kevin — beginning to "aprendí a la mala"</div>
+        <div style="font-size:12px;color:var(--text);">This week's podcast — same section every day</div>
         <div style="font-size:10px;color:var(--muted);margin-top:2px;">Same section every day this week. Deeper each time.</div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Walk — Passive Listen</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Walk — Listen</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Put the podcast section in your ears<br>
-          • Walk normally, phone in pocket<br>
-          • Just let it wash over you — no effort
+          Put this week's podcast section in your ears while you walk. Just listen.
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Deep Listen</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Sit down — Listen again</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Sit down — notifications off — nothing else<br>
-          • Play the same section start to finish<br>
-          • Full attention — just understand what's happening<br>
-          • Don't write, don't analyze — when it ends, stop
+          Same section. Full attention. Nothing else. When it ends, stop.
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read the Transcript</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read the transcript</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open the Rocky and Kevin transcript<br>
-          • Read the same section straight through<br>
-          • Don't stop to look up words<br>
-          • Only write a word if you see it 3+ times
+          Same section. Straight through. Don't stop for words.
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Summarize Out Loud</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Press record on your phone<br>
-          • Say in Spanish what the section was about<br>
-          • Even one sentence is enough — just try<br>
-          • If a word doesn't come, say it in English and keep going<br>
-          • Example: <em style="color:var(--accent);">Rocky y Kevin hablan de aprender español y el miedo de hablar.</em>
+          Record in Spanish what the section was about. Keep going even when words don't come.
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Write & Correct</div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Write gaps here</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Write 2-3 sentences in Spanish here in chat with Claude<br>
-          • Claude corrects them<br>
-          • Handwrite the corrected version — Spanish left, English right
+          After recording — write what you couldn't say. Claude corrects it. Handwrite corrections.
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
+      <div style="margin-bottom:12px;">
         <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑥ Shadow</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Say each corrected sentence out loud 3 times<br>
-          • Match the rhythm — not just the words<br>
-          • Add to your Journal tab in the app
+          Say each corrected sentence 3 times out loud matching the rhythm.
         </div>
       </div>
 
       <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Same every day this week</div>
-        <div style="font-size:11px;color:var(--muted);">Don't switch sections mid-week. The compound effect happens through repetition of the same content — deeper each day.</div>
+        <div style="font-size:11px;color:var(--muted);">Don't switch sections. The compound effect happens through deep repetition of the same content.</div>
       </div>`
   },
   {
     id: 'fluency',
     emoji: '📱',
     title: 'Fluency App',
-    subtitle: 'Read · Recall · Speak & Correct',
+    subtitle: 'Read · Recall · Speak & Correct — minimum 30 min',
     color: 'var(--accent)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;">📱 Fluency App</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Read your Spanish, recall it, then speak and get corrected.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Read your Spanish, recall it, then speak and get corrected. Minimum 30 minutes — then go by feel.</div>
+
+      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Flow state rule</div>
+        <div style="font-size:11px;color:var(--muted);">It takes 17 minutes to reach flow. Don't stop before 30 minutes. After that — if focus is strong keep going. If it drops, stop.</div>
+      </div>
 
       <div style="margin-bottom:16px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Read Your Islands</div>
@@ -537,12 +541,10 @@ const STEPS = [
       <div style="margin-bottom:16px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Read at Your Level</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Pick something you understand at least 80% of<br>
-          • Rocky and Kevin transcript — one section<br>
+          • This week's podcast transcript — same section<br>
           • Or Maldeamores subtitles — one scene<br>
           • Or your correction sentences from this week<br>
           • Read straight through without stopping<br>
-          • Don't look up every word — if you don't know it keep going<br>
           • Only write a word if you've seen it 3+ times<br>
           • When done — say out loud in Spanish what it was about
         </div>
@@ -562,9 +564,9 @@ const STEPS = [
       <div style="margin-bottom:16px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak & Correct</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Press record — morning routine, military background, free talk — 5 min<br>
-          • Write 3-5 sentences in Spanish in your chat with Claude<br>
-          • Claude corrects them<br>
+          • Press record — morning routine, military background, free talk<br>
+          • Write what you couldn't say here — Claude corrects it<br>
+          • Also write 2-3 sentences you did say — Claude corrects those too<br>
           • Handwrite each correction — Spanish left, English right<br>
           • Say each correction out loud 3 times matching the rhythm
         </div>
@@ -574,18 +576,22 @@ const STEPS = [
     id: 'hyperlingua',
     emoji: '🔁',
     title: 'HyperLingua',
-    subtitle: 'Q&A active recall — 10 sentences',
+    subtitle: 'Language Patterns — minimum 30 min',
     color: 'var(--purple)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--purple);margin-bottom:4px;">🔁 HyperLingua</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">General conversational patterns — always after your personal sentences.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Language Patterns drill verb patterns across all persons — yo, tú, él, ella, nosotros, ellos. This is how tenses get absorbed without studying grammar.</div>
       <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
         • Open HyperLingua<br>
-        • Your saved 5 Q&A questions<br>
-        • Listen and Repeat 3 times first<br>
-        • Then switch to Active Recall<br>
-        • See English — produce Spanish out loud before revealing<br>
-        • Stop after 10 sentences — no more
+        • Go to Language Patterns<br>
+        • Shadow — listen, pause, repeat out loud<br>
+        • Recall — see English, produce Spanish before revealing<br>
+        • Rate with stars honestly<br>
+        • Minimum 30 minutes — then go by feel
+      </div>
+      <div style="margin-top:12px;background:rgba(196,160,255,0.06);border:1px solid rgba(196,160,255,0.2);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:4px;">Why 30 minutes minimum</div>
+        <div style="font-size:11px;color:var(--muted);">It takes 17 minutes to reach flow state. Stopping before that means you warmed up but never got the deep learning. After 30 minutes go by feel — if focus is strong keep going, if it drops stop.</div>
       </div>`
   },
   {
@@ -1478,6 +1484,92 @@ function playPattern(formula) {
     ttsSpeak(es, ()=>setTimeout(next, 800), 0.85);
   }
   next();
+}
+
+// ================================================================
+// VOCABULARY
+// ================================================================
+const VOCAB = [
+  {word:'quiero',meaning:'I want',category:'verbs',color:'var(--accent)',es:'Quiero vivir cerca del mar en Gran Canaria.',en:'I want to live near the sea in Gran Canaria.'},
+  {word:'necesito',meaning:'I need',category:'verbs',color:'var(--accent)',es:'Necesito practicar español todos los días.',en:'I need to practice Spanish every day.'},
+  {word:'puedo',meaning:'I can',category:'verbs',color:'var(--accent)',es:'Puedo hablar español mejor que antes.',en:'I can speak Spanish better than before.'},
+  {word:'tengo',meaning:'I have',category:'verbs',color:'var(--accent)',es:'Tengo dos hijas que viven en Alemania.',en:'I have two daughters who live in Germany.'},
+  {word:'voy',meaning:"I go / I'm going",category:'verbs',color:'var(--accent)',es:'Voy pal gym tres veces a la semana.',en:'I go to the gym three times a week.'},
+  {word:'soy',meaning:'I am',category:'verbs',color:'var(--accent)',es:'Soy veterano del ejército americano y soy de Brooklyn.',en:'I am a US Army veteran and I am from Brooklyn.'},
+  {word:'estoy',meaning:'I am (right now)',category:'verbs',color:'var(--accent)',es:'Estoy aprendiendo español para mudarme a Gran Canaria.',en:'I am learning Spanish to move to Gran Canaria.'},
+  {word:'me levanto',meaning:'I get up',category:'verbs',color:'var(--accent)',es:'Me levanto como a las seis y media todos los días.',en:'I get up around six thirty every day.'},
+  {word:'salgo',meaning:'I go out',category:'verbs',color:'var(--accent)',es:'Salgo a caminar como veinte minutos después del café.',en:'I go out to walk about twenty minutes after coffee.'},
+  {word:'vuelvo',meaning:'I come back',category:'verbs',color:'var(--accent)',es:'Cuando vuelvo del gym me siento mucho mejor.',en:'When I come back from the gym I feel much better.'},
+  {word:'porque',meaning:'because',category:'connectors',color:'var(--blue)',es:'Estudio español porque me voy a mudar a España.',en:'I study Spanish because I am going to move to Spain.'},
+  {word:'cuando',meaning:'when',category:'connectors',color:'var(--blue)',es:'Cuando vuelvo de caminar, pongo el café.',en:'When I get back from walking, I put on the coffee.'},
+  {word:'después',meaning:'after / then',category:'connectors',color:'var(--blue)',es:'Después de meditar me tomo el café con calma.',en:'After meditating I have my coffee calmly.'},
+  {word:'antes',meaning:'before',category:'connectors',color:'var(--blue)',es:'Antes del gym me tomo el batido de proteína.',en:'Before the gym I have my protein smoothie.'},
+  {word:'mientras',meaning:'while',category:'connectors',color:'var(--blue)',es:'Mientras se hace el café, medito diez minutos.',en:'While the coffee brews, I meditate ten minutes.'},
+  {word:'aunque',meaning:'even though',category:'connectors',color:'var(--blue)',es:'Aunque a veces tengo sueño, no me quedo en la cama.',en:"Even though I'm sometimes sleepy, I don't stay in bed."},
+  {word:'así que',meaning:'so / therefore',category:'connectors',color:'var(--blue)',es:'Me gusta la terapia de sal, así que voy seguido.',en:'I like salt therapy, so I go often.'},
+  {word:'también',meaning:'also / too',category:'connectors',color:'var(--blue)',es:'Fui soldado de infantería y también fui paracaidista.',en:'I was an infantry soldier and I was also a paratrooper.'},
+  {word:'pero',meaning:'but',category:'connectors',color:'var(--blue)',es:'Tengo sueño pero me levanto de todas formas.',en:'I am sleepy but I get up anyway.'},
+  {word:'ya',meaning:'already / right now',category:'connectors',color:'var(--blue)',es:'Ya volví del gym, ahora a preparar la cena.',en:"I'm back from the gym, now to prepare dinner."},
+  {word:'ahorita',meaning:'in a bit (PR)',category:'time',color:'var(--success)',es:'Salgo ahorita, dame un momento.',en:"I'm heading out in a bit, give me a moment."},
+  {word:'siempre',meaning:'always',category:'time',color:'var(--success)',es:'Siempre me levanto temprano aunque tenga sueño.',en:"I always get up early even if I'm sleepy."},
+  {word:'nunca',meaning:'never',category:'time',color:'var(--success)',es:'Nunca me salto el desayuno.',en:'I never skip breakfast.'},
+  {word:'a veces',meaning:'sometimes',category:'time',color:'var(--success)',es:'A veces medito antes de tomar el café.',en:'Sometimes I meditate before having coffee.'},
+  {word:'todos los días',meaning:'every day',category:'time',color:'var(--success)',es:'Practico español todos los días sin falta.',en:'I practice Spanish every day without fail.'},
+  {word:'la gente',meaning:'people',category:'people',color:'var(--purple)',es:'La gente en Gran Canaria habla español caribeño.',en:'People in Gran Canaria speak Caribbean Spanish.'},
+  {word:'mi familia',meaning:'my family',category:'people',color:'var(--purple)',es:'Mi familia es de Puerto Rico y me siento bien orgulloso de eso.',en:'My family is from Puerto Rico and I feel really proud of that.'},
+  {word:'mis hijas',meaning:'my daughters',category:'people',color:'var(--purple)',es:'Mis hijas viven en Alemania pero hablamos seguido.',en:'My daughters live in Germany but we talk often.'},
+  {word:'me siento',meaning:'I feel',category:'feelings',color:'var(--warn)',es:'Me siento bien cuando hablo español sin pensar.',en:'I feel good when I speak Spanish without thinking.'},
+  {word:'me gusta',meaning:'I like',category:'feelings',color:'var(--warn)',es:'Me gusta el café con leche y un chin de azúcar.',en:'I like coffee with milk and a little bit of sugar.'},
+  {word:'estoy cansado',meaning:"I'm tired",category:'feelings',color:'var(--warn)',es:'Estoy cansado después del gym pero me siento bien.',en:"I'm tired after the gym but I feel good."},
+  {word:'me relaja',meaning:'it relaxes me',category:'feelings',color:'var(--warn)',es:'La terapia de sal me relaja un montón después del gym.',en:'Salt therapy relaxes me a lot after the gym.'},
+];
+
+let vocabFilter = 'all';
+
+function renderVocabFilter() {
+  const el = document.getElementById('vocab-filter');
+  if (!el) return;
+  const categories = ['all', ...new Set(VOCAB.map(v => v.category))];
+  const labels = {all:'All',verbs:'Verbos',connectors:'Conectores',time:'Tiempo',people:'Personas',feelings:'Sentimientos'};
+  el.innerHTML = categories.map(c => `
+    <button onclick="setVocabFilter('${c}')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${c===vocabFilter?'var(--accent)':'var(--border)'};background:${c===vocabFilter?'rgba(212,240,60,0.08)':'none'};color:${c===vocabFilter?'var(--accent)':'var(--muted)'};cursor:pointer;font-family:var(--font-mono);">${labels[c]||c}</button>`).join('');
+}
+
+function setVocabFilter(cat) { vocabFilter=cat; renderVocab(); }
+
+function renderVocab() {
+  renderVocabFilter();
+  const el = document.getElementById('vocab-list');
+  if (!el) return;
+  const list = vocabFilter==='all' ? VOCAB : VOCAB.filter(v=>v.category===vocabFilter);
+  el.innerHTML = list.map((v,i) => `
+    <div class="scard" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-family:var(--font-head);font-size:17px;font-weight:700;color:${v.color};">${v.word}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:1px;">${v.meaning}</div>
+        </div>
+        <span style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid ${v.color};color:${v.color};text-transform:uppercase;flex-shrink:0;">${v.category}</span>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border-left:2px solid ${v.color};border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:8px;">
+        <div style="font-size:13px;color:var(--text);font-style:italic;margin-bottom:3px;">${v.es}</div>
+        <div style="font-size:11px;color:var(--muted);">${v.en}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-sm" onclick="playVocabWord(${i})" style="color:${v.color};border-color:${v.color};">▶ Word</button>
+        <button class="btn btn-sm" onclick="playVocabSentence(${i})" style="color:var(--blue);border-color:var(--blue);">▶ Sentence</button>
+        <button class="btn btn-sm" onclick="addVocabToJournal(${i})" style="color:var(--muted);">+ Journal</button>
+      </div>
+    </div>`).join('');
+}
+
+function playVocabWord(i) { const v=VOCAB[i]; if(v) ttsSpeak(v.word,null,0.75); }
+function playVocabSentence(i) { const v=VOCAB[i]; if(v) ttsSpeak(v.es,null,0.85); }
+function addVocabToJournal(i) {
+  const v=VOCAB[i]; if(!v) return;
+  sentences.unshift({id:Date.now(),es:v.es,en:v.en,src:'Vocab — '+v.word,status:'new',added:new Date().toLocaleDateString()});
+  saveSentences();
+  showToast('Added to Journal ✓');
 }
 
 // ================================================================
