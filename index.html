@@ -1031,6 +1031,26 @@ const ISLANDS = [
     ]
   },
   {
+    id: 'visa',
+    name: 'Mi visa y trámites',
+    emoji: '🛂',
+    color: 'var(--warn)',
+    sentences: [
+      {es:'Necesito una copia del certificado de nacimiento de mi papá.', en:'I need a copy of my dad\'s birth certificate.'},
+      {es:'Soy su hijo. Tengo mi certificado de nacimiento y el certificado de defunción de él.', en:'I am his son. I have my birth certificate and his death certificate.'},
+      {es:'Mi papá nació el veintidós de junio de mil novecientos cincuenta.', en:'My dad was born on the twenty-second of June, nineteen fifty.'},
+      {es:'Estoy preparando mi visa de residencia no lucrativa.', en:'I am preparing my non-lucrative residence visa.'},
+      {es:'Tengo que apostillar este documento antes de enviarlo.', en:'I have to apostille this document before sending it.'},
+      {es:'Necesito una póliza de salud privada sin copagos ni deducibles.', en:'I need a private health insurance policy with no copays or deductibles.'},
+      {es:'Estoy esperando la respuesta del consulado.', en:'I am waiting for the response from the consulate.'},
+      {es:'Tengo que demostrar ingresos suficientes para vivir sin trabajar.', en:'I have to prove sufficient income to live without working.'},
+      {es:'Mi compensación del gobierno cubre el requisito de ingresos.', en:'My government compensation covers the income requirement.'},
+      {es:'Tengo derecho a la ciudadanía española por ser iberoamericano.', en:'I am entitled to Spanish citizenship for being Ibero-American.'},
+      {es:'El proceso puede tardar varios meses.', en:'The process can take several months.'},
+      {es:'Voy a contratar a un abogado de inmigración para que me ayude.', en:'I am going to hire an immigration lawyer to help me.'},
+    ]
+  },
+  {
     id: 'conectores',
     name: 'Frases de conexión',
     emoji: '🔗',
@@ -1317,7 +1337,7 @@ function renderScript() {
       <div class="scard-actions">
         <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
         <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
-        <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
+        <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:#e05555;border-color:rgba(224,85,85,0.35);">✕ Delete</button>
       </div>
     </div>`).join('');
 }
