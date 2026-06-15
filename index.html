@@ -452,16 +452,21 @@ const STEPS = [
     id: 'podcast',
     emoji: '🎧',
     title: 'Podcast',
-    subtitle: 'Walk · Deep Listen · Speak & Write',
+    subtitle: 'Walk · Listen · Speak · Write 10x · Shadow',
     color: 'var(--blue)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px;">🎧 Podcast</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Three sections — walk, listen, then speak and write.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Listen, read, speak, then write corrections 10 times. Same section every day this week.</div>
+
+      <div style="background:rgba(212,240,60,0.08);border:1px solid rgba(212,240,60,0.3);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">⚡ Your method — writing locks it in</div>
+        <div style="font-size:11px;color:var(--muted);">Write every corrected sentence 10 times saying it out loud as you write. Then say it quietly 10 times. Then shadow. Writing first makes speaking easier.</div>
+      </div>
 
       <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">This week's section</div>
-        <div style="font-size:12px;color:var(--text);">This week's podcast — same section every day</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px;">Same section every day this week. Deeper each time.</div>
+        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">What is one section?</div>
+        <div style="font-size:12px;color:var(--text);">One section is a small chunk of the podcast — about 1 to 3 minutes — covering one complete idea. Same section every day this week. Not the whole podcast.</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Example: Rocky and Kevin podcast — Sección 1 is 0:06 to 1:10 this week.</div>
       </div>
 
       <div style="margin-bottom:12px;">
@@ -495,14 +500,14 @@ const STEPS = [
       <div style="margin-bottom:12px;">
         <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Write gaps here</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          After recording — write what you couldn't say. Claude corrects it. Handwrite corrections.
+          After recording — write what you couldn't say in English here. Claude gives you the correct Spanish. Write each correction by hand 10 times saying it out loud as you write. Then say it alone quietly 10 times.
         </div>
       </div>
 
       <div style="margin-bottom:12px;">
         <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑥ Shadow</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Say each corrected sentence 3 times out loud matching the rhythm.
+          Play the corrected sentence audio. Repeat out loud 3 times matching the rhythm. Then record yourself saying it. Writing first makes this step easier.
         </div>
       </div>
 
@@ -519,27 +524,41 @@ const STEPS = [
     color: 'var(--accent)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;">📱 Fluency App</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Read your Spanish, recall it, then speak and get corrected. Minimum 30 minutes — then go by feel.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Read your Spanish, write it to lock it in, then recall and speak. Minimum 30 minutes — then go by feel.</div>
 
       <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Flow state rule</div>
-        <div style="font-size:11px;color:var(--muted);">It takes 17 minutes to reach flow. Don't stop before 30 minutes. After that — if focus is strong keep going. If it drops, stop.</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Your personal method — discovered June 2026</div>
+        <div style="font-size:11px;color:var(--muted);">Writing by hand 10 times while saying out loud locks sentences in faster than any other method. This is your superpower. Use it on every sentence.</div>
       </div>
 
       <div style="margin-bottom:16px;">
         <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Read Your Islands</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open Fluency app<br>
-          • Read today's island sentences slowly<br>
+          • Open Fluency app — pick today's island<br>
+          • Read each sentence slowly<br>
           • Read your Dialogues tab<br>
           • Read your Journal tab<br>
-          • No speaking, no writing — just absorb<br>
-          • If a sentence jumps out say it once softly then keep reading
+          • No pressure — just absorb<br>
+          • If a sentence jumps out say it once softly
         </div>
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Read at Your Level</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Write & Say — 3 sentences only</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Pick 3 sentences from today's island<br>
+          • For each sentence:<br>
+          &nbsp;&nbsp;→ Play audio once — listen<br>
+          &nbsp;&nbsp;→ Write it by hand 10 times saying it out loud as you write<br>
+          &nbsp;&nbsp;→ Say it alone without writing — 3 times<br>
+          &nbsp;&nbsp;→ Play audio again and shadow — match the rhythm<br>
+          • Spanish left page, English right page in notebook<br>
+          • Don't rush — 3 sentences done deeply beats 14 done quickly
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read at Your Level</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
           • This week's podcast transcript — same section<br>
           • Or Maldeamores subtitles — one scene<br>
@@ -551,24 +570,23 @@ const STEPS = [
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Recall</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Recall</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
           • Switch to Recall mode<br>
-          • Today's island — see English, say Spanish out loud, then reveal<br>
+          • Today's island — see English, say Spanish out loud before revealing<br>
           • Got it → moving toward automatic<br>
-          • Again → write it by hand immediately in notebook Section 2<br>
-          • Again sentences reviewed first thing next morning
+          • Again → write it by hand 10 times immediately in notebook Section 2
         </div>
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak & Correct</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Speak & Correct</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Press record — morning routine, military background, free talk<br>
+          • Press record — talk about your morning routine, military background, anything<br>
           • Write what you couldn't say here — Claude corrects it<br>
-          • Also write 2-3 sentences you did say — Claude corrects those too<br>
-          • Handwrite each correction — Spanish left, English right<br>
-          • Say each correction out loud 3 times matching the rhythm
+          • Write 2-3 sentences you did say — Claude corrects those too<br>
+          • Write each correction by hand 10 times saying it out loud<br>
+          • Then shadow it 3 times matching the rhythm
         </div>
       </div>`
   },
@@ -637,10 +655,11 @@ const STEPS = [
     color: 'var(--warn)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--warn);margin-bottom:4px;">✍️ Before Sleep</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Close the loop on your day. What your brain hears last gets consolidated overnight.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Close the loop on your day. What your brain encodes last gets consolidated overnight.</div>
       <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
         • Open your notebook to Section 3<br>
         • Write 3 sentences in Spanish about something real that happened today<br>
+        • Say each one out loud as you write it<br>
         • Imperfect is fine — no looking anything up<br>
         • Put the pen down — done<br><br>
         • <strong style="color:var(--warn);">Sunday only</strong> — cover one side of Section 1 and test yourself on the week's corrections
@@ -649,9 +668,9 @@ const STEPS = [
       <div style="margin-top:16px;background:rgba(240,164,64,0.06);border:1px solid rgba(240,164,64,0.2);border-radius:8px;padding:12px 14px;">
         <div style="font-size:11px;color:var(--warn);font-weight:700;margin-bottom:6px;">Your Notebook — 3 Sections</div>
         <div style="font-size:11px;color:var(--muted);line-height:1.9;">
-          <strong style="color:var(--text);">Section 1</strong> — Corrections from Claude chat<br>
-          <strong style="color:var(--text);">Section 2</strong> — Again sentences from recall<br>
-          <strong style="color:var(--text);">Section 3</strong> — Before sleep sentences
+          <strong style="color:var(--text);">Section 1</strong> — Corrections from Claude chat. Write each one 10 times.<br>
+          <strong style="color:var(--text);">Section 2</strong> — Again sentences from recall. Write each one 10 times.<br>
+          <strong style="color:var(--text);">Section 3</strong> — Before sleep sentences. 3 per night.
         </div>
       </div>`
   }
