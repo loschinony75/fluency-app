@@ -936,6 +936,7 @@ const ISLANDS = [
     emoji: '🌅',
     color: 'var(--accent)',
     sentences: [
+      // PRESENT — habit, what you always do
       {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
       {es:'Voy pal baño, me cepillo los dientes y me lavo la cara.', en:'I go to the bathroom, brush my teeth and wash my face.'},
       {es:'Me tomo un vaso de agua con sal.', en:'I drink a glass of salt water.'},
@@ -944,12 +945,31 @@ const ISLANDS = [
       {es:'Después de meditar me tomo el café con calma.', en:'After meditating I have my coffee calmly.'},
       {es:'Me gusta el café con leche y un chin de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
       {es:'Después empiezo a practicar español.', en:'Then I start practicing Spanish.'},
-      {es:'Trato de estudiar como tres horas.', en:'I try to study about three hours.'},
-      {es:'Antes del gym me tomo el batido.', en:'Before the gym I have my smoothie.'},
       {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
       {es:'Después del gym voy pa la terapia de sal — me relaja un montón.', en:'After the gym I go to salt therapy — it relaxes me a lot.'},
       {es:'Cuando termino voy pal súper, llego a casa y preparo la cena.', en:'When I finish I go to the supermarket, get home and make dinner.'},
-      {es:'Después de comer me baño y me voy pa la cama.', en:'After eating I shower and go to bed.'},
+      {es:'Después de cenar veo un poco de televisión, me baño y me voy pa la cama.', en:'After I eat dinner I watch some TV, take a shower and go to bed.'},
+      // PAST — what you did this morning
+      {es:'Me levanté como a las seis y media.', en:'I got up around six thirty.'},
+      {es:'Fui pal baño, me cepillé los dientes y me lavé la cara.', en:'I went to the bathroom, brushed my teeth and washed my face.'},
+      {es:'Me tomé un vaso de agua con sal.', en:'I drank a glass of salt water.'},
+      {es:'Salí a caminar como veinte minutos.', en:'I went out to walk about twenty minutes.'},
+      {es:'Cuando volví, puse el café y mientras se hacía, medité.', en:'When I got back, I put on the coffee and while it brewed, I meditated.'},
+      {es:'Después de meditar me tomé el café con calma.', en:'After meditating I had my coffee calmly.'},
+      {es:'Después empecé a practicar español.', en:'Then I started practicing Spanish.'},
+      {es:'Fui pal gym esta mañana.', en:'I went to the gym this morning.'},
+      {es:'Después del gym fui pa la terapia de sal — me relajó un montón.', en:'After the gym I went to salt therapy — it relaxed me a lot.'},
+      {es:'Después de cenar vi un poco de televisión, me bañé y me fui pa la cama.', en:'After dinner I watched some TV, took a shower and went to bed.'},
+      // FUTURE — what you plan to do tomorrow
+      {es:'Mañana me voy a levantar como a las seis y media.', en:'Tomorrow I\'m going to get up around six thirty.'},
+      {es:'Voy a ir pal baño, cepillarme los dientes y lavarme la cara.', en:'I\'m going to go to the bathroom, brush my teeth and wash my face.'},
+      {es:'Me voy a tomar un vaso de agua con sal.', en:'I\'m going to drink a glass of salt water.'},
+      {es:'Voy a salir a caminar como veinte minutos.', en:'I\'m going to go out to walk about twenty minutes.'},
+      {es:'Cuando vuelva, voy a poner el café y mientras se hace, voy a meditar.', en:'When I get back, I\'m going to put on the coffee and while it brews, I\'m going to meditate.'},
+      {es:'Después voy a empezar a practicar español.', en:'Then I\'m going to start practicing Spanish.'},
+      {es:'Mañana voy pal gym.', en:'Tomorrow I\'m going to the gym.'},
+      {es:'Después del gym voy a ir pa la terapia de sal.', en:'After the gym I\'m going to go to salt therapy.'},
+      {es:'Después de cenar voy a ver televisión, bañarme y me voy a ir pa la cama.', en:'After dinner I\'m going to watch TV, shower and go to bed.'},
     ]
   },
   {
@@ -1031,26 +1051,6 @@ const ISLANDS = [
     ]
   },
   {
-    id: 'visa',
-    name: 'Mi visa y trámites',
-    emoji: '🛂',
-    color: 'var(--warn)',
-    sentences: [
-      {es:'Necesito una copia del certificado de nacimiento de mi papá.', en:'I need a copy of my dad\'s birth certificate.'},
-      {es:'Soy su hijo. Tengo mi certificado de nacimiento y el certificado de defunción de él.', en:'I am his son. I have my birth certificate and his death certificate.'},
-      {es:'Mi papá nació el veintidós de junio de mil novecientos cincuenta.', en:'My dad was born on the twenty-second of June, nineteen fifty.'},
-      {es:'Estoy preparando mi visa de residencia no lucrativa.', en:'I am preparing my non-lucrative residence visa.'},
-      {es:'Tengo que apostillar este documento antes de enviarlo.', en:'I have to apostille this document before sending it.'},
-      {es:'Necesito una póliza de salud privada sin copagos ni deducibles.', en:'I need a private health insurance policy with no copays or deductibles.'},
-      {es:'Estoy esperando la respuesta del consulado.', en:'I am waiting for the response from the consulate.'},
-      {es:'Tengo que demostrar ingresos suficientes para vivir sin trabajar.', en:'I have to prove sufficient income to live without working.'},
-      {es:'Mi compensación del gobierno cubre el requisito de ingresos.', en:'My government compensation covers the income requirement.'},
-      {es:'Tengo derecho a la ciudadanía española por ser iberoamericano.', en:'I am entitled to Spanish citizenship for being Ibero-American.'},
-      {es:'El proceso puede tardar varios meses.', en:'The process can take several months.'},
-      {es:'Voy a contratar a un abogado de inmigración para que me ayude.', en:'I am going to hire an immigration lawyer to help me.'},
-    ]
-  },
-  {
     id: 'conectores',
     name: 'Frases de conexión',
     emoji: '🔗',
@@ -1124,7 +1124,7 @@ const DEFAULT_SCRIPT = [
   {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
   {es:'Después del gym voy pa la terapia de sal — me relaja un montón.', en:'After the gym I go to salt therapy — it relaxes me a lot.'},
   {es:'Cuando termino voy pal súper, llego a casa y preparo la cena.', en:'When I finish I go to the supermarket, get home and make dinner.'},
-  {es:'Después de comer me baño y me voy pa la cama.', en:'After eating I shower and go to bed.'},
+  {es:'Después de cenar veo un poco de televisión, me baño y me voy pa la cama.', en:'After I eat dinner I watch some TV, take a shower and go to bed.'},
 ];
 
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
@@ -1337,7 +1337,7 @@ function renderScript() {
       <div class="scard-actions">
         <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
         <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
-        <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:#e05555;border-color:rgba(224,85,85,0.35);">✕ Delete</button>
+        <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
       </div>
     </div>`).join('');
 }
