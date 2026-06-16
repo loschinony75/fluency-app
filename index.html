@@ -79,8 +79,7 @@
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
     <button class="nav-tab" onclick="showScreen('journal')">Journal</button>
     <button class="nav-tab" onclick="showScreen('script')">Islands</button>
-    <button class="nav-tab" onclick="showScreen('dialogues')">Dialogues</button>
-    <button class="nav-tab" onclick="showScreen('patterns')">Patterns</button>
+    <button class="nav-tab" onclick="showScreen('qanda')">Q&A</button>
     <button class="nav-tab" onclick="showScreen('vocab')">Vocab</button>
   </div>
 </nav>
@@ -236,32 +235,16 @@
 
 </div>
 
-<!-- DIALOGUES -->
-<div class="screen" id="screen-dialogues">
+<!-- Q&A -->
+<div class="screen" id="screen-qanda">
 
-  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Dialogues</div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Real PR Spanish conversations you'll actually have. Shadow the whole exchange as one unit. Both sides. That's how chunks become automatic.</div>
+  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Q&A Practice</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Real questions people will ask you. Hear the question, say your answer out loud before revealing. Write any missed answer 10 times.</div>
 
-  <div id="dialogues-list"></div>
+  <!-- Category filter -->
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;" id="qanda-filter"></div>
 
-  <!-- Add dialogue -->
-  <div class="card" style="margin-top:12px;">
-    <div class="section-label">Add new dialogue</div>
-    <input type="text" id="dlg-title" placeholder="Title e.g. At the gym..." style="margin-bottom:8px;" />
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Lines — one per row, format: Spanish | English</div>
-    <textarea id="dlg-lines" placeholder="¿Cuándo llegas? | When are you getting here?&#10;Ya llego. | I'm almost there.&#10;Ya llegué. | I'm here." style="min-height:100px;font-size:12px;margin-bottom:10px;"></textarea>
-    <button class="btn btn-accent btn-full" onclick="addDialogue()">+ Add Dialogue</button>
-  </div>
-
-</div>
-
-<!-- PATTERNS -->
-<div class="screen" id="screen-patterns">
-
-  <div style="font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:4px;">Core Patterns</div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">10 patterns that cover most of what you need to say. Shadow 3 sentences per pattern until automatic. You don't study these — you absorb them.</div>
-
-  <div id="patterns-list"></div>
+  <div id="qanda-list"></div>
 
 </div>
 
@@ -349,14 +332,13 @@ function showScreen(name) {
   if (s) s.classList.add('active');
   // Hide nav on detail screens
   const nav = document.getElementById('main-nav');
-  const navScreens = ['today','journal','script','dialogues','patterns','vocab'];
+  const navScreens = ['today','journal','script','qanda','vocab'];
   if (nav) nav.style.display = navScreens.includes(name) ? 'flex' : 'none';
   ttsStop();
   if (name === 'today') initToday();
   if (name === 'journal') renderJournal();
   if (name === 'script') renderScript();
-  if (name === 'patterns') renderPatterns();
-  if (name === 'dialogues') renderDialogues();
+  if (name === 'qanda') renderQanda();
   if (name === 'vocab') renderVocab();
 }
 
@@ -533,62 +515,52 @@ const STEPS = [
     id: 'fluency',
     emoji: '📱',
     title: 'Fluency App',
-    subtitle: 'Islands · Shadow · Recall · Speak — minimum 30 min',
+    subtitle: 'Journal → Islands → Q&A — minimum 30 min',
     color: 'var(--accent)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;">📱 Fluency App</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Read your Spanish, write it to lock it in, then recall and speak. Minimum 30 minutes — then go by feel.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Follow the sequence — Journal → Islands → Q&A. Minimum 30 minutes then go by feel.</div>
 
-      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Your personal method — discovered June 2026</div>
-        <div style="font-size:11px;color:var(--muted);">Writing by hand 10 times while saying out loud locks sentences in faster than any other method. This is your superpower. Use it on every sentence.</div>
+      <div style="background:rgba(212,240,60,0.08);border:1px solid rgba(212,240,60,0.3);border-radius:8px;padding:12px 14px;margin-bottom:16px;">
+        <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">⚡ Your method — every sentence</div>
+        <div style="font-size:12px;color:var(--text);line-height:2;">Write 10 times saying out loud → say quietly alone → shadow with audio</div>
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Read Your Islands</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Journal tab — 5 min</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open Fluency app — pick today's island<br>
-          • Read each sentence slowly<br>
-          • Read your Dialogues tab<br>
-          • Read your Journal tab<br>
-          • No pressure — just absorb<br>
-          • If a sentence jumps out say it once softly
+          • Open Journal tab<br>
+          • Read your corrected sentences slowly<br>
+          • Say each one softly as you read<br>
+          • Loads your corrections into your brain first
         </div>
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Write & Say — 3 sentences only</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Islands tab — 15 min</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Pick 3 sentences from today's island<br>
-          • For each sentence:<br>
-          &nbsp;&nbsp;→ Play audio once — listen<br>
-          &nbsp;&nbsp;→ Write it by hand 10 times saying it out loud as you write<br>
-          &nbsp;&nbsp;→ Say it alone without writing — 3 times<br>
-          &nbsp;&nbsp;→ Play audio again and shadow — match the rhythm<br>
-          • Spanish left page, English right page in notebook<br>
-          • Don't rush — 3 sentences done deeply beats 14 done quickly
+          • Open Islands tab — pick today's island<br>
+          • Pick 3 sentences only<br>
+          • Each sentence — write 10 times out loud → say alone quietly → shadow with audio<br>
+          • Switch to Recall — see English, write Spanish from memory, reveal<br>
+          • Again → write 10 more times in notebook Section 2
         </div>
       </div>
 
       <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Recall</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Q&A tab — 10 min</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Switch to Recall mode<br>
-          • Today's island — see English, say Spanish out loud before revealing<br>
-          • Got it → moving toward automatic<br>
-          • Again → write it by hand 10 times immediately in notebook Section 2
+          • Open Q&A tab — today's category<br>
+          • Tap ▶ Question — hear it<br>
+          • Say your answer out loud before revealing<br>
+          • Tap Reveal — check yourself<br>
+          • Missed answer → write it 10 times → tap + Journal
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak & Correct</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Say today's island sentences from memory out loud — no looking<br>
-          • Whatever doesn't come out — write it in English here<br>
-          • Claude gives you the correct Spanish<br>
-          • Write each correction by hand 10 times saying it out loud<br>
-          • Then shadow it 3 times matching the rhythm
-        </div>
+      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Flow state rule</div>
+        <div style="font-size:11px;color:var(--muted);">17 minutes to reach flow. Don't stop before 30 minutes. After that go by feel.</div>
       </div>`
   },
   {
@@ -1524,6 +1496,175 @@ function playPattern(formula) {
     ttsSpeak(es, ()=>setTimeout(next, 800), 0.85);
   }
   next();
+}
+
+// ================================================================
+// Q&A
+// ================================================================
+const QA_CATEGORIES = [
+  {
+    id: 'sobre_mi',
+    name: 'Sobre mí',
+    emoji: '👤',
+    color: 'var(--accent)',
+    day: 'Monday',
+    questions: [
+      {q:'¿De dónde eres?', qa:'Where are you from?', a:'Soy de Brooklyn, Nueva York, pero ahora vivo en Florida.', aa:'I am from Brooklyn, New York but now I live in Florida.'},
+      {q:'¿Cuántos años tienes?', qa:'How old are you?', a:'Tengo cincuenta años.', aa:'I am fifty years old.'},
+      {q:'¿Dónde vives ahora?', qa:'Where do you live now?', a:'Vivo en Florida, pero me voy a mudar a Gran Canaria en el 2027.', aa:'I live in Florida but I am going to move to Gran Canaria in 2027.'},
+      {q:'¿A qué te dedicas?', qa:'What do you do for work?', a:'Soy asesor de liderazgo y veterano discapacitado del ejército americano.', aa:'I am a leadership advisor and disabled US Army veteran.'},
+      {q:'¿Hablas español?', qa:'Do you speak Spanish?', a:'Estoy aprendiendo. Me cuesta hablar aunque entiendo mucho.', aa:'I am learning. It is hard for me to speak even though I understand a lot.'},
+      {q:'¿Por qué aprendes español?', qa:'Why are you learning Spanish?', a:'Porque me voy a mudar a Gran Canaria y quiero reconectar con mis raíces puertorriqueñas.', aa:'Because I am moving to Gran Canaria and I want to reconnect with my Puerto Rican roots.'},
+      {q:'¿Estás casado?', qa:'Are you married?', a:'No, no estoy casado.', aa:'No, I am not married.'},
+      {q:'¿Tienes hijos?', qa:'Do you have children?', a:'Sí, tengo dos hijas que viven en Alemania.', aa:'Yes, I have two daughters who live in Germany.'},
+    ]
+  },
+  {
+    id: 'mi_historia',
+    name: 'Mi historia',
+    emoji: '🏙',
+    color: 'var(--blue)',
+    day: 'Tuesday',
+    questions: [
+      {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací en Brooklyn, Nueva York.', aa:'I was born in Brooklyn, New York.'},
+      {q:'¿De dónde son tus padres?', qa:'Where are your parents from?', a:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', aa:'My dad was born in Puerto Rico and my mom was born in New York.'},
+      {q:'¿Cuándo te alistaste en el ejército?', qa:'When did you enlist in the Army?', a:'Me alisté en diciembre de 1995, a los diecinueve años.', aa:'I enlisted in December 1995 at nineteen years old.'},
+      {q:'¿Cuánto tiempo serviste?', qa:'How long did you serve?', a:'Serví durante diez años, hasta el 2005.', aa:'I served for ten years, until 2005.'},
+      {q:'¿Qué hiciste en el ejército?', qa:'What did you do in the Army?', a:'Fui soldado de infantería, policía militar y paracaidista.', aa:'I was an infantry soldier, military police and paratrooper.'},
+      {q:'¿Por qué saliste del ejército?', qa:'Why did you leave the Army?', a:'Salí porque me lesioné en el servicio. Soy veterano discapacitado.', aa:'I left because I was injured in service. I am a disabled veteran.'},
+      {q:'¿Luché por aprender español?', qa:'Did you struggle to learn Spanish?', a:'Sí, luché por años para aprender español aunque siempre lo escuché en casa.', aa:'Yes, I struggled for years to learn Spanish even though I always heard it at home.'},
+      {q:'¿Cuándo te mudas a España?', qa:'When are you moving to Spain?', a:'Me mudo a Gran Canaria en febrero del 2027.', aa:'I am moving to Gran Canaria in February 2027.'},
+    ]
+  },
+  {
+    id: 'oficina',
+    name: 'En la oficina',
+    emoji: '🏛',
+    color: 'var(--success)',
+    day: 'Wednesday',
+    questions: [
+      {q:'¿Cuál es su nombre completo?', qa:'What is your full name?', a:'Mi nombre completo es Carlos Irizarry.', aa:'My full name is Carlos Irizarry.'},
+      {q:'¿Cuál es su fecha de nacimiento?', qa:'What is your date of birth?', a:'Mi fecha de nacimiento es...', aa:'My date of birth is...'},
+      {q:'¿Cuál es su nacionalidad?', qa:'What is your nationality?', a:'Soy americano, de origen puertorriqueño.', aa:'I am American, of Puerto Rican origin.'},
+      {q:'¿Cuál es el motivo de su estancia?', qa:'What is the reason for your stay?', a:'Tengo una visa de residencia no lucrativa. Vivo aquí con mi compensación de veterano.', aa:'I have a non-lucrative residence visa. I live here with my veteran compensation.'},
+      {q:'¿Tiene usted ingresos?', qa:'Do you have income?', a:'Sí, recibo compensación del gobierno americano por mi servicio militar.', aa:'Yes, I receive compensation from the US government for my military service.'},
+      {q:'¿Tiene seguro médico?', qa:'Do you have health insurance?', a:'Sí, tengo seguro médico.', aa:'Yes, I have health insurance.'},
+      {q:'¿Cuál es su dirección en España?', qa:'What is your address in Spain?', a:'Mi dirección es...', aa:'My address is...'},
+      {q:'¿Necesita un intérprete?', qa:'Do you need an interpreter?', a:'Un poco, por favor. Estoy aprendiendo español.', aa:'A little please. I am learning Spanish.'},
+    ]
+  },
+  {
+    id: 'diario',
+    name: 'En el día a día',
+    emoji: '🛒',
+    color: 'var(--purple)',
+    day: 'Thursday',
+    questions: [
+      {q:'¿Qué desea?', qa:'What would you like?', a:'Quisiera un café con leche, por favor.', aa:'I would like a coffee with milk please.'},
+      {q:'¿Algo más?', qa:'Anything else?', a:'No, eso es todo. Muchas gracias.', aa:'No that is all. Thank you very much.'},
+      {q:'¿Cómo va a pagar?', qa:'How are you going to pay?', a:'Con tarjeta, por favor.', aa:'By card please.'},
+      {q:'¿Tiene tarjeta de cliente?', qa:'Do you have a loyalty card?', a:'No, no tengo. ¿Puedo hacer una?', aa:'No I do not have one. Can I make one?'},
+      {q:'¿Dónde está el baño?', qa:'Where is the bathroom?', a:'Perdona, ¿dónde está el baño por favor?', aa:'Excuse me where is the bathroom please?'},
+      {q:'¿Cuánto cuesta esto?', qa:'How much does this cost?', a:'Perdona, ¿cuánto cuesta esto?', aa:'Excuse me how much does this cost?'},
+      {q:'¿A qué hora cierra?', qa:'What time do you close?', a:'¿A qué hora cierran ustedes?', aa:'What time do you all close?'},
+      {q:'¿Tiene esto en otra talla?', qa:'Do you have this in another size?', a:'¿Tiene esto en otra talla por favor?', aa:'Do you have this in another size please?'},
+    ]
+  },
+  {
+    id: 'situaciones',
+    name: 'Situaciones importantes',
+    emoji: '🚨',
+    color: 'var(--warn)',
+    day: 'Friday',
+    questions: [
+      {q:'¿Cómo se siente?', qa:'How do you feel?', a:'No me siento bien. Me duele la cabeza y tengo fiebre.', aa:'I do not feel well. My head hurts and I have a fever.'},
+      {q:'¿Tiene alguna alergia?', qa:'Do you have any allergies?', a:'Sí, tengo alergia a...', aa:'Yes I am allergic to...'},
+      {q:'¿Toma algún medicamento?', qa:'Do you take any medication?', a:'Sí, tomo... todos los días.', aa:'Yes I take... every day.'},
+      {q:'¿Necesita ayuda?', qa:'Do you need help?', a:'Sí, necesito ayuda por favor. No hablo español muy bien.', aa:'Yes I need help please. I do not speak Spanish very well.'},
+      {q:'¿Puede repetir más despacio?', qa:'Can you repeat more slowly?', a:'¿Puede repetir eso más despacio por favor? No entendí bien.', aa:'Can you repeat that more slowly please? I did not understand well.'},
+      {q:'¿Cómo llego a...?', qa:'How do I get to...?', a:'Perdona, ¿cómo llego al centro de salud?', aa:'Excuse me how do I get to the health center?'},
+      {q:'¿Puede escribirlo?', qa:'Can you write it down?', a:'¿Puede escribirlo por favor? Es más fácil para mí.', aa:'Can you write it down please? It is easier for me.'},
+      {q:'Llame a la policía.', qa:'Call the police.', a:'Por favor llame a la policía. Necesito ayuda urgente.', aa:'Please call the police. I need urgent help.'},
+    ]
+  }
+];
+
+let qandaFilter = 'sobre_mi';
+let qandaRevealed = {};
+
+function renderQandaFilter() {
+  const el = document.getElementById('qanda-filter');
+  if (!el) return;
+  el.innerHTML = QA_CATEGORIES.map(c => `
+    <button onclick="setQandaFilter('${c.id}')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${c.id===qandaFilter?c.color:'var(--border)'};background:${c.id===qandaFilter?'rgba(255,255,255,0.05)':'none'};color:${c.id===qandaFilter?c.color:'var(--muted)'};cursor:pointer;font-family:var(--font-mono);">
+      ${c.emoji} ${c.name}
+    </button>`).join('');
+}
+
+function setQandaFilter(id) {
+  qandaFilter = id;
+  qandaRevealed = {};
+  renderQanda();
+}
+
+function revealQanda(catId, idx) {
+  if (!qandaRevealed[catId]) qandaRevealed[catId] = {};
+  qandaRevealed[catId][idx] = true;
+  renderQanda();
+}
+
+function playQandaQ(catId, idx) {
+  const cat = QA_CATEGORIES.find(c => c.id === catId);
+  if (cat) ttsSpeak(cat.questions[idx].q, null, 0.85);
+}
+
+function playQandaA(catId, idx) {
+  const cat = QA_CATEGORIES.find(c => c.id === catId);
+  if (cat) ttsSpeak(cat.questions[idx].a, null, 0.85);
+}
+
+function addQandaToJournal(catId, idx) {
+  const cat = QA_CATEGORIES.find(c => c.id === catId);
+  if (!cat) return;
+  const q = cat.questions[idx];
+  sentences.unshift({id:Date.now(), es:q.a, en:q.aa, src:'Q&A — '+cat.name, status:'new', added:new Date().toLocaleDateString()});
+  saveSentences();
+  showToast('Added to Journal ✓');
+}
+
+function renderQanda() {
+  renderQandaFilter();
+  const el = document.getElementById('qanda-list');
+  if (!el) return;
+  const cat = QA_CATEGORIES.find(c => c.id === qandaFilter);
+  if (!cat) return;
+
+  el.innerHTML = `
+    <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
+      <div style="font-size:11px;color:${cat.color};font-weight:700;margin-bottom:4px;">${cat.emoji} ${cat.name} — ${cat.day}</div>
+      <div style="font-size:11px;color:var(--muted);">Hear the question → say your answer out loud → reveal to check → write missed answers 10 times.</div>
+    </div>` +
+    cat.questions.map((q, i) => {
+      const revealed = qandaRevealed[cat.id] && qandaRevealed[cat.id][i];
+      return `
+      <div class="card" style="margin-bottom:10px;">
+        <div style="font-size:13px;color:var(--text);font-weight:500;margin-bottom:4px;">${q.q}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${q.qa}</div>
+        <div style="display:flex;gap:6px;margin-bottom:${revealed?'10px':'0'};">
+          <button class="btn btn-sm" onclick="playQandaQ('${cat.id}',${i})" style="color:var(--blue);border-color:var(--blue);">▶ Question</button>
+          ${!revealed ? `<button class="btn btn-sm" onclick="revealQanda('${cat.id}',${i})" style="color:${cat.color};border-color:${cat.color};">Reveal answer</button>` : ''}
+        </div>
+        ${revealed ? `
+        <div style="background:rgba(212,240,60,0.05);border-left:2px solid ${cat.color};padding:10px 12px;border-radius:0 6px 6px 0;margin-bottom:8px;">
+          <div style="font-size:13px;color:var(--accent);font-style:italic;margin-bottom:3px;">${q.a}</div>
+          <div style="font-size:11px;color:var(--muted);">${q.aa}</div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm" onclick="playQandaA('${cat.id}',${i})" style="color:var(--success);border-color:var(--success);">▶ Answer</button>
+          <button class="btn btn-sm" onclick="addQandaToJournal('${cat.id}',${i})" style="color:var(--muted);">+ Journal</button>
+        </div>` : ''}
+      </div>`;
+    }).join('');
 }
 
 // ================================================================
