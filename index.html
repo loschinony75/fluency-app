@@ -79,7 +79,6 @@
     <button class="nav-tab active" onclick="showScreen('today')">Today</button>
     <button class="nav-tab" onclick="showScreen('journal')">Journal</button>
     <button class="nav-tab" onclick="showScreen('script')">Islands</button>
-    <button class="nav-tab" onclick="showScreen('qanda')">Q&A</button>
     <button class="nav-tab" onclick="showScreen('vocab')">Vocab</button>
   </div>
 </nav>
@@ -185,6 +184,7 @@
   <div style="display:flex;gap:6px;margin-bottom:16px;">
     <button id="mode-shadow-btn" onclick="setScriptMode('shadow')" style="flex:1;padding:9px;border-radius:7px;border:2px solid var(--blue);background:rgba(160,196,255,0.1);color:var(--blue);font-family:var(--font-mono);font-size:12px;font-weight:600;cursor:pointer;">🔊 Shadow</button>
     <button id="mode-recall-btn" onclick="setScriptMode('recall')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">⚡ Recall</button>
+    <button id="mode-qa-btn" onclick="setScriptMode('qa')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">❓ Q&A</button>
   </div>
 
   <!-- Progress -->
@@ -216,6 +216,20 @@
       </div>
     </div>
     <div id="recall-container"></div>
+  </div>
+
+  <!-- Q&A mode -->
+  <div id="qa-island-mode" style="display:none;">
+    <div class="card" style="background:rgba(212,240,60,0.05);border-color:rgba(212,240,60,0.2);margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px;">How to use Q&A</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.9;">
+        1. Tap ▶ to hear the question<br>
+        2. Say your answer out loud before revealing<br>
+        3. Tap Reveal to check yourself<br>
+        4. Write any missed answer 10 times
+      </div>
+    </div>
+    <div id="qa-island-container"></div>
   </div>
 
   <!-- Add to script -->
@@ -332,13 +346,12 @@ function showScreen(name) {
   if (s) s.classList.add('active');
   // Hide nav on detail screens
   const nav = document.getElementById('main-nav');
-  const navScreens = ['today','journal','script','qanda','vocab'];
+  const navScreens = ['today','journal','script','vocab'];
   if (nav) nav.style.display = navScreens.includes(name) ? 'flex' : 'none';
   ttsStop();
   if (name === 'today') initToday();
   if (name === 'journal') renderJournal();
   if (name === 'script') renderScript();
-  if (name === 'qanda') renderQanda();
   if (name === 'vocab') renderVocab();
 }
 
@@ -444,123 +457,63 @@ function playWakeupIdx(i) {
 // ================================================================
 const STEPS = [
   {
-    id: 'podcast',
-    emoji: '🎧',
-    title: 'Podcast',
-    subtitle: 'Walk · Listen · Speak · Write 10x · Shadow',
-    color: 'var(--blue)',
-    detail: `
-      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px;">🎧 Podcast</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Listen, read, speak, then write corrections 10 times. Same section every day this week.</div>
-
-      <div style="background:rgba(212,240,60,0.08);border:1px solid rgba(212,240,60,0.3);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">⚡ Your method — writing locks it in</div>
-        <div style="font-size:11px;color:var(--muted);">Write every corrected sentence 10 times saying it out loud as you write. Then say it quietly 10 times. Then shadow. Writing first makes speaking easier.</div>
-      </div>
-
-      <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">What is one section?</div>
-        <div style="font-size:12px;color:var(--text);">One section is a small chunk of the podcast — about 1 to 3 minutes — covering one complete idea. Same section every day this week. Not the whole podcast.</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Example: Rocky and Kevin podcast — Sección 1 is 0:06 to 1:10 this week.</div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Walk — Listen</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Put this week's podcast section in your ears while you walk. Just listen.
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Sit down — Listen again</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Same section. Full attention. Nothing else. When it ends, stop.
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read the transcript</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Same section. Straight through. Don't stop for words.
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Speak</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Record in Spanish what the section was about. Keep going even when words don't come.
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑤ Write gaps here</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          After recording — write what you couldn't say in English here. Claude gives you the correct Spanish. Write each correction by hand 10 times saying it out loud as you write. Then say it alone quietly 10 times.
-        </div>
-      </div>
-
-      <div style="margin-bottom:12px;">
-        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">⑥ Shadow</div>
-        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          Play the corrected sentence audio. Repeat out loud 3 times matching the rhythm. Then record yourself saying it. Writing first makes this step easier.
-        </div>
-      </div>
-
-      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Same every day this week</div>
-        <div style="font-size:11px;color:var(--muted);">Don't switch sections. The compound effect happens through deep repetition of the same content.</div>
-      </div>`
-  },
-  {
     id: 'fluency',
     emoji: '📱',
     title: 'Fluency App',
-    subtitle: 'Journal → Islands → Q&A — minimum 30 min',
+    subtitle: 'Mis Verbos · Mi historia · Rotating island',
     color: 'var(--accent)',
     detail: `
       <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--accent);margin-bottom:4px;">📱 Fluency App</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Follow the sequence — Journal → Islands → Q&A. Minimum 30 minutes then go by feel.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Three sentences every day. Always the same structure. Write while speaking is your method.</div>
 
       <div style="background:rgba(212,240,60,0.08);border:1px solid rgba(212,240,60,0.3);border-radius:8px;padding:12px 14px;margin-bottom:16px;">
         <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px;">⚡ Your method — every sentence</div>
-        <div style="font-size:12px;color:var(--text);line-height:2;">Write 10 times saying out loud → say quietly alone → shadow with audio</div>
+        <div style="font-size:12px;color:var(--text);line-height:2;">Play audio once → write while saying out loud → shadow with audio</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Write 10 times only if it keeps failing recall. One pass is enough for most sentences.</div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Journal tab — 5 min</div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--warn);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① 💪 Mis Verbos — 1 sentence</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open Journal tab<br>
-          • Read your corrected sentences slowly<br>
-          • Say each one softly as you read<br>
-          • Loads your corrections into your brain first
+          • Open Islands → select Mis Verbos<br>
+          • Alternate — present tense one day, imperfect the next<br>
+          • Play audio → write while speaking → shadow<br>
+          • Always first — this is your foundation
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Islands tab — 15 min</div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② 🏙 Mi historia — 1 sentence</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open Islands tab — pick today's island<br>
-          • Pick 3 sentences only<br>
-          • Each sentence — write 10 times out loud → say alone quietly → shadow with audio<br>
-          • Switch to Recall — see English, write Spanish from memory, reveal<br>
-          • Again → write 10 more times in notebook Section 2
+          • Select Mi historia island<br>
+          • Pick the next sentence — rotate through all across the week<br>
+          • Play audio → write while speaking → shadow<br>
+          • Always second — who you are
         </div>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Q&A tab — 10 min</div>
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--success);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Rotating island — 1 sentence</div>
         <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
-          • Open Q&A tab — today's category<br>
-          • Tap ▶ Question — hear it<br>
-          • Say your answer out loud before revealing<br>
-          • Tap Reveal — check yourself<br>
-          • Missed answer → write it 10 times → tap + Journal
+          • Mon — 🌅 Mi rutina · Tue — 👨‍👧‍👧 Mi familia<br>
+          • Wed — 🎖 Mi servicio · Thu — 🗣 Mi español<br>
+          • Fri — 💪 Mi carácter · Sat — 🔗 Frases · Sun — weakest<br>
+          • Play audio → write while speaking → shadow
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--purple);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Q&A — 1 question from each island</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Switch to Q&A mode on each island<br>
+          • Hear question → say answer out loud before revealing<br>
+          • Missed answer → write in notebook → tap + Journal
         </div>
       </div>
 
       <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Flow state rule</div>
-        <div style="font-size:11px;color:var(--muted);">17 minutes to reach flow. Don't stop before 30 minutes. After that go by feel.</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">The rule</div>
+        <div style="font-size:11px;color:var(--muted);">Three sentences. Every day. Never more. Depth beats breadth every time.</div>
       </div>`
   },
   {
@@ -583,6 +536,75 @@ const STEPS = [
       <div style="margin-top:12px;background:rgba(196,160,255,0.06);border:1px solid rgba(196,160,255,0.2);border-radius:8px;padding:10px 13px;">
         <div style="font-size:11px;color:var(--purple);font-weight:700;margin-bottom:4px;">Why 30 minutes minimum</div>
         <div style="font-size:11px;color:var(--muted);">It takes 17 minutes to reach flow state. Stopping before that means you warmed up but never got the deep learning. After 30 minutes go by feel — if focus is strong keep going, if it drops stop.</div>
+      </div>`
+  },
+  {
+    id: 'podcast',
+    emoji: '🎧',
+    title: 'Podcast',
+    subtitle: 'Listen · Read · Answer questions · Write corrections',
+    color: 'var(--blue)',
+    detail: `
+      <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--blue);margin-bottom:4px;">🎧 Podcast</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Listen, read, answer questions. Same section every day this week.</div>
+
+      <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:10px 13px;margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:4px;">This week's section</div>
+        <div style="font-size:12px;color:var(--text);">One section — 1 to 3 minutes — covering one complete idea. Same section every day. Not the whole podcast.</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px;">Rocky and Kevin — Sección 1 is 0:06 to 1:10 this week.</div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">① Walk — Listen passively</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          Put this week's section in your ears while you walk. Just listen — no effort.
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">② Sit down — Listen actively</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          Same section. Full attention. Nothing else. Get the general idea. When it ends stop.
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">③ Read transcript while listening</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          Play section again. Read transcript at the same time. Audio plays while your eyes follow. Don't stop for words you don't know.
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">④ Answer comprehension questions</div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.9;">
+          • Write your answers here in chat with Claude<br>
+          • Spanish if you can — English if you can't yet<br>
+          • Claude corrects your Spanish answers<br>
+          • Write each correction by hand while saying it out loud<br>
+          • Add corrections to your Journal tab
+        </div>
+      </div>
+
+      <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:8px;padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--blue);font-weight:700;margin-bottom:8px;">This week's questions — Sección 1</div>
+        <div style="font-size:12px;color:var(--text);line-height:2.2;">
+          1. ¿De qué hablan Rocky y Kevin en este podcast?<br>
+          <span style="font-size:10px;color:var(--muted);">What do Rocky and Kevin talk about?</span><br>
+          2. ¿Por cuántos años luchó Rocky para entender el español rápido?<br>
+          <span style="font-size:10px;color:var(--muted);">How many years did Rocky struggle?</span><br>
+          3. ¿Qué significa fluidez para Rocky?<br>
+          <span style="font-size:10px;color:var(--muted);">What does fluency mean for Rocky?</span><br>
+          4. ¿Es fácil o difícil entender el español boricua?<br>
+          <span style="font-size:10px;color:var(--muted);">Is it easy or hard to understand PR Spanish?</span><br>
+          5. ¿Quién habla español boricua de verdad en el podcast?<br>
+          <span style="font-size:10px;color:var(--muted);">Who speaks real Puerto Rican Spanish?</span>
+        </div>
+      </div>
+
+      <div style="background:rgba(212,240,60,0.05);border:1px solid rgba(212,240,60,0.2);border-radius:8px;padding:10px 13px;">
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:4px;">Same every day this week</div>
+        <div style="font-size:11px;color:var(--muted);">Same section. Same questions. Your answers get better each day. That's the compound effect.</div>
       </div>`
   },
   {
@@ -903,45 +925,63 @@ function renderJournal() {
 // ================================================================
 const ISLANDS = [
   {
+    id: 'verbos',
+    name: 'Mis Verbos',
+    emoji: '💪',
+    color: 'var(--warn)',
+    qa: [
+      {q:'¿Qué eres?', qa:'What are you?', a:'Soy veterano del ejército americano.', aa:'I am a US Army veteran.'},
+      {q:'¿Dónde estás ahora?', qa:'Where are you now?', a:'Estoy en Florida aprendiendo español.', aa:'I am in Florida learning Spanish.'},
+      {q:'¿Tienes familia?', qa:'Do you have family?', a:'Tengo dos hijas que viven en Alemania.', aa:'I have two daughters who live in Germany.'},
+      {q:'¿Hablas español?', qa:'Do you speak Spanish?', a:'Hablo un poco de español pero sigo aprendiendo.', aa:'I speak a little Spanish but I keep learning.'},
+      {q:'¿Dónde vivías antes?', qa:'Where did you live before?', a:'Vivía en Carolina del Norte, Alemania y Nueva York.', aa:'I used to live in North Carolina, Germany and New York.'},
+      {q:'¿Qué eras antes?', qa:'What were you before?', a:'Era soldado de infantería y paracaidista.', aa:'I was an infantry soldier and paratrooper.'},
+      {q:'¿Cuántos años tenías cuando te alistaste?', qa:'How old were you when you enlisted?', a:'Tenía diecinueve años cuando me alisté.', aa:'I was nineteen years old when I enlisted.'},
+    ],
+    sentences: [
+      // PRESENT
+      {es:'Soy veterano del ejército americano.', en:'I am a US Army veteran.'},
+      {es:'Estoy en Florida aprendiendo español.', en:'I am in Florida learning Spanish.'},
+      {es:'Tengo dos hijas que viven en Alemania.', en:'I have two daughters who live in Germany.'},
+      {es:'Hablo un poco de español pero sigo aprendiendo.', en:'I speak a little Spanish but I keep learning.'},
+      {es:'Hago ejercicio tres veces a la semana.', en:'I exercise three times a week.'},
+      {es:'Voy pal gym regularmente.', en:'I go to the gym regularly.'},
+      {es:'Vivo en Florida ahora mismo.', en:'I live in Florida right now.'},
+      // IMPERFECT
+      {es:'Era soldado de infantería y paracaidista.', en:'I was an infantry soldier and paratrooper.'},
+      {es:'Estaba en el ejército cuando tenía diecinueve años.', en:'I was in the Army when I was nineteen years old.'},
+      {es:'Tenía diecinueve años cuando me alisté.', en:'I was nineteen years old when I enlisted.'},
+      {es:'Hablaba muy poco español cuando era chamaquito.', en:'I spoke very little Spanish when I was a little kid.'},
+      {es:'Hacía mucho ejercicio en el ejército.', en:'I used to do a lot of exercise in the Army.'},
+      {es:'Iba a la escuela en Brooklyn.', en:'I used to go to school in Brooklyn.'},
+      {es:'Vivía en Carolina del Norte, Alemania y Nueva York.', en:'I used to live in North Carolina, Germany and New York.'},
+    ]
+  },
+  {
     id: 'rutina',
     name: 'Mi rutina diaria',
     emoji: '🌅',
     color: 'var(--accent)',
+    qa: [
+      {q:'¿A qué hora te levantas todos los días?', qa:'What time do you get up every day?', a:'Me levanto como a las seis y media.', aa:'I get up around six thirty.'},
+      {q:'¿Qué haces primero cuando te levantas?', qa:'What do you do first when you get up?', a:'Voy pal baño, me cepillo los dientes y me lavo la cara.', aa:'I go to the bathroom, brush my teeth and wash my face.'},
+      {q:'¿Caminas por las mañanas?', qa:'Do you walk in the mornings?', a:'Sí, salgo a caminar como veinte minutos.', aa:'Yes, I go out to walk about twenty minutes.'},
+      {q:'¿Tomas café?', qa:'Do you drink coffee?', a:'Sí, me gusta el café con leche y un chin de azúcar.', aa:'Yes, I like coffee with milk and a little bit of sugar.'},
+      {q:'¿Meditas?', qa:'Do you meditate?', a:'Sí, cuando vuelvo de caminar, pongo el café y medito.', aa:'Yes, when I get back from walking, I put on the coffee and meditate.'},
+      {q:'¿Vas al gym?', qa:'Do you go to the gym?', a:'Sí, voy pal gym tres veces a la semana.', aa:'Yes, I go to the gym three times a week.'},
+      {q:'¿Qué haces después del gym?', qa:'What do you do after the gym?', a:'Después del gym voy pa la terapia de sal — me relaja un montón.', aa:'After the gym I go to salt therapy — it relaxes me a lot.'},
+      {q:'¿A qué hora te acuestas?', qa:'What time do you go to bed?', a:'Después de cenar veo un poco de televisión, me baño y me voy pa la cama.', aa:'After dinner I watch some TV, shower and go to bed.'},
+    ],
     sentences: [
-      // PRESENT — habit, what you always do
       {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
-      {es:'Voy pal baño, me cepillo los dientes y me lavo la cara.', en:'I go to the bathroom, brush my teeth and wash my face.'},
-      {es:'Me tomo un vaso de agua con sal.', en:'I drink a glass of salt water.'},
       {es:'Salgo a caminar como veinte minutos.', en:'I go out to walk about twenty minutes.'},
-      {es:'Cuando vuelvo, pongo el café y medito.', en:'When I get back, I put on the coffee and meditate.'},
-      {es:'Después de meditar me tomo el café con calma.', en:'After meditating I have my coffee calmly.'},
-      {es:'Me gusta el café con leche y un chin de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
-      {es:'Después empiezo a practicar español.', en:'Then I start practicing Spanish.'},
+      {es:'Tomo café con leche y un chin de azúcar.', en:'I have coffee with milk and a little bit of sugar.'},
+      {es:'Medito un rato cuando vuelvo de caminar.', en:'I meditate for a bit when I get back from walking.'},
       {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
-      {es:'Después del gym voy pa la terapia de sal — me relaja un montón.', en:'After the gym I go to salt therapy — it relaxes me a lot.'},
-      {es:'Cuando termino voy pal súper, llego a casa y preparo la cena.', en:'When I finish I go to the supermarket, get home and make dinner.'},
-      {es:'Después de cenar veo un poco de televisión, me baño y me voy pa la cama.', en:'After I eat dinner I watch some TV, take a shower and go to bed.'},
-      // PAST — what you did this morning
-      {es:'Me levanté como a las seis y media.', en:'I got up around six thirty.'},
-      {es:'Fui pal baño, me cepillé los dientes y me lavé la cara.', en:'I went to the bathroom, brushed my teeth and washed my face.'},
-      {es:'Me tomé un vaso de agua con sal.', en:'I drank a glass of salt water.'},
-      {es:'Salí a caminar como veinte minutos.', en:'I went out to walk about twenty minutes.'},
-      {es:'Cuando volví, puse el café y medité.', en:'When I got back, I put on the coffee and meditated.'},
-      {es:'Después de meditar me tomé el café con calma.', en:'After meditating I had my coffee calmly.'},
-      {es:'Después empecé a practicar español.', en:'Then I started practicing Spanish.'},
-      {es:'Fui pal gym esta mañana.', en:'I went to the gym this morning.'},
-      {es:'Después del gym fui pa la terapia de sal — me relajó un montón.', en:'After the gym I went to salt therapy — it relaxed me a lot.'},
-      {es:'Después de cenar vi un poco de televisión, me bañé y me fui pa la cama.', en:'After dinner I watched some TV, took a shower and went to bed.'},
-      // FUTURE — what you plan to do tomorrow
-      {es:'Mañana me voy a levantar como a las seis y media.', en:'Tomorrow I\'m going to get up around six thirty.'},
-      {es:'Voy a ir pal baño, cepillarme los dientes y lavarme la cara.', en:'I\'m going to go to the bathroom, brush my teeth and wash my face.'},
-      {es:'Me voy a tomar un vaso de agua con sal.', en:'I\'m going to drink a glass of salt water.'},
-      {es:'Voy a salir a caminar como veinte minutos.', en:'I\'m going to go out to walk about twenty minutes.'},
-      {es:'Cuando vuelva, voy a poner el café y meditar.', en:'When I get back, I\'m going to put on the coffee and meditate.'},
-      {es:'Después voy a empezar a practicar español.', en:'Then I\'m going to start practicing Spanish.'},
-      {es:'Mañana voy pal gym.', en:'Tomorrow I\'m going to the gym.'},
-      {es:'Después del gym voy a ir pa la terapia de sal.', en:'After the gym I\'m going to go to salt therapy.'},
-      {es:'Después de cenar voy a ver televisión, bañarme y me voy a ir pa la cama.', en:'After dinner I\'m going to watch TV, shower and go to bed.'},
+      {es:'Voy a la terapia de sal después del gym.', en:'I go to salt therapy after the gym.'},
+      {es:'Preparo la cena cuando llego a casa.', en:'I make dinner when I get home.'},
+      {es:'Veo un poco de televisión antes de dormir.', en:'I watch some TV before sleeping.'},
+      {es:'Me voy pa la cama temprano.', en:'I go to bed early.'},
     ]
   },
   {
@@ -949,13 +989,21 @@ const ISLANDS = [
     name: 'Mi historia',
     emoji: '🏙',
     color: 'var(--blue)',
+    qa: [
+      {q:'¿De dónde eres?', qa:'Where are you from?', a:'Soy de Brooklyn, Nueva York.', aa:'I am from Brooklyn, New York.'},
+      {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', aa:'I was born on August 3rd 1975 in Brooklyn, New York.'},
+      {q:'¿De dónde son tus padres?', qa:'Where are your parents from?', a:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', aa:'My dad was born in Puerto Rico and my mom was born in New York.'},
+      {q:'¿Eres puertorriqueño?', qa:'Are you Puerto Rican?', a:'Sí, tengo raíces puertorriqueñas y me siento bien orgulloso de eso.', aa:'Yes I have Puerto Rican roots and I feel really proud of that.'},
+      {q:'¿Hablas español?', qa:'Do you speak Spanish?', a:'Me cuesta hablar español aunque entiendo mucho.', aa:'It is hard for me to speak Spanish even though I understand a lot.'},
+      {q:'¿Por qué aprendes español?', qa:'Why are you learning Spanish?', a:'Porque quiero reconectar con mis raíces puertorriqueñas.', aa:'Because I want to reconnect with my Puerto Rican roots.'},
+    ],
     sentences: [
+      {es:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', en:'I was born on August 3rd 1975 in Brooklyn, New York.'},
       {es:'Soy de Brooklyn, Nueva York.', en:'I am from Brooklyn, New York.'},
-      {es:'Mis padres son de Puerto Rico.', en:'My parents are from Puerto Rico.'},
-      {es:'Crecí entre dos culturas — la americana y la boricua.', en:'I grew up between two cultures — American and Puerto Rican.'},
-      {es:'De niño vivía en Brooklyn pero siempre sentí esa conexión con la isla.', en:'As a child I lived in Brooklyn but always felt that connection to the island.'},
-      {es:'Tengo raíces puertorriqueñas y me siento orgulloso de eso.', en:'I have Puerto Rican roots and I am proud of that.'},
+      {es:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', en:'My dad was born in Puerto Rico and my mom was born in New York.'},
+      {es:'Crecí entre dos culturas, pero siempre sentí esa conexión con la isla.', en:'I grew up between two cultures, but I always felt that connection to the island.'},
       {es:'El español siempre estuvo en mi vida aunque no lo hablaba bien.', en:'Spanish was always in my life even though I didn\'t speak it well.'},
+      {es:'Luché por años para aprender español aunque lo escuché toda mi vida.', en:'I struggled for years to learn Spanish even though I heard it my whole life.'},
       {es:'Ahora estoy reconectando con mis raíces a través del español.', en:'Now I am reconnecting with my roots through Spanish.'},
     ]
   },
@@ -964,18 +1012,24 @@ const ISLANDS = [
     name: 'Mi servicio militar',
     emoji: '🎖',
     color: 'var(--success)',
+    qa: [
+      {q:'¿Serviste en el ejército?', qa:'Did you serve in the military?', a:'Sí, estuve en el ejército americano por diez años.', aa:'Yes I was in the US Army for ten years.'},
+      {q:'¿Cuándo te alistaste?', qa:'When did you enlist?', a:'Me alisté en diciembre de 1995, tenía diecinueve años.', aa:'I enlisted in December 1995, I was nineteen years old.'},
+      {q:'¿Qué hacías en el ejército?', qa:'What did you do in the Army?', a:'Estuve en el ejército y fui paracaidista.', aa:'I was in the Army and I was a paratrooper.'},
+      {q:'¿Te daba miedo saltar como paracaidista?', qa:'Were you scared to jump as a paratrooper?', a:'Claro que da miedo, pero uno se enfoca y se acostumbra.', aa:'Of course it is scary but you focus and get used to it.'},
+      {q:'¿Cuándo saliste del ejército?', qa:'When did you leave the Army?', a:'Salí en el 2005 después de diez años de servicio.', aa:'I left in 2005 after ten years of service.'},
+      {q:'¿Eres veterano discapacitado?', qa:'Are you a disabled veteran?', a:'Sí, soy veterano discapacitado. Recibo compensación del gobierno por mi servicio.', aa:'Yes I am a disabled veteran. I receive compensation from the government for my service.'},
+      {q:'¿A qué te dedicas ahora?', qa:'What do you do now?', a:'No puedo trabajar por mi visa, pero quiero empezar un negocio de coaching de liderazgo.', aa:'I cannot work because of my visa but I want to start a leadership coaching business.'},
+    ],
     sentences: [
-      {es:'Me alisté en el ejército en diciembre de 1995.', en:'I enlisted in the Army in December 1995.'},
-      {es:'Tenía diecinueve años cuando me alisté.', en:'I was nineteen years old when I enlisted.'},
-      {es:'Estuve en el ejército por diez años, desde 1995 hasta el 2005.', en:'I was in the Army for ten years, from 1995 to 2005.'},
-      {es:'Estuve en la infantería y la policía militar.', en:'I was in the infantry and military police.'},
-      {es:'También fui paracaidista.', en:'I was also a paratrooper.'},
+      {es:'Me alisté en el ejército en diciembre de 1995 cuando tenía diecinueve años.', en:'I enlisted in the Army in December 1995 when I was nineteen years old.'},
+      {es:'Estuve en el ejército por diez años hasta que salí en el 2005.', en:'I was in the Army for ten years until I left in 2005.'},
+      {es:'Soy veterano discapacitado así que recibo compensación del gobierno por mi servicio.', en:'I am a disabled veteran so I receive compensation from the government for my service.'},
       {es:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', en:'I lived in North Carolina, Germany and New York during my service.'},
       {es:'El ejército me enseñó disciplina y liderazgo.', en:'The Army taught me discipline and leadership.'},
       {es:'Salí del ejército en el 2005.', en:'I left the Army in 2005.'},
       {es:'Soy veterano discapacitado del ejército americano.', en:'I am a disabled US Army veteran.'},
       {es:'Recibo compensación del gobierno por mi servicio.', en:'I receive compensation from the government for my service.'},
-      {es:'Mi compensación me permite vivir en España sin trabajar.', en:'My compensation allows me to live in Spain without working.'},
       {es:'Estoy orgulloso de haber servido a mi país.', en:'I am proud to have served my country.'},
     ]
   },
@@ -984,6 +1038,12 @@ const ISLANDS = [
     name: 'Mi familia',
     emoji: '👨‍👧‍👧',
     color: 'var(--purple)',
+    qa: [
+      {q:'¿Tienes hijos?', qa:'Do you have children?', a:'Sí, tengo dos hijas que viven en Alemania.', aa:'Yes I have two daughters who live in Germany.'},
+      {q:'¿Las extrañas?', qa:'Do you miss them?', a:'Sí, las extraño pero hablamos seguido.', aa:'Yes I miss them but we talk often.'},
+      {q:'¿Cuándo las ves?', qa:'When do you see them?', a:'Las veo cuando puedo. La distancia es difícil pero nos mantenemos conectados.', aa:'I see them when I can. The distance is hard but we stay connected.'},
+      {q:'¿Estás casado?', qa:'Are you married?', a:'No, no estoy casado.', aa:'No I am not married.'},
+    ],
     sentences: [
       {es:'Tengo dos hijas que viven en Alemania.', en:'I have two daughters who live in Germany.'},
       {es:'Las extraño pero hablamos seguido.', en:'I miss them but we talk often.'},
@@ -993,33 +1053,23 @@ const ISLANDS = [
     ]
   },
   {
-    id: 'grancanaria',
-    name: 'Mi plan Gran Canaria',
-    emoji: '🌊',
-    color: 'var(--warn)',
-    sentences: [
-      {es:'Me voy a mudar a Gran Canaria, España.', en:'I am going to move to Gran Canaria, Spain.'},
-      {es:'Mi plan es irme en febrero del 2027.', en:'My plan is to go in February 2027.'},
-      {es:'Voy a vivir en Las Palmas, cerca del mar.', en:'I am going to live in Las Palmas, near the sea.'},
-      {es:'Estoy preparando mi visa de residencia no lucrativa.', en:'I am preparing my non-lucrative residence visa.'},
-      {es:'Gran Canaria tiene un clima perfecto todo el año.', en:'Gran Canaria has perfect weather all year round.'},
-      {es:'El español canario es muy similar al español boricua.', en:'Canarian Spanish is very similar to Puerto Rican Spanish.'},
-      {es:'Estoy emocionado por este nuevo capítulo de mi vida.', en:'I am excited about this new chapter of my life.'},
-    ]
-  },
-  {
     id: 'espanol',
     name: 'Mi español',
     emoji: '🗣',
     color: 'var(--accent)',
+    qa: [
+      {q:'¿Cuánto tiempo llevas aprendiendo español?', qa:'How long have you been learning Spanish?', a:'Llevo varios meses practicando todos los días.', aa:'I have been practicing every day for several months.'},
+      {q:'¿Es difícil para ti?', qa:'Is it hard for you?', a:'Me cuesta hablar aunque entiendo mucho. Pero no me rindo — sigo pa\'lante.', aa:'It is hard for me to speak even though I understand a lot. But I do not give up — I keep going forward.'},
+      {q:'¿Por qué aprendes español si ya eres puertorriqueño?', qa:'Why are you learning Spanish if you are already Puerto Rican?', a:'Lo escuché toda mi vida pero nunca lo hablé bien. Ahora quiero reconectar con mis raíces.', aa:'I heard it my whole life but never spoke it well. Now I want to reconnect with my roots.'},
+      {q:'¿Cómo lo aprendes?', qa:'How are you learning it?', a:'Practico todos los días — escucho, leo y repito en voz alta. Luché por años pero sigo adelante.', aa:'I practice every day — I listen, read and repeat out loud. I struggled for years but I keep going.'},
+    ],
     sentences: [
       {es:'Llevo varios meses aprendiendo español.', en:'I have been learning Spanish for several months.'},
-      {es:'Estoy aprendiendo para reconectar con mis raíces.', en:'I am learning to reconnect with my roots.'},
-      {es:'Practico español todos los días.', en:'I practice Spanish every day.'},
-      {es:'Cada día hablo mejor que ayer.', en:'Every day I speak better than yesterday.'},
-      {es:'No me rindo — sigo adelante.', en:'I don\'t give up — I keep going.'},
-      {es:'El español boricua es el que yo quiero hablar.', en:'Puerto Rican Spanish is what I want to speak.'},
-      {es:'Poco a poco me va saliendo más natural.', en:'Little by little it is coming out more naturally.'},
+      {es:'Estoy aprendiendo para reconectar con mis raíces porque el español siempre fue parte de mi vida.', en:'I am learning to reconnect with my roots because Spanish was always part of my life.'},
+      {es:'Luché por años para aprender español pero no me rendí — sigo pa\'lante.', en:'I struggled for years to learn Spanish but I didn\'t give up — I keep going forward.'},
+      {es:'Me cuesta hablar español aunque entiendo mucho desde chamaquito.', en:'It\'s hard for me to speak Spanish even though I\'ve understood a lot since I was a little kid.'},
+      {es:'Practico todos los días así que poco a poco me va saliendo más natural.', en:'I practice every day so little by little it is coming out more naturally.'},
+      {es:'El español boricua es el que yo quiero hablar porque es el de mi familia.', en:'Puerto Rican Spanish is what I want to speak because it is my family\'s Spanish.'},
     ]
   },
   {
@@ -1027,6 +1077,12 @@ const ISLANDS = [
     name: 'Frases de conexión',
     emoji: '🔗',
     color: 'var(--blue)',
+    qa: [
+      {q:'¿Ya llegaste?', qa:'Did you arrive?', a:'Sí, ya llegué.', aa:'Yes I am here.'},
+      {q:'¿Cuándo llegas?', qa:'When are you getting here?', a:'Ya llego — dame un momento.', aa:'I am almost there — give me a moment.'},
+      {q:'¿Pa ónde vas?', qa:'Where are you going?', a:'Voy pal gym. Vuelvo en un rato.', aa:'I am going to the gym. I will be back in a little while.'},
+      {q:'¿Te vas a dormir?', qa:'Are you going to sleep?', a:'Sí, me voy pa la cama. Hasta mañana.', aa:'Yes I am going to bed. Until tomorrow.'},
+    ],
     sentences: [
       {es:'Salgo ahorita.', en:'I\'m heading out in a bit.'},
       {es:'Ya volví.', en:'I\'m back.'},
@@ -1102,37 +1158,91 @@ const DEFAULT_SCRIPT = [
 let scriptSentences = loadData('script_v2', DEFAULT_SCRIPT.map((s,i)=>({...s,id:i+1,owned:false})));
 function saveScript() { saveData('island_sentences_' + currentIslandId, scriptSentences); }
 let scriptMode = 'shadow';
+let qaIslandRevealed = {};
 
 function setScriptMode(mode) {
   scriptMode = mode;
   const shadowBtn = document.getElementById('mode-shadow-btn');
   const recallBtn = document.getElementById('mode-recall-btn');
+  const qaBtn = document.getElementById('mode-qa-btn');
   const shadowDiv = document.getElementById('shadow-mode');
   const recallDiv = document.getElementById('recall-mode');
+  const qaDiv = document.getElementById('qa-island-mode');
+
+  // Reset all buttons
+  [shadowBtn, recallBtn, qaBtn].forEach(btn => {
+    if (btn) { btn.style.background='none'; btn.style.borderColor='var(--border2)'; btn.style.borderWidth='1px'; btn.style.color='var(--muted)'; btn.style.fontWeight='400'; }
+  });
+  [shadowDiv, recallDiv, qaDiv].forEach(d => { if(d) d.style.display='none'; });
+
   if (mode === 'shadow') {
-    shadowBtn.style.background = 'rgba(160,196,255,0.1)';
-    shadowBtn.style.borderColor = 'var(--blue)';
-    shadowBtn.style.borderWidth = '2px';
-    shadowBtn.style.color = 'var(--blue)';
-    recallBtn.style.background = 'none';
-    recallBtn.style.borderColor = 'var(--border2)';
-    recallBtn.style.borderWidth = '1px';
-    recallBtn.style.color = 'var(--muted)';
-    shadowDiv.style.display = 'block';
-    recallDiv.style.display = 'none';
-  } else {
-    recallBtn.style.background = 'rgba(212,240,60,0.1)';
-    recallBtn.style.borderColor = 'var(--accent)';
-    recallBtn.style.borderWidth = '2px';
-    recallBtn.style.color = 'var(--accent)';
-    shadowBtn.style.background = 'none';
-    shadowBtn.style.borderColor = 'var(--border2)';
-    shadowBtn.style.borderWidth = '1px';
-    shadowBtn.style.color = 'var(--muted)';
-    shadowDiv.style.display = 'none';
-    recallDiv.style.display = 'block';
+    if (shadowBtn) { shadowBtn.style.background='rgba(160,196,255,0.1)'; shadowBtn.style.borderColor='var(--blue)'; shadowBtn.style.borderWidth='2px'; shadowBtn.style.color='var(--blue)'; shadowBtn.style.fontWeight='600'; }
+    if (shadowDiv) shadowDiv.style.display='block';
+  } else if (mode === 'recall') {
+    if (recallBtn) { recallBtn.style.background='rgba(212,240,60,0.1)'; recallBtn.style.borderColor='var(--accent)'; recallBtn.style.borderWidth='2px'; recallBtn.style.color='var(--accent)'; recallBtn.style.fontWeight='600'; }
+    if (recallDiv) recallDiv.style.display='block';
     renderRecall();
+  } else if (mode === 'qa') {
+    if (qaBtn) { qaBtn.style.background='rgba(196,160,255,0.1)'; qaBtn.style.borderColor='var(--purple)'; qaBtn.style.borderWidth='2px'; qaBtn.style.color='var(--purple)'; qaBtn.style.fontWeight='600'; }
+    if (qaDiv) qaDiv.style.display='block';
+    qaIslandRevealed = {};
+    renderIslandQA();
   }
+}
+
+function renderIslandQA() {
+  const el = document.getElementById('qa-island-container');
+  if (!el) return;
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  if (!island || !island.qa || !island.qa.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px;font-size:12px;">No Q&A for this island yet.</div>';
+    return;
+  }
+  el.innerHTML = island.qa.map((q, i) => {
+    const revealed = !!qaIslandRevealed[i];
+    return `
+    <div class="card" style="margin-bottom:10px;">
+      <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:3px;">${q.q}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${q.qa}</div>
+      <div style="display:flex;gap:6px;margin-bottom:${revealed?'10px':'0'};">
+        <button class="btn btn-sm" onclick="playIslandQ(${i})" style="color:var(--purple);border-color:var(--purple);">▶ Question</button>
+        ${!revealed ? `<button class="btn btn-sm" onclick="revealIslandQ(${i})" style="color:var(--accent);border-color:var(--accent);">Reveal</button>` : ''}
+      </div>
+      ${revealed ? `
+      <div style="background:rgba(212,240,60,0.05);border-left:2px solid ${island.color};padding:10px 12px;border-radius:0 6px 6px 0;margin-bottom:8px;">
+        <div style="font-size:13px;color:var(--accent);font-style:italic;margin-bottom:3px;">${q.a}</div>
+        <div style="font-size:11px;color:var(--muted);">${q.aa}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-sm" onclick="playIslandA(${i})" style="color:var(--success);border-color:var(--success);">▶ Answer</button>
+        <button class="btn btn-sm" onclick="addIslandQAToJournal(${i})" style="color:var(--muted);">+ Journal</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function playIslandQ(i) {
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  if (island && island.qa && island.qa[i]) ttsSpeak(island.qa[i].q, null, 0.85);
+}
+
+function playIslandA(i) {
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  if (island && island.qa && island.qa[i]) ttsSpeak(island.qa[i].a, null, 0.85);
+}
+
+function revealIslandQ(i) {
+  qaIslandRevealed[i] = true;
+  renderIslandQA();
+}
+
+function addIslandQAToJournal(i) {
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  if (!island || !island.qa || !island.qa[i]) return;
+  const q = island.qa[i];
+  sentences.unshift({id:Date.now(), es:q.a, en:q.aa, src:'Q&A — '+island.name, status:'new', added:new Date().toLocaleDateString()});
+  saveSentences();
+  showToast('Added to Journal ✓');
 }
 
 // RECALL state
@@ -1526,7 +1636,7 @@ const QA_CATEGORIES = [
     color: 'var(--blue)',
     day: 'Tuesday',
     questions: [
-      {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací en Brooklyn, Nueva York.', aa:'I was born in Brooklyn, New York.'},
+      {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', aa:'I was born on August 3rd 1975 in Brooklyn, New York.'},
       {q:'¿De dónde son tus padres?', qa:'Where are your parents from?', a:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', aa:'My dad was born in Puerto Rico and my mom was born in New York.'},
       {q:'¿Cuándo te alistaste en el ejército?', qa:'When did you enlist in the Army?', a:'Me alisté en diciembre de 1995, a los diecinueve años.', aa:'I enlisted in December 1995 at nineteen years old.'},
       {q:'¿Cuánto tiempo serviste?', qa:'How long did you serve?', a:'Serví durante diez años, hasta el 2005.', aa:'I served for ten years, until 2005.'},
