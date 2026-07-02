@@ -1346,12 +1346,16 @@ function rateRecall(rating) {
 }
 
 function resetScript() {
-  if (confirm('Reset script to the latest PR Spanish version? Your Journal entries will not be affected.')) {
-    localStorage.removeItem('script_v2');
-    scriptSentences = DEFAULT_SCRIPT.map((s,i) => ({...s, id:i+1, owned:false}));
+  const island = ISLANDS.find(x => x.id === currentIslandId);
+  const name = island ? island.name : 'this island';
+  if (confirm('Reset ' + name + ' to default sentences? Your Journal entries will not be affected.')) {
+    localStorage.removeItem('island_sentences_' + currentIslandId);
+    if (island) {
+      scriptSentences = island.sentences.map((s,i) => ({...s, id:i+1, owned:false}));
+    }
     saveScript();
     renderScript();
-    showToast('Script reset ✓');
+    showToast('Island reset ✓');
   }
 }
 
