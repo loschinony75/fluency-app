@@ -201,6 +201,7 @@
         4. Then tap Mark owned and move to the next
       </div>
     </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;" id="script-star-filter"></div>
     <div id="script-sentences"></div>
   </div>
 
@@ -1318,11 +1319,22 @@ function showRecallCard() {
       <button class="btn btn-full" onclick="playRecallAudio()" style="color:var(--blue);border-color:var(--blue);justify-content:center;margin-bottom:16px;">▶ Hear it</button>
     </div>
     <div id="recall-rating" style="display:none;">
-      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;">How did you do?</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <button class="btn" onclick="recallAgain()" style="justify-content:center;color:var(--warn);border-color:var(--warn);background:rgba(240,164,64,0.08);">🔁 Again</button>
-        <button class="btn" onclick="recallGotIt()" style="justify-content:center;color:var(--success);border-color:var(--success);background:rgba(79,207,138,0.08);">✓ Got it</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;">Rate yourself</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:8px;">
+        <button onclick="rateRecallStar(1)" style="font-size:24px;background:none;border:none;cursor:pointer;opacity:0.9;" title="Blank — no idea">⭐</button>
+        <button onclick="rateRecallStar(2)" style="font-size:24px;background:none;border:none;cursor:pointer;opacity:0.9;" title="Partial — got some">⭐</button>
+        <button onclick="rateRecallStar(3)" style="font-size:24px;background:none;border:none;cursor:pointer;opacity:0.9;" title="Close — almost there">⭐</button>
+        <button onclick="rateRecallStar(4)" style="font-size:24px;background:none;border:none;cursor:pointer;opacity:0.9;" title="Good — with a pause">⭐</button>
+        <button onclick="rateRecallStar(5)" style="font-size:24px;background:none;border:none;cursor:pointer;opacity:0.9;" title="Perfect — came out fast">⭐</button>
       </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:0 4px;">
+        <span>No idea</span>
+        <span>Partial</span>
+        <span>Almost</span>
+        <span>Good</span>
+        <span>Perfect</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:8px;">1-3 → comes back again · 4-5 → moving toward owned</div>
     </div>`;
 }
 
@@ -1355,6 +1367,29 @@ function recallAgain() {
   if (s) recallAgainList.push(s);
   recallIdx++;
   showRecallCard();
+}
+
+function rateRecallStar(stars) {
+  const s = recallQueue[recallIdx];
+  if (s) {
+    if (stars >= 4) {
+      // 4-5 stars — moving toward owned
+      const orig = scriptSentences.find(x => x.id == s.id);
+      if (orig) {
+        orig.rating = stars;
+        if (stars === 5) orig.owned = true;
+        saveScript();
+      }
+      recallIdx++;
+      showRecallCard();
+    } else {
+      // 1-3 stars — comes back again, write it 10 times
+      recallAgainList.push(s);
+      if (stars <= 2) showToast('Write this one 10 times in your notebook');
+      recallIdx++;
+      showRecallCard();
+    }
+  }
 }
 
 function rateRecall(rating) {
@@ -1418,31 +1453,66 @@ function addScriptSentence() {
   showToast('Added to script ✓');
 }
 
+let scriptStarFilter = 'all';
+
+function setScriptStarFilter(f) {
+  scriptStarFilter = f;
+  renderScript();
+}
+
 function renderScript() {
   initIslands();
   const island = ISLANDS.find(x => x.id === currentIslandId);
   const owned = scriptSentences.filter(s=>s.owned).length;
+  const needWork = scriptSentences.filter(s=>s.rating && s.rating <= 3 && !s.owned).length;
   const lbl = document.getElementById('script-progress-label');
-  if (lbl) lbl.innerHTML = `<span style="color:${island ? island.color : 'var(--accent)'};">${island ? island.emoji + ' ' + island.name : 'Script'}</span> · <span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span>`;
+  if (lbl) lbl.innerHTML = `<span style="color:${island ? island.color : 'var(--accent)'};">${island ? island.emoji + ' ' + island.name : 'Script'}</span> · <span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--warn);">${needWork} need work</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span>`;
+
+  // Star filter buttons
+  const filterEl = document.getElementById('script-star-filter');
+  if (filterEl) {
+    filterEl.innerHTML = `
+      <button onclick="setScriptStarFilter('all')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='all'?'var(--accent)':'var(--border)'};background:${scriptStarFilter==='all'?'rgba(212,240,60,0.08)':'none'};color:${scriptStarFilter==='all'?'var(--accent)':'var(--muted)'};cursor:pointer;">All</button>
+      <button onclick="setScriptStarFilter('work')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='work'?'var(--warn)':'var(--border)'};background:${scriptStarFilter==='work'?'rgba(240,164,64,0.08)':'none'};color:${scriptStarFilter==='work'?'var(--warn)':'var(--muted)'};cursor:pointer;">⭐ Needs work</button>
+      <button onclick="setScriptStarFilter('owned')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='owned'?'var(--success)':'var(--border)'};background:${scriptStarFilter==='owned'?'rgba(79,207,138,0.08)':'none'};color:${scriptStarFilter==='owned'?'var(--success)':'var(--muted)'};cursor:pointer;">✓ Owned</button>`;
+  }
+
   const el = document.getElementById('script-sentences');
   if (!el) return;
   const shadowDiv = document.getElementById('shadow-mode');
   if (shadowDiv) shadowDiv.style.display = 'block';
-  el.innerHTML = scriptSentences.map(s => `
-    <div class="scard" style="${s.owned?'opacity:0.5;border-color:rgba(79,207,138,0.3);':''}">
+
+  let filtered = scriptSentences;
+  if (scriptStarFilter === 'work') filtered = scriptSentences.filter(s => s.rating && s.rating <= 3 && !s.owned);
+  if (scriptStarFilter === 'owned') filtered = scriptSentences.filter(s => s.owned);
+
+  if (filtered.length === 0) {
+    el.innerHTML = `<div style="text-align:center;color:var(--muted);padding:30px;font-size:12px;">${scriptStarFilter === 'work' ? 'No sentences need work yet. Keep drilling!' : 'No owned sentences yet. Keep going!'}</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map(s => {
+    const stars = s.rating ? '⭐'.repeat(s.rating) : '';
+    const starColor = s.rating <= 2 ? 'var(--warn)' : s.rating === 3 ? 'var(--muted)' : 'var(--success)';
+    return `
+    <div class="scard" style="${s.owned?'opacity:0.5;border-color:rgba(79,207,138,0.3);':''}${s.rating && s.rating <= 3 && !s.owned ? 'border-color:rgba(240,164,64,0.3);' : ''}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
         <div style="flex:1;">
           <div class="scard-es">${s.es}</div>
           <div class="scard-en">${s.en}</div>
         </div>
-        ${s.owned ? '<span style="color:var(--success);font-size:18px;flex-shrink:0;">✓</span>' : ''}
+        <div style="flex-shrink:0;text-align:right;">
+          ${s.owned ? '<span style="color:var(--success);font-size:16px;">✓</span>' : ''}
+          ${stars ? `<div style="font-size:11px;color:${starColor};">${stars}</div>` : ''}
+        </div>
       </div>
       <div class="scard-actions">
         <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
         <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
         <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ================================================================
