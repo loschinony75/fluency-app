@@ -201,7 +201,6 @@
         4. Then tap Mark owned and move to the next
       </div>
     </div>
-    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;" id="script-star-filter"></div>
     <div id="script-sentences"></div>
   </div>
 
@@ -216,6 +215,8 @@
         4. Rate honestly — the struggle is the learning
       </div>
     </div>
+    <!-- Star filter -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;" id="script-star-filter"></div>
     <div id="recall-container"></div>
   </div>
 
@@ -1270,8 +1271,22 @@ let recallRevealed = false;
 let recallAgainList = [];
 
 function renderRecall() {
-  recallQueue = scriptSentences.filter(s => !s.owned);
-  if (!recallQueue.length) recallQueue = [...scriptSentences];
+  // Render star filter
+  const filterEl = document.getElementById('script-star-filter');
+  if (filterEl) {
+    filterEl.innerHTML = `
+      <button onclick="setScriptStarFilter('all');renderRecall();" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='all'?'var(--accent)':'var(--border)'};background:${scriptStarFilter==='all'?'rgba(212,240,60,0.08)':'none'};color:${scriptStarFilter==='all'?'var(--accent)':'var(--muted)'};cursor:pointer;">All</button>
+      <button onclick="setScriptStarFilter('work');renderRecall();" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='work'?'var(--warn)':'var(--border)'};background:${scriptStarFilter==='work'?'rgba(240,164,64,0.08)':'none'};color:${scriptStarFilter==='work'?'var(--warn)':'var(--muted)'};cursor:pointer;">⭐ Needs work</button>
+      <button onclick="setScriptStarFilter('owned');renderRecall();" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='owned'?'var(--success)':'var(--border)'};background:${scriptStarFilter==='owned'?'rgba(79,207,138,0.08)':'none'};color:${scriptStarFilter==='owned'?'var(--success)':'var(--muted)'};cursor:pointer;">✓ Owned</button>`;
+  }
+
+  // Filter queue based on star filter
+  let base = scriptSentences;
+  if (scriptStarFilter === 'work') base = scriptSentences.filter(s => s.rating && s.rating <= 3 && !s.owned);
+  if (scriptStarFilter === 'owned') base = scriptSentences.filter(s => s.owned);
+
+  recallQueue = base.filter(s => !s.owned);
+  if (!recallQueue.length) recallQueue = [...base];
   recallAgainList = [];
   recallIdx = 0;
   recallRevealed = false;
@@ -1467,15 +1482,6 @@ function renderScript() {
   const needWork = scriptSentences.filter(s=>s.rating && s.rating <= 3 && !s.owned).length;
   const lbl = document.getElementById('script-progress-label');
   if (lbl) lbl.innerHTML = `<span style="color:${island ? island.color : 'var(--accent)'};">${island ? island.emoji + ' ' + island.name : 'Script'}</span> · <span style="color:var(--success);">${owned} owned</span> · <span style="color:var(--warn);">${needWork} need work</span> · <span style="color:var(--muted);">${scriptSentences.length - owned} to go</span>`;
-
-  // Star filter buttons
-  const filterEl = document.getElementById('script-star-filter');
-  if (filterEl) {
-    filterEl.innerHTML = `
-      <button onclick="setScriptStarFilter('all')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='all'?'var(--accent)':'var(--border)'};background:${scriptStarFilter==='all'?'rgba(212,240,60,0.08)':'none'};color:${scriptStarFilter==='all'?'var(--accent)':'var(--muted)'};cursor:pointer;">All</button>
-      <button onclick="setScriptStarFilter('work')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='work'?'var(--warn)':'var(--border)'};background:${scriptStarFilter==='work'?'rgba(240,164,64,0.08)':'none'};color:${scriptStarFilter==='work'?'var(--warn)':'var(--muted)'};cursor:pointer;">⭐ Needs work</button>
-      <button onclick="setScriptStarFilter('owned')" style="font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid ${scriptStarFilter==='owned'?'var(--success)':'var(--border)'};background:${scriptStarFilter==='owned'?'rgba(79,207,138,0.08)':'none'};color:${scriptStarFilter==='owned'?'var(--success)':'var(--muted)'};cursor:pointer;">✓ Owned</button>`;
-  }
 
   const el = document.getElementById('script-sentences');
   if (!el) return;
