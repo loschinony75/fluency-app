@@ -185,6 +185,7 @@
     <button id="mode-shadow-btn" onclick="setScriptMode('shadow')" style="flex:1;padding:9px;border-radius:7px;border:2px solid var(--blue);background:rgba(160,196,255,0.1);color:var(--blue);font-family:var(--font-mono);font-size:12px;font-weight:600;cursor:pointer;">🔊 Shadow</button>
     <button id="mode-recall-btn" onclick="setScriptMode('recall')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">⚡ Recall</button>
     <button id="mode-qa-btn" onclick="setScriptMode('qa')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">❓ Q&A</button>
+    <button id="mode-walk-btn" onclick="setScriptMode('walk')" style="flex:1;padding:9px;border-radius:7px;border:1px solid var(--border2);background:none;color:var(--muted);font-family:var(--font-mono);font-size:12px;cursor:pointer;">🚶 Walk</button>
   </div>
 
   <!-- Progress -->
@@ -202,6 +203,31 @@
       </div>
     </div>
     <div id="script-sentences"></div>
+  </div>
+
+  <!-- Walk autoplay mode -->
+  <div id="walk-mode" style="display:none;">
+    <div style="background:rgba(160,196,255,0.06);border:1px solid rgba(160,196,255,0.2);border-radius:10px;padding:16px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:14px;color:var(--blue);font-weight:700;margin-bottom:4px;">🚶 Walk Mode</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:16px;">Sentences play automatically with a pause between each one. Put your phone in your pocket and just listen and repeat.</div>
+      <div id="walk-current-sentence" style="font-size:16px;color:var(--text);font-style:italic;margin-bottom:8px;min-height:24px;"></div>
+      <div id="walk-current-english" style="font-size:12px;color:var(--muted);margin-bottom:16px;min-height:18px;"></div>
+      <div id="walk-progress" style="font-size:11px;color:var(--muted);margin-bottom:16px;"></div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button id="walk-play-btn" onclick="startWalkPlay()" style="padding:12px 24px;border-radius:8px;border:none;background:var(--blue);color:#000;font-weight:700;font-size:14px;cursor:pointer;">▶ Start</button>
+        <button id="walk-stop-btn" onclick="stopWalkPlay()" style="display:none;padding:12px 24px;border-radius:8px;border:none;background:var(--warn);color:#000;font-weight:700;font-size:14px;cursor:pointer;">■ Stop</button>
+      </div>
+      <div style="margin-top:12px;">
+        <label style="font-size:11px;color:var(--muted);">Pause between sentences: </label>
+        <select id="walk-pause" style="font-size:11px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:3px;">
+          <option value="3000">3 seconds</option>
+          <option value="4000" selected>4 seconds</option>
+          <option value="5000">5 seconds</option>
+          <option value="7000">7 seconds</option>
+          <option value="10000">10 seconds</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <!-- Recall mode -->
@@ -932,12 +958,12 @@ const ISLANDS = [
     emoji: '💪',
     color: 'var(--warn)',
     qa: [
-      {q:'¿Qué eres?', qa:'What are you?', a:'Soy veterano del ejército americano.', aa:'I am a US Army veteran.'},
+      {q:'¿A qué te dedicas?', qa:'What do you do for work?', a:'Soy veterano del ejército americano.', aa:'I am a US Army veteran.'},
       {q:'¿Dónde estás ahora?', qa:'Where are you now?', a:'Estoy en Florida aprendiendo español.', aa:'I am in Florida learning Spanish.'},
       {q:'¿Tienes familia?', qa:'Do you have family?', a:'Tengo dos hijas que viven en Alemania.', aa:'I have two daughters who live in Germany.'},
       {q:'¿Hablas español?', qa:'Do you speak Spanish?', a:'Hablo un poco de español pero sigo aprendiendo.', aa:'I speak a little Spanish but I keep learning.'},
       {q:'¿Dónde vivías antes?', qa:'Where did you live before?', a:'Vivía en Carolina del Norte, Alemania y Nueva York.', aa:'I used to live in North Carolina, Germany and New York.'},
-      {q:'¿Qué eras antes?', qa:'What were you before?', a:'Era soldado de infantería y policía militar.', aa:'I was an infantry soldier and military police.'},
+      {q:'¿A qué te dedicabas antes?', qa:'What did you do before?', a:'Era soldado de infantería y policía militar.', aa:'I was an infantry soldier and military police.'},
       {q:'¿Cuántos años tenías cuando te alistaste?', qa:'How old were you when you enlisted?', a:'Tenía diecinueve años cuando me alisté en el ejército.', aa:'I was nineteen years old when I enlisted in the Army.'},
     ],
     sentences: [
@@ -1019,20 +1045,22 @@ const ISLANDS = [
       {q:'¿Cuándo te alistaste?', qa:'When did you enlist?', a:'Me alisté en diciembre de 1995, tenía diecinueve años.', aa:'I enlisted in December 1995, I was nineteen years old.'},
       {q:'¿Qué hacías en el ejército?', qa:'What did you do in the Army?', a:'Estuve en el ejército y fui paracaidista.', aa:'I was in the Army and I was a paratrooper.'},
       {q:'¿Te daba miedo saltar como paracaidista?', qa:'Were you scared to jump as a paratrooper?', a:'Claro que da miedo, pero uno se enfoca y se acostumbra.', aa:'Of course it is scary but you focus and get used to it.'},
-      {q:'¿Cuándo saliste del ejército?', qa:'When did you leave the Army?', a:'Salí en el 2005 después de diez años de servicio.', aa:'I left in 2005 after ten years of service.'},
+      {q:'¿Cuándo saliste del ejército?', qa:'When did you leave the Army?', a:'Salí en el 2005 porque me lesioné durante el servicio.', aa:'I left in 2005 because I got injured during service.'},
+      {q:'¿Qué te pasó?', qa:'What happened to you?', a:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', aa:'I injured my back, neck and knees during my service.'},
       {q:'¿Eres veterano discapacitado?', qa:'Are you a disabled veteran?', a:'Sí, soy veterano discapacitado. Recibo compensación del gobierno por mi servicio.', aa:'Yes I am a disabled veteran. I receive compensation from the government for my service.'},
       {q:'¿A qué te dedicas ahora?', qa:'What do you do now?', a:'No puedo trabajar por mi visa, pero quiero empezar un negocio de coaching de liderazgo.', aa:'I cannot work because of my visa but I want to start a leadership coaching business.'},
     ],
     sentences: [
+      {es:'Estuve en el ejército americano por diez años.', en:'I was in the US Army for ten years.'},
       {es:'Me alisté en el ejército en diciembre de 1995 cuando tenía diecinueve años.', en:'I enlisted in the Army in December 1995 when I was nineteen years old.'},
-      {es:'Estuve en el ejército por diez años hasta que salí en el 2005.', en:'I was in the Army for ten years until I left in 2005.'},
+      {es:'Cuando estaba en el ejército, estuve en la infantería y la policía militar.', en:'When I was in the Army, I was in the infantry and military police.'},
+      {es:'También fui paracaidista.', en:'I was also a paratrooper.'},
+      {es:'Salí del ejército en el 2005 porque me lesioné.', en:'I left the Army in 2005 because I got injured.'},
+      {es:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', en:'I injured my back, neck and knees during my service.'},
       {es:'Soy veterano discapacitado así que recibo compensación del gobierno por mi servicio.', en:'I am a disabled veteran so I receive compensation from the government for my service.'},
-      {es:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', en:'I lived in North Carolina, Germany and New York during my service.'},
       {es:'El ejército me enseñó disciplina y liderazgo.', en:'The Army taught me discipline and leadership.'},
-      {es:'Salí del ejército en el 2005.', en:'I left the Army in 2005.'},
-      {es:'Soy veterano discapacitado del ejército americano.', en:'I am a disabled US Army veteran.'},
-      {es:'Recibo compensación del gobierno por mi servicio.', en:'I receive compensation from the government for my service.'},
-      {es:'Estoy orgulloso de haber servido a mi país.', en:'I am proud to have served my country.'},
+      {es:'Estoy orgulloso de haber servido a mi país aunque me costó mucho.', en:'I am proud to have served my country even though it cost me a lot.'},
+      {es:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', en:'I lived in North Carolina, Germany and New York during my service.'},
     ]
   },
   {
@@ -1186,13 +1214,15 @@ function setScriptMode(mode) {
   const qaBtn = document.getElementById('mode-qa-btn');
   const shadowDiv = document.getElementById('shadow-mode');
   const recallDiv = document.getElementById('recall-mode');
+  const walkBtn = document.getElementById('mode-walk-btn');
+  const walkDiv = document.getElementById('walk-mode');
   const qaDiv = document.getElementById('qa-island-mode');
 
   // Reset all buttons
-  [shadowBtn, recallBtn, qaBtn].forEach(btn => {
+  [shadowBtn, recallBtn, qaBtn, walkBtn].forEach(btn => {
     if (btn) { btn.style.background='none'; btn.style.borderColor='var(--border2)'; btn.style.borderWidth='1px'; btn.style.color='var(--muted)'; btn.style.fontWeight='400'; }
   });
-  [shadowDiv, recallDiv, qaDiv].forEach(d => { if(d) d.style.display='none'; });
+  [shadowDiv, recallDiv, qaDiv, walkDiv].forEach(d => { if(d) d.style.display='none'; });
 
   if (mode === 'shadow') {
     if (shadowBtn) { shadowBtn.style.background='rgba(160,196,255,0.1)'; shadowBtn.style.borderColor='var(--blue)'; shadowBtn.style.borderWidth='2px'; shadowBtn.style.color='var(--blue)'; shadowBtn.style.fontWeight='600'; }
@@ -1206,7 +1236,63 @@ function setScriptMode(mode) {
     if (qaDiv) qaDiv.style.display='block';
     qaIslandRevealed = {};
     renderIslandQA();
+  } else if (mode === 'walk') {
+    if (walkBtn) { walkBtn.style.background='rgba(160,196,255,0.1)'; walkBtn.style.borderColor='var(--blue)'; walkBtn.style.borderWidth='2px'; walkBtn.style.color='var(--blue)'; walkBtn.style.fontWeight='600'; }
+    if (walkDiv) walkDiv.style.display='block';
+    stopWalkPlay();
   }
+}
+
+let walkTimer = null;
+let walkIdx = 0;
+let walkPlaying = false;
+
+function startWalkPlay() {
+  stopWalkPlay();
+  walkIdx = 0;
+  walkPlaying = true;
+  const playBtn = document.getElementById('walk-play-btn');
+  const stopBtn = document.getElementById('walk-stop-btn');
+  if (playBtn) playBtn.style.display = 'none';
+  if (stopBtn) stopBtn.style.display = 'inline-block';
+  playWalkSentence();
+}
+
+function stopWalkPlay() {
+  walkPlaying = false;
+  ttsStop();
+  if (walkTimer) { clearTimeout(walkTimer); walkTimer = null; }
+  const playBtn = document.getElementById('walk-play-btn');
+  const stopBtn = document.getElementById('walk-stop-btn');
+  if (playBtn) { playBtn.style.display = 'inline-block'; playBtn.textContent = '▶ Start'; }
+  if (stopBtn) stopBtn.style.display = 'none';
+  const cur = document.getElementById('walk-current-sentence');
+  const eng = document.getElementById('walk-current-english');
+  const prog = document.getElementById('walk-progress');
+  if (cur) cur.textContent = '';
+  if (eng) eng.textContent = '';
+  if (prog) prog.textContent = '';
+}
+
+function playWalkSentence() {
+  if (!walkPlaying) return;
+  const sentences = scriptSentences;
+  if (!sentences.length) { stopWalkPlay(); return; }
+  if (walkIdx >= sentences.length) walkIdx = 0;
+  const s = sentences[walkIdx];
+  const cur = document.getElementById('walk-current-sentence');
+  const eng = document.getElementById('walk-current-english');
+  const prog = document.getElementById('walk-progress');
+  if (cur) cur.textContent = s.es;
+  if (eng) eng.textContent = s.en;
+  if (prog) prog.textContent = (walkIdx + 1) + ' of ' + sentences.length;
+  const pause = parseInt(document.getElementById('walk-pause')?.value || '4000');
+  ttsSpeak(s.es, null, 0.85);
+  const estimatedDuration = Math.max(2000, s.es.length * 80);
+  walkTimer = setTimeout(() => {
+    walkIdx++;
+    if (walkPlaying) playWalkSentence();
+  }, estimatedDuration + pause);
 }
 
 function renderIslandQA() {
