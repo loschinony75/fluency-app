@@ -1591,7 +1591,7 @@ function renderScript() {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;">
         <div style="flex:1;">
           <div class="scard-es">${s.es}</div>
-          <div class="scard-en">${s.en}</div>
+          <div class="scard-en" id="en-${s.id}" style="display:none;">${s.en}</div>
         </div>
         <div style="flex-shrink:0;text-align:right;">
           ${s.owned ? '<span style="color:var(--success);font-size:16px;">✓</span>' : ''}
@@ -1600,11 +1600,26 @@ function renderScript() {
       </div>
       <div class="scard-actions">
         <button class="btn btn-sm" onclick="playScriptSentence(${s.id})" style="color:var(--blue);border-color:var(--blue);">▶ Play</button>
+        <button class="btn btn-sm" onclick="toggleShadowEnglish(${s.id}, this)" style="color:var(--muted);">Show English</button>
         <button class="btn btn-sm" onclick="toggleScriptOwned(${s.id})" style="color:${s.owned?'var(--success)':'var(--muted)'};">${s.owned?'✓ Owned':'Mark owned'}</button>
         <button class="btn btn-sm" onclick="deleteScriptSentence(${s.id})" style="color:var(--muted);">✕</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function toggleShadowEnglish(id, btn) {
+  const el = document.getElementById('en-' + id);
+  if (!el) return;
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    btn.textContent = 'Hide English';
+    btn.style.color = 'var(--accent)';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = 'Show English';
+    btn.style.color = 'var(--muted)';
+  }
 }
 
 // ================================================================
