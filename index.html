@@ -1586,8 +1586,6 @@ function renderScript() {
 
   const el = document.getElementById('script-sentences');
   if (!el) return;
-  const shadowDiv = document.getElementById('shadow-mode');
-  if (shadowDiv) shadowDiv.style.display = 'block';
 
   let filtered = scriptSentences;
   if (scriptStarFilter === 'work') filtered = scriptSentences.filter(s => s.rating && s.rating <= 3 && !s.owned);
