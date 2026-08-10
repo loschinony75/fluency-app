@@ -408,7 +408,7 @@ const WAKEUP_WEEKS = [
   { present: [["Cuando llego a casa preparo la cena.","When I get home I prepare dinner."],["Después de cenar me baño y me relajo.","After dinner I shower and relax."],["Me voy pa la cama temprano.","I go to bed early."]],
     past: [["Llegué a casa y preparé la cena.","I got home and prepared dinner."],["Me bañé después de cenar.","I showered after dinner."],["Anoche me fui pa la cama temprano.","Last night I went to bed early."]],
     future: [["Cuando llegue a casa voy a preparar la cena.","When I get home I'm going to prepare dinner."],["Me voy a bañar después de cenar.","I'm going to shower after dinner."],["Esta noche me voy pa la cama temprano.","Tonight I'm going to bed early."]] },
-  { present: [["Cada día hablo mejor que ayer.","Every day I speak better than yesterday."],["No me rindo — sigo adelante.","I don't give up — I keep going."],["El esfuerzo de hoy es el progreso de mañana.","Today's effort is tomorrow's progress."]],
+  { present: [["Cada día hablo mejor que ayer.","Every day I speak better than yesterday."],["No me rindo — sigo pa lante.","I don't give up — I keep going."],["El esfuerzo de hoy es el progreso de mañana.","Today's effort is tomorrow's progress."]],
     past: [["Ayer hablé mejor que el día anterior.","Yesterday I spoke better than the day before."],["No me rendí aunque fue difícil.","I didn't give up even though it was hard."],["El esfuerzo de ayer ya es progreso.","Yesterday's effort is already progress."]],
     future: [["Mañana voy a hablar mejor que hoy.","Tomorrow I'm going to speak better than today."],["No me voy a rendir.","I'm not going to give up."],["El esfuerzo de hoy va a dar frutos.","Today's effort is going to pay off."]] }
 ];
@@ -979,7 +979,7 @@ const ISLANDS = [
       {es:'Era soldado de infantería y policía militar.', en:'I was an infantry soldier and military police.'},
       {es:'Estaba en el ejército cuando tenía diecinueve años.', en:'I was in the Army when I was nineteen years old.'},
       {es:'Tenía diecinueve años cuando me alisté en el ejército.', en:'I was nineteen years old when I enlisted in the Army.'},
-      {es:'Hablaba un poco español cuando era chamaquito.', en:'I spoke a little Spanish when I was a little kid.'},
+      {es:'Hablaba muy poco español cuando era chamaquito.', en:'I spoke very little Spanish when I was a little kid.'},
       {es:'Hacía mucho ejercicio en el ejército.', en:'I used to do a lot of exercise in the Army.'},
       {es:'Iba a la escuela en Brooklyn.', en:'I used to go to school in Brooklyn.'},
       {es:'Vivía en Carolina del Norte, Alemania y Nueva York.', en:'I used to live in North Carolina, Germany and New York.'},
@@ -994,7 +994,7 @@ const ISLANDS = [
       {q:'¿A qué hora te levantas todos los días?', qa:'What time do you get up every day?', a:'Me levanto como a las seis y media.', aa:'I get up around six thirty.'},
       {q:'¿Qué haces primero cuando te levantas?', qa:'What do you do first when you get up?', a:'Voy pal baño, me cepillo los dientes y me lavo la cara.', aa:'I go to the bathroom, brush my teeth and wash my face.'},
       {q:'¿Caminas por las mañanas?', qa:'Do you walk in the mornings?', a:'Sí, salgo a caminar como veinte minutos.', aa:'Yes, I go out to walk about twenty minutes.'},
-      {q:'¿Tomas café?', qa:'Do you drink coffee?', a:'Sí, me gusta el café con leche y un pocito de azúcar.', aa:'Yes, I like coffee with milk and a little bit of sugar.'},
+      {q:'¿Tomas café?', qa:'Do you drink coffee?', a:'Sí, me gusta el café con leche y un chin de azúcar.', aa:'Yes, I like coffee with milk and a little bit of sugar.'},
       {q:'¿Meditas?', qa:'Do you meditate?', a:'Sí, cuando vuelvo de caminar, pongo el café y medito.', aa:'Yes, when I get back from walking, I put on the coffee and meditate.'},
       {q:'¿Vas al gym?', qa:'Do you go to the gym?', a:'Sí, voy pal gym tres veces a la semana.', aa:'Yes, I go to the gym three times a week.'},
       {q:'¿Qué haces después del gym?', qa:'What do you do after the gym?', a:'Después del gym voy pa la terapia de sal — me relaja un montón.', aa:'After the gym I go to salt therapy — it relaxes me a lot.'},
@@ -1003,7 +1003,7 @@ const ISLANDS = [
     sentences: [
       {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
       {es:'Salgo a caminar como veinte minutos.', en:'I go out to walk about twenty minutes.'},
-      {es:'Tomo café con leche y un pocito de azúcar.', en:'I have coffee with milk and a little bit of sugar.'},
+      {es:'Tomo café con leche y un poqito de azúcar.', en:'I have coffee with milk and a little bit of sugar.'},
       {es:'Medito un rato cuando vuelvo de caminar.', en:'I meditate for a bit when I get back from walking.'},
       {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
       {es:'Voy a la terapia de sal después del gym.', en:'I go to salt therapy after the gym.'},
@@ -1022,16 +1022,8 @@ const ISLANDS = [
       {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', aa:'I was born on August 3rd 1975 in Brooklyn, New York.'},
       {q:'¿De dónde son tus padres?', qa:'Where are your parents from?', a:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', aa:'My dad was born in Puerto Rico and my mom was born in New York.'},
       {q:'¿Eres puertorriqueño?', qa:'Are you Puerto Rican?', a:'Sí, tengo raíces puertorriqueñas y me siento bien orgulloso de eso.', aa:'Yes I have Puerto Rican roots and I feel really proud of that.'},
-      {q:'¿Cuándo te alistaste en el ejército?', qa:'When did you enlist in the Army?', a:'Me alisté en diciembre de 1995, a los diecinueve años.', aa:'I enlisted in December 1995 at nineteen years old.'},
-      {q:'¿Cuánto tiempo serviste?', qa:'How long did you serve?', a:'Estuve en el ejército americano por diez años y fui paracaidista.', aa:'I was in the American Army for ten years and I was a paratrooper.'},
-      {q:'¿Qué hiciste en el ejército?', qa:'What did you do in the Army?', a:'Cuando estaba en el ejército, estuve en la infantería y la policía militar.', aa:'When I was in the Army, I was in the infantry and military police.'},
-      {q:'¿Dónde estuviste destacado?', qa:'Where were you stationed?', a:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', aa:'I lived in North Carolina, Germany and New York during my service.'},
-      {q:'¿Qué te pasó?', qa:'What happened to you?', a:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', aa:'I injured my back, neck and knees during my service.'},
-      {q:'¿Por qué saliste del ejército?', qa:'Why did you leave the Army?', a:'Salí porque me lesioné en el servicio. Soy veterano discapacitado.', aa:'I left because I was injured in service. I am a disabled veteran.'},
       {q:'¿Hablas español?', qa:'Do you speak Spanish?', a:'Me cuesta hablar español aunque entiendo mucho.', aa:'It is hard for me to speak Spanish even though I understand a lot.'},
-      {q:'¿Luché por aprender español?', qa:'Did you struggle to learn Spanish?', a:'Sí, luché por años para aprender español aunque siempre lo escuché en casa.', aa:'Yes, I struggled for years to learn Spanish even though I always heard it at home.'},
       {q:'¿Por qué aprendes español?', qa:'Why are you learning Spanish?', a:'Porque quiero reconectar con mis raíces puertorriqueñas.', aa:'Because I want to reconnect with my Puerto Rican roots.'},
-      {q:'¿Cuándo te mudas a España?', qa:'When are you moving to Spain?', a:'Me mudo a Gran Canaria en febrero del 2027.', aa:'I am moving to Gran Canaria in February 2027.'},
     ],
     sentences: [
       {es:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', en:'I was born on August 3rd 1975 in Brooklyn, New York.'},
@@ -1041,33 +1033,34 @@ const ISLANDS = [
       {es:'El español siempre estuvo en mi vida aunque no lo hablaba bien.', en:'Spanish was always in my life even though I didn\'t speak it well.'},
       {es:'Luché por años para aprender español aunque lo escuché toda mi vida.', en:'I struggled for years to learn Spanish even though I heard it my whole life.'},
       {es:'Ahora estoy reconectando con mis raíces a través del español.', en:'Now I am reconnecting with my roots through Spanish.'},
-      // ESTAR (preterite) — estuve
+    ]
+  },
+  {
+    id: 'militar',
+    name: 'Mi servicio militar',
+    emoji: '🎖',
+    color: 'var(--success)',
+    qa: [
+      {q:'¿Serviste en el ejército?', qa:'Did you serve in the military?', a:'Sí, estuve en el ejército americano por diez años.', aa:'Yes I was in the US Army for ten years.'},
+      {q:'¿Cuándo te alistaste?', qa:'When did you enlist?', a:'Me alisté en diciembre de 1995, tenía diecinueve años.', aa:'I enlisted in December 1995, I was nineteen years old.'},
+      {q:'¿Qué hacías en el ejército?', qa:'What did you do in the Army?', a:'Estuve en el ejército y fui paracaidista.', aa:'I was in the Army and I was a paratrooper.'},
+      {q:'¿Te daba miedo saltar como paracaidista?', qa:'Were you scared to jump as a paratrooper?', a:'Claro que da miedo, pero uno se enfoca y se acostumbra.', aa:'Of course it is scary but you focus and get used to it.'},
+      {q:'¿Cuándo saliste del ejército?', qa:'When did you leave the Army?', a:'Salí en el 2005 porque me lesioné durante el servicio.', aa:'I left in 2005 because I got injured during service.'},
+      {q:'¿Qué te pasó?', qa:'What happened to you?', a:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', aa:'I injured my back, neck and knees during my service.'},
+      {q:'¿Eres veterano discapacitado?', qa:'Are you a disabled veteran?', a:'Sí, soy veterano discapacitado. Recibo compensación del gobierno por mi servicio.', aa:'Yes I am a disabled veteran. I receive compensation from the government for my service.'},
+      {q:'¿A qué te dedicas ahora?', qa:'What do you do now?', a:'No puedo trabajar por mi visa, pero quiero empezar un negocio de coaching de liderazgo.', aa:'I cannot work because of my visa but I want to start a leadership coaching business.'},
+    ],
+    sentences: [
       {es:'Estuve en el ejército americano por diez años.', en:'I was in the US Army for ten years.'},
-      {es:'¿Estuviste en el ejército tú también?', en:'Were you in the Army too?'},
-      {es:'Él estuvo en el ejército por seis años.', en:'He was in the Army for six years.'},
-      {es:'Estuvimos en el ejército casi al mismo tiempo.', en:'We were in the Army around the same time.'},
-      // ALISTARSE — me alisté
-      {es:'Me alisté en el ejército en diciembre de 1995.', en:'I enlisted in the Army in December 1995.'},
-      {es:'¿Cuándo te alistaste tú?', en:'When did you enlist?'},
-      {es:'Se alistó cuando tenía diecinueve años.', en:'He enlisted when he was nineteen years old.'},
-      {es:'Nos alistamos casi en la misma época.', en:'We enlisted around the same time.'},
-      // SERVIR (preterite, e→i) — serví
-      {es:'Serví en la infantería y la policía militar.', en:'I served in the infantry and military police.'},
-      {es:'¿Serviste en el ejército tú también?', en:'Did you serve in the Army too?'},
-      {es:'Sirvió como paracaidista.', en:'He served as a paratrooper.'},
-      // LESIONARSE — me lesioné
-      {es:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', en:'I injured my back, neck and knees during my service.'},
-      {es:'¿Te lesionaste en el ejército también?', en:'Did you get injured in the Army too?'},
-      {es:'Se lesionó la rodilla durante el entrenamiento.', en:'He injured his knee during training.'},
-      // SALIR — salí
+      {es:'Me alisté en el ejército en diciembre de 1995 cuando tenía diecinueve años.', en:'I enlisted in the Army in December 1995 when I was nineteen years old.'},
+      {es:'Cuando estaba en el ejército, estuve en la infantería y la policía militar.', en:'When I was in the Army, I was in the infantry and military police.'},
+      {es:'También fui paracaidista.', en:'I was also a paratrooper.'},
       {es:'Salí del ejército en el 2005 porque me lesioné.', en:'I left the Army in 2005 because I got injured.'},
-      {es:'¿Cuándo saliste tú del ejército?', en:'When did you leave the Army?'},
-      {es:'Salió por una lesión también.', en:'He left because of an injury too.'},
-      // VIVIR (imperfect)
-      {es:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', en:'I lived in North Carolina, Germany and New York during my service.'},
-      // Reflection
+      {es:'Me lesioné la espalda, el cuello y las rodillas durante mi servicio.', en:'I injured my back, neck and knees during my service.'},
+      {es:'Soy veterano discapacitado así que recibo compensación del gobierno por mi servicio.', en:'I am a disabled veteran so I receive compensation from the government for my service.'},
       {es:'El ejército me enseñó disciplina y liderazgo.', en:'The Army taught me discipline and leadership.'},
       {es:'Estoy orgulloso de haber servido a mi país aunque me costó mucho.', en:'I am proud to have served my country even though it cost me a lot.'},
+      {es:'Viví en Carolina del Norte, Alemania y Nueva York durante mi servicio.', en:'I lived in North Carolina, Germany and New York during my service.'},
     ]
   },
   {
@@ -1077,18 +1070,16 @@ const ISLANDS = [
     color: 'var(--purple)',
     qa: [
       {q:'¿Tienes hijos?', qa:'Do you have children?', a:'Sí, tengo dos hijas que viven en Alemania.', aa:'Yes I have two daughters who live in Germany.'},
-      {q:'¿Las extrañas?', qa:'Do you miss them?', a:'Sí, extraño a mis hijas, pero hablamos seguido.', aa:'Yes I miss my daughters, but we talk often.'},
+      {q:'¿Las extrañas?', qa:'Do you miss them?', a:'Sí, las extraño pero hablamos seguido.', aa:'Yes I miss them but we talk often.'},
       {q:'¿Cuándo las ves?', qa:'When do you see them?', a:'Las veo cuando puedo. La distancia es difícil pero nos mantenemos conectados.', aa:'I see them when I can. The distance is hard but we stay connected.'},
       {q:'¿Estás casado?', qa:'Are you married?', a:'No, no estoy casado.', aa:'No I am not married.'},
-      {q:'¿Qué significan tus hijas para ti?', qa:'What do your daughters mean to you?', a:'Mis hijas son mi vida y mi corazón, me encanta estar con ellas.', aa:'My daughters are my life and my heart, I love being around them.'},
     ],
     sentences: [
       {es:'Tengo dos hijas que viven en Alemania.', en:'I have two daughters who live in Germany.'},
-      {es:'Extraño a mis hijas, pero hablamos seguido.', en:'I miss my daughters, but we talk often.'},
+      {es:'Las extraño pero hablamos seguido.', en:'I miss them but we talk often.'},
       {es:'Mi familia me da fuerza todos los días.', en:'My family gives me strength every day.'},
       {es:'Mis hijas van a visitarme en Gran Canaria.', en:'My daughters are going to visit me in Gran Canaria.'},
       {es:'Aunque estamos lejos, siempre estamos conectados.', en:'Even though we are far, we are always connected.'},
-      {es:'Mis hijas son mi vida y mi corazón, me encanta estar con ellas.', en:'My daughters are my life and my heart, I love being around them.'},
     ]
   },
   {
@@ -1138,7 +1129,6 @@ const ISLANDS = [
       {es:'El miedo hay que dejarlo.', en:'You have to let go of the fear.'},
       {es:'Me salió natural.', en:'It came out naturally.'},
       {es:'Claro.', en:'Of course.'},
-      {es:'Déjame quieto.', en:'Leave me alone.'},
       {es:'De verdad.', en:'Really. / Truly.'},
       {es:'Creo que sí.', en:'I think so.'},
       {es:'Creo que no.', en:'I don\'t think so.'},
@@ -1202,7 +1192,7 @@ const DEFAULT_SCRIPT = [
   {es:'Salgo a caminar como veinte minutos.', en:'I go out to walk about twenty minutes.'},
   {es:'Cuando vuelvo, pongo el café y medito.', en:'When I get back, I put on the coffee and meditate.'},
   {es:'Después de meditar me tomo el café con calma.', en:'After meditating I have my coffee calmly.'},
-  {es:'Me gusta el café con leche y un pocito de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
+  {es:'Me gusta el café con leche y un chin de azúcar.', en:'I like coffee with milk and a little bit of sugar.'},
   {es:'Después empiezo a practicar español.', en:'Then I start practicing Spanish.'},
   {es:'Trato de estudiar como tres horas.', en:'I try to study about three hours.'},
   {es:'Antes del gym me tomo el batido.', en:'Before the gym I have my smoothie.'},
@@ -1581,6 +1571,8 @@ function renderScript() {
 
   const el = document.getElementById('script-sentences');
   if (!el) return;
+  const shadowDiv = document.getElementById('shadow-mode');
+  if (shadowDiv) shadowDiv.style.display = 'block';
 
   let filtered = scriptSentences;
   if (scriptStarFilter === 'work') filtered = scriptSentences.filter(s => s.rating && s.rating <= 3 && !s.owned);
@@ -1836,6 +1828,23 @@ const QA_CATEGORIES = [
     ]
   },
   {
+    id: 'mi_historia',
+    name: 'Mi historia',
+    emoji: '🏙',
+    color: 'var(--blue)',
+    day: 'Tuesday',
+    questions: [
+      {q:'¿Cuándo naciste?', qa:'When were you born?', a:'Nací el tres de agosto de 1975 en Brooklyn, Nueva York.', aa:'I was born on August 3rd 1975 in Brooklyn, New York.'},
+      {q:'¿De dónde son tus padres?', qa:'Where are your parents from?', a:'Mi papá nació en Puerto Rico y mi mamá nació en Nueva York.', aa:'My dad was born in Puerto Rico and my mom was born in New York.'},
+      {q:'¿Cuándo te alistaste en el ejército?', qa:'When did you enlist in the Army?', a:'Me alisté en diciembre de 1995, a los diecinueve años.', aa:'I enlisted in December 1995 at nineteen years old.'},
+      {q:'¿Cuánto tiempo serviste?', qa:'How long did you serve?', a:'Serví durante diez años, hasta el 2005.', aa:'I served for ten years, until 2005.'},
+      {q:'¿Qué hiciste en el ejército?', qa:'What did you do in the Army?', a:'Cuando estaba en el ejército, estuve en la infantería y la policía militar. También fui paracaidista.', aa:'When I was in the Army, I was in the infantry and military police. I was also a paratrooper.'},
+      {q:'¿Por qué saliste del ejército?', qa:'Why did you leave the Army?', a:'Salí porque me lesioné en el servicio. Soy veterano discapacitado.', aa:'I left because I was injured in service. I am a disabled veteran.'},
+      {q:'¿Luché por aprender español?', qa:'Did you struggle to learn Spanish?', a:'Sí, luché por años para aprender español aunque siempre lo escuché en casa.', aa:'Yes, I struggled for years to learn Spanish even though I always heard it at home.'},
+      {q:'¿Cuándo te mudas a España?', qa:'When are you moving to Spain?', a:'Me mudo a Gran Canaria en febrero del 2027.', aa:'I am moving to Gran Canaria in February 2027.'},
+    ]
+  },
+  {
     id: 'oficina',
     name: 'En la oficina',
     emoji: '🏛',
@@ -2000,7 +2009,7 @@ const VOCAB = [
   {word:'mi familia',meaning:'my family',category:'people',color:'var(--purple)',es:'Mi familia es de Puerto Rico y me siento bien orgulloso de eso.',en:'My family is from Puerto Rico and I feel really proud of that.'},
   {word:'mis hijas',meaning:'my daughters',category:'people',color:'var(--purple)',es:'Mis hijas viven en Alemania pero hablamos seguido.',en:'My daughters live in Germany but we talk often.'},
   {word:'me siento',meaning:'I feel',category:'feelings',color:'var(--warn)',es:'Me siento bien cuando hablo español sin pensar.',en:'I feel good when I speak Spanish without thinking.'},
-  {word:'me gusta',meaning:'I like',category:'feelings',color:'var(--warn)',es:'Me gusta el café con leche y un pocito de azúcar.',en:'I like coffee with milk and a little bit of sugar.'},
+  {word:'me gusta',meaning:'I like',category:'feelings',color:'var(--warn)',es:'Me gusta el café con leche y un chin de azúcar.',en:'I like coffee with milk and a little bit of sugar.'},
   {word:'estoy cansado',meaning:"I'm tired",category:'feelings',color:'var(--warn)',es:'Estoy cansado después del gym pero me siento bien.',en:"I'm tired after the gym but I feel good."},
   {word:'me relaja',meaning:'it relaxes me',category:'feelings',color:'var(--warn)',es:'La terapia de sal me relaja un montón después del gym.',en:'Salt therapy relaxes me a lot after the gym.'},
 ];
@@ -2023,7 +2032,9 @@ function renderVocab() {
   const el = document.getElementById('vocab-list');
   if (!el) return;
   const list = vocabFilter==='all' ? VOCAB : VOCAB.filter(v=>v.category===vocabFilter);
-  el.innerHTML = list.map((v,i) => `
+  el.innerHTML = list.map((v) => {
+    const i = VOCAB.indexOf(v);
+    return `
     <div class="scard" style="margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
@@ -2041,7 +2052,8 @@ function renderVocab() {
         <button class="btn btn-sm" onclick="playVocabSentence(${i})" style="color:var(--blue);border-color:var(--blue);">▶ Sentence</button>
         <button class="btn btn-sm" onclick="addVocabToJournal(${i})" style="color:var(--muted);">+ Journal</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function playVocabWord(i) { const v=VOCAB[i]; if(v) ttsSpeak(v.word,null,0.75); }
