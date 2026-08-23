@@ -408,7 +408,7 @@ const WAKEUP_WEEKS = [
   { present: [["Cuando llego a casa preparo la cena.","When I get home I prepare dinner."],["Después de cenar me baño y me relajo.","After dinner I shower and relax."],["Me voy pa la cama temprano.","I go to bed early."]],
     past: [["Llegué a casa y preparé la cena.","I got home and prepared dinner."],["Me bañé después de cenar.","I showered after dinner."],["Anoche me fui pa la cama temprano.","Last night I went to bed early."]],
     future: [["Cuando llegue a casa voy a preparar la cena.","When I get home I'm going to prepare dinner."],["Me voy a bañar después de cenar.","I'm going to shower after dinner."],["Esta noche me voy pa la cama temprano.","Tonight I'm going to bed early."]] },
-  { present: [["Cada día hablo mejor que ayer.","Every day I speak better than yesterday."],["No me rindo — sigo pa lante.","I don't give up — I keep going."],["El esfuerzo de hoy es el progreso de mañana.","Today's effort is tomorrow's progress."]],
+  { present: [["Cada día hablo mejor que ayer.","Every day I speak better than yesterday."],["No me rindo — sigo adelante.","I don't give up — I keep going."],["El esfuerzo de hoy es el progreso de mañana.","Today's effort is tomorrow's progress."]],
     past: [["Ayer hablé mejor que el día anterior.","Yesterday I spoke better than the day before."],["No me rendí aunque fue difícil.","I didn't give up even though it was hard."],["El esfuerzo de ayer ya es progreso.","Yesterday's effort is already progress."]],
     future: [["Mañana voy a hablar mejor que hoy.","Tomorrow I'm going to speak better than today."],["No me voy a rendir.","I'm not going to give up."],["El esfuerzo de hoy va a dar frutos.","Today's effort is going to pay off."]] }
 ];
@@ -1003,10 +1003,10 @@ const ISLANDS = [
     sentences: [
       {es:'Me levanto como a las seis y media.', en:'I get up around six thirty.'},
       {es:'Salgo a caminar como veinte minutos.', en:'I go out to walk about twenty minutes.'},
-      {es:'Tomo café con leche y un poqito de azúcar.', en:'I have coffee with milk and a little bit of sugar.'},
+      {es:'Tomo café con leche y un chin de azúcar.', en:'I have coffee with milk and a little bit of sugar.'},
       {es:'Medito un rato cuando vuelvo de caminar.', en:'I meditate for a bit when I get back from walking.'},
       {es:'Voy pal gym tres veces a la semana.', en:'I go to the gym three times a week.'},
-      {es:'Voy a la terapia de sal después del gym.', en:'I go to salt therapy after the gym.'},
+      {es:'Voy pa la terapia de sal después del gym.', en:'I go to salt therapy after the gym.'},
       {es:'Preparo la cena cuando llego a casa.', en:'I make dinner when I get home.'},
       {es:'Veo un poco de televisión antes de dormir.', en:'I watch some TV before sleeping.'},
       {es:'Me voy pa la cama temprano.', en:'I go to bed early.'},
@@ -2032,9 +2032,7 @@ function renderVocab() {
   const el = document.getElementById('vocab-list');
   if (!el) return;
   const list = vocabFilter==='all' ? VOCAB : VOCAB.filter(v=>v.category===vocabFilter);
-  el.innerHTML = list.map((v) => {
-    const i = VOCAB.indexOf(v);
-    return `
+  el.innerHTML = list.map((v,i) => `
     <div class="scard" style="margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div>
@@ -2052,8 +2050,7 @@ function renderVocab() {
         <button class="btn btn-sm" onclick="playVocabSentence(${i})" style="color:var(--blue);border-color:var(--blue);">▶ Sentence</button>
         <button class="btn btn-sm" onclick="addVocabToJournal(${i})" style="color:var(--muted);">+ Journal</button>
       </div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 
 function playVocabWord(i) { const v=VOCAB[i]; if(v) ttsSpeak(v.word,null,0.75); }
